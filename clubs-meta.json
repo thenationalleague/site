@@ -36,7 +36,13 @@
     ]
   },
   "entity_notes": {
-    "Ebbsfleet United": "Club named Gravesend & Northfleet until 2007."
+    "Ebbsfleet United": "Club named Gravesend & Northfleet until 2007.",
+    "Nuneaton Town": "Known as Nuneaton Borough during 2018-19 season.",
+    "Leamington": "Known as AP Leamington until 1985.",
+    "Runcorn": "Known as Runcorn FC Halton during 2004-05 season.",
+    "Hornchurch": "Known as AFC Hornchurch between 2005 reformation and 2018.",
+    "Hyde United": "Known as Hyde between 2010 and 2015.",
+    "Darlington": "Knowna as Darlington 1883 between 2012 reformation and 2017."
   },
   "hints": {
     "entity_field_name": "entity",
