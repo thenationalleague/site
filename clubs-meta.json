@@ -1,5 +1,6 @@
 {
   "version": 1,
+  "revision": "v1.1",
   "relationships": {
     "phoenix": [
       { "new": "Chester",               "old": "Chester City" },
@@ -33,6 +34,9 @@
         "parents": ["Hayes", "Yeading"]
       }
     ]
+  },
+  "entity_notes": {
+    "Ebbsfleet United": "Club named Gravesend & Northfleet until 2007."
   },
   "hints": {
     "entity_field_name": "entity",
