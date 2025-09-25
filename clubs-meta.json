@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "revision": "v1.1",
+  "revision": "v1.2",
   "relationships": {
     "phoenix": [
       { "new": "Chester",               "old": "Chester City" },
@@ -42,7 +42,7 @@
     "Runcorn": "Known as Runcorn FC Halton during 2004-05 season.",
     "Hornchurch": "Known as AFC Hornchurch between 2005 reformation and 2018.",
     "Hyde United": "Known as Hyde between 2010 and 2015.",
-    "Darlington": "Knowna as Darlington 1883 between 2012 reformation and 2017."
+    "Darlington": "Known as Darlington 1883 between 2012 reformation and 2017."
   },
     "nicknames": [
     { "entity": "AFC Fylde", "nickname": "The Coasters" },
@@ -270,6 +270,6 @@
     "semantics": {
       "phoenix": "new is a reformed club; treat as separate entity but with historical linkage to old",
       "merger": "new is a new entity formed from the listed parents"
-    },
+    }
   }
 }
