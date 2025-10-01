@@ -3053,8 +3053,9 @@
               "GA": 0,
               "GD": 0,
               "Pts": 0,
+              "move": "down",
               "classes": [
-                "expunged"
+                "folded"
               ],
               "entity": "Newport County"
             }
@@ -7621,8 +7622,9 @@
               "GA": 51,
               "GD": -2,
               "Pts": 55,
+              "move": "down",
               "classes": [
-                "expunged"
+                "folded"
               ],
               "entity": "Telford United"
             },
@@ -8414,7 +8416,7 @@
         },
         "South": {
           "title": "Football Conference South",
-          "note": "Hornchurch deducted 10 points.\nMargate deducted 10 points.\nRedbridge deducted 3 points.",
+          "note": "Hornchurch deducted 10 points; folded upon the conclusion of the season.\nMargate deducted 10 points.\nRedbridge deducted 3 points.",
           "rows": [
             {
               "pos": 1,
@@ -8648,10 +8650,10 @@
               "GA": 63,
               "GD": 8,
               "Pts": 51,
+              "move": "down",
               "classes": [
-                "expunged"
+                "folded"
               ],
-
               "entity": "Hornchurch (original)"
             },
             {
@@ -10318,8 +10320,9 @@
               "GA": 45,
               "GD": 5,
               "Pts": 45,
+              "move": "down",
               "classes": [
-                "expunged"
+                "folded"
               ],
               "entity": "Scarborough"
             },
@@ -10961,8 +10964,9 @@
               "GA": 70,
               "GD": -9,
               "Pts": 42,
+              "move": "down",
               "classes": [
-                "expunged"
+                "folded"
               ],
               "entity": "Halifax Town"
             },
@@ -12516,7 +12520,7 @@
               "Pts": 55,
               "move": "down",
               "classes": [
-                "relegated"
+                "folded"
               ],
               "entity": "Team Bath"
             },
@@ -12665,8 +12669,9 @@
               "GA": 100,
               "GD": -78,
               "Pts": 18,
+              "move": "down",
               "classes": [
-                "expunged"
+                "folded"
               ],
               "entity": "Fisher Athletic"
             }
@@ -13021,8 +13026,9 @@
               "GA": 0,
               "GD": 0,
               "Pts": 0,
+              "move": "down",
               "classes": [
-                "expunged"
+                "folded"
               ],
               "entity": "Chester City"
             }
@@ -13338,8 +13344,9 @@
               "GA": 0,
               "GD": 0,
               "Pts": 0,
+              "move": "down",
               "classes": [
-                "expunged"
+                "folded"
               ],
               "entity": "Farsley Celtic"
             }
@@ -13854,7 +13861,7 @@
               "Pts": 57,
               "move": "down",
               "classes": [
-                "relegated"
+                "folded"
               ],
               "entity": "Rushden & Diamonds"
             },
@@ -14329,8 +14336,9 @@
               "GA": 0,
               "GD": 0,
               "Pts": 0,
+              "move": "down",
               "classes": [
-                "expunged"
+                "folded"
               ],
               "entity": "Ilkeston Town"
             }
@@ -14969,8 +14977,9 @@
               "GA": 73,
               "GD": -26,
               "Pts": 36,
+              "move": "down",
               "classes": [
-                "expunged"
+                "folded"
               ],
               "entity": "Darlington (original)"
             },
@@ -16827,6 +16836,10 @@
               "GA": 63,
               "GD": -5,
               "Pts": 67,
+              "move": "down",
+              "classes": [
+                "folded"
+              ],
               "entity": "Salisbury City"
             },
             {
@@ -24035,6 +24048,9 @@
               "GA": 0,
               "GD": 0,
               "Pts": 0,
+              "classes": [
+                "expunged"
+              ],              
               "entity": "Dover Athletic"
             },
             {
@@ -24048,8 +24064,9 @@
               "GA": 0,
               "GD": 0,
               "Pts": 0,
+              "move": "down",
               "classes": [
-                "expunged"
+                "folded"
               ],
               "entity": "Macclesfield Town"
             }
