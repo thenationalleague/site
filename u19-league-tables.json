@@ -3,7 +3,7 @@
     {
       "season": "2013-14",
       "divisions": {
-        "Beds, Essex, Herts": {
+        "Beds'Essex/Herts": {
           "rows": [
             {
               "Pos": 1,
@@ -240,7 +240,7 @@
             }
           ]
         },
-        "East Sussex, Kent": {
+        "East Sussex/Kent": {
           "rows": [
             {
               "Pos": 1,
@@ -500,7 +500,7 @@
             }
           ]
         },
-        "Essex, Herts": {
+        "Essex/Herts": {
           "rows": [
             {
               "Pos": 1,
@@ -737,7 +737,7 @@
             }
           ]
         },
-        "Hants, Surrey, West Sussex": {
+        "Hants/Surrey/West Sussex": {
           "rows": [
             {
               "Pos": 1,
@@ -1020,7 +1020,7 @@
             }
           ]
         },
-        "Home Counties, South West London": {
+        "Home Counties/South West London": {
           "rows": [
             {
               "Pos": 1,
@@ -1257,7 +1257,7 @@
             }
           ]
         },
-        "Kent, South East London": {
+        "Kent/South East London": {
           "rows": [
             {
               "Pos": 1,
@@ -1517,7 +1517,7 @@
             }
           ]
         },
-        "London, South East": {
+        "London/South East": {
           "rows": [
             {
               "Pos": 1,
@@ -2302,7 +2302,7 @@
     {
       "season": "2014-15",
       "divisions": {
-        "Beds, Essex, Herts": {
+        "Beds'Essex/Herts": {
           "rows": [
             {
               "Pos": 1,
@@ -2562,7 +2562,7 @@
             }
           ]
         },
-        "East Sussex, Kent": {
+        "East Sussex/Kent": {
           "rows": [
             {
               "Pos": 1,
@@ -2845,7 +2845,7 @@
             }
           ]
         },
-        "Essex, Herts": {
+        "Essex/Herts": {
           "rows": [
             {
               "Pos": 1,
@@ -3128,7 +3128,7 @@
             }
           ]
         },
-        "Hants, Surrey, West Sussex": {
+        "Hants/Surrey/West Sussex": {
           "rows": [
             {
               "Pos": 1,
@@ -3411,7 +3411,7 @@
             }
           ]
         },
-        "Home Counties, South West London": {
+        "Home Counties/South West London": {
           "rows": [
             {
               "Pos": 1,
@@ -3625,7 +3625,7 @@
             }
           ]
         },
-        "Kent, South East London": {
+        "Kent/South East London": {
           "rows": [
             {
               "Pos": 1,
@@ -3908,7 +3908,7 @@
             }
           ]
         },
-        "London, South East": {
+        "London/South East": {
           "rows": [
             {
               "Pos": 1,
@@ -12759,7 +12759,7 @@
             },
             {
               "Pos": 6,
-              "Team": "Staines Town FC / Kingston College U19",
+              "Team": "Staines Town FC, Kingston College U19",
               "P": 18,
               "HW": 5,
               "HD": 0,
