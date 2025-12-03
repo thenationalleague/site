@@ -19,7 +19,7 @@
       "key": "B",
       "caption": "National League Cup Group B",
       "rows": [
-        { "pos": "Q", "team": "Boreham Wood",                  "P": 4, "W": $, "PW": 0, "PL": 0, "L": 0, "GF": 13, "GA": 4, "GD": "+9", "Pts": 12 },
+        { "pos": "Q", "team": "Boreham Wood",                  "P": 4, "W": 4, "PW": 0, "PL": 0, "L": 0, "GF": 13, "GA": 4, "GD": "+9", "Pts": 12 },
         { "pos": "Q", "team": "Braintree Town",                "P": 4, "W": 3, "PW": 0, "PL": 0, "L": 1, "GF": 8, "GA": 5, "GD": "+3", "Pts": 9 },
         { "pos": 3, "team": "Wealdstone",                    "P": 4, "W": 3, "PW": 0, "PL": 0, "L": 1, "GF": 6, "GA": 4, "GD": "+2", "Pts": 9 },
         { "pos": 4, "team": "Forest Green Rovers",           "P": 4, "W": 2, "PW": 0, "PL": 1, "L": 1, "GF": 8, "GA": 6, "GD": "+2", "Pts": 7 },
