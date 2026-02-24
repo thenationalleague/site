@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v2.4)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v2.5)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -167,14 +167,13 @@
     </div>
 
     <script>
-      (function(){
+    (function(){
         // =========================
         // Data sources (same folder)
         // =========================
-        const RESULTS_SRC = "https://raw.githubusercontent.com/rckd-nl/website/main/results.json";         // REQUIRED
+        const RESULTS_SRC = "https://raw.githubusercontent.com/rckd-nl/website/main/results.json";          // REQUIRED (league results + dates)
+        const TABLES_SRC  = "https://raw.githubusercontent.com/rckd-nl/website/main/league-tables.json";    // REQUIRED (final standings + classes/movement)
         const EXPULSIONS_SRC = "./expulsions.json";   // OPTIONAL (ignored if missing)
-
-        // Optional (kept from your v2.3 build)
         const CLUBS_META_SRC = "https://raw.githubusercontent.com/rckd-nl/website/main/clubs-meta.json";
         const SEASON_NOTES_SRC = "https://raw.githubusercontent.com/rckd-nl/website/main/season-notes.json";
 
@@ -209,22 +208,22 @@
         // =========================
         // State
         // =========================
-        const state = {
-          seasons: [],
-          byKey: {},
-          current: { season:null, division:null, asof:null },
-
-          // meta/name helpers
-          metaBySlug: new Map(),   // Map<slug, clubMeta>
-          aliasMap: new Map(),     // Map<canonName, Set<slug>>
-
-          // season notes (unchanged)
-          seasonNotes: new Map(),  // Map<season, Map<division, Array<{team,note}>>>
-
-          // expulsions: Map<season, Map<division, Array<{team,date}>>>
-          expulsions: new Map()
-        };
-
+          const state = {
+            seasons: [],               // seasons from results.json
+            byKey: {},                 // seasonKey -> season (results.json)
+            finalByKey: {},            // seasonKey -> season (league-tables.json)
+            current: { season:null, division:null, asof:null },
+          
+            // meta/name helpers
+            metaBySlug: new Map(),     // Map<slug, clubMeta>
+            aliasMap: new Map(),       // Map<canonName, Set<slug>>
+          
+            // season notes (unchanged)
+            seasonNotes: new Map(),    // Map<season, Map<division, Array<{team,note}>>>
+          
+            // expulsions: Map<season, Map<division, Array<{team,date}>>>
+            expulsions: new Map()
+          };
         // =========================
         // Utils
         // =========================
@@ -510,7 +509,118 @@
           if (!raw || !Array.isArray(raw.seasons)) return [];
           return raw.seasons.filter(s => s && s.season && s.divisions);
         }
+function normalizeTables(raw){
+  if (!raw) return [];
+  if (Array.isArray(raw?.seasons)) return raw.seasons.filter(s=>s && s.season && s.divisions);
+  if (Array.isArray(raw)) return raw.filter(s=>s && s.season && s.divisions);
 
+  // Support object keyed by season
+  const out = [];
+  Object.keys(raw||{}).forEach(k=>{
+    const v = raw[k];
+    if (!v || typeof v !== 'object') return;
+    if (v.divisions){
+      const item = { season:k, divisions:{} };
+      Object.keys(v.divisions).forEach(name=>{
+        const d = v.divisions[name] || {};
+        item.divisions[name] = { title: d.title || (name + ' ' + k), rows: d.rows || [] };
+      });
+      out.push(item);
+    }
+  });
+  return out;
+}
+
+function buildFinalIndex(items){
+  const seasons = items.slice().sort((a,b)=> startYear(a.season) - startYear(b.season));
+  state.finalByKey = {};
+  seasons.forEach(s => state.finalByKey[s.season] = s);
+}
+
+function buildFinalRow(r, idx, seasonKey){
+  let slug = r.teamSlug || '';
+  if (!slug && r.team) slug = bestEffortSlugFromName(r.team, seasonKey) || '';
+  const label = slug ? displayNameForSeason(slug, seasonKey) : (r.team || '—');
+
+  const tr = document.createElement('tr');
+  tr.id = slug ? ('row-' + slug) : ('row-' + slugify(label));
+  if (slug) tr.setAttribute('data-team-slug', slug);
+
+  (r.classes || []).forEach(c => tr.classList.add(c));
+
+  // Zebra only if not special (same logic as v2.3)
+  if (!tr.classList.contains('champion') &&
+      !tr.classList.contains('promoted') &&
+      !tr.classList.contains('playoff') &&
+      !tr.classList.contains('relegated') &&
+      !tr.classList.contains('folded') &&
+      !tr.classList.contains('expunged')){
+    tr.classList.add((idx % 2 === 0) ? 'zebra-odd' : 'zebra-even');
+  }
+
+  tr.style.setProperty('--i', idx);
+  tr.classList.add('anim-in');
+
+  const mvRaw = (r.move != null ? r.move : r.movement);
+  let mv = (typeof mvRaw === 'string') ? mvRaw.trim().toLowerCase() : '';
+  if (mv !== 'up' && mv !== 'down') mv = '';
+
+  const cells = [
+    r.pos,
+    { move: mv },
+    label,
+    r.P, r.W, r.D, r.L, r.GF, r.GA,
+    { gd: r.GD },
+    r.Pts
+  ];
+
+  cells.forEach((val, i)=>{
+    const td = document.createElement('td');
+
+    if (i === 1){
+      td.classList.add('move-col');
+      if (val && typeof val === 'object'){
+        if (val.move === 'up'){ setText(td,'↑'); td.classList.add('move-up'); td.title='Promoted'; td.setAttribute('aria-label','Promoted'); }
+        else if (val.move === 'down'){ setText(td,'↓'); td.classList.add('move-down'); td.title='Relegated'; td.setAttribute('aria-label','Relegated'); }
+        else { setText(td,''); td.classList.add('move-none'); }
+      } else { setText(td,''); td.classList.add('move-none'); }
+      tr.appendChild(td);
+      return;
+    }
+
+    if (i === 9){
+      let gd = Number((val && typeof val === 'object') ? val.gd : val);
+      if (!isFinite(gd)){
+        const gf = Number(r.GF), ga = Number(r.GA);
+        gd = (isFinite(gf) && isFinite(ga)) ? (gf - ga) : 0;
+      }
+      setText(td, gd > 0 ? ('+' + gd) : String(gd));
+      td.classList.add(classForGD(gd));
+      tr.appendChild(td);
+      return;
+    }
+
+    setText(td, (val != null ? val : ''));
+    tr.appendChild(td);
+  });
+
+  return tr;
+}
+
+function renderFinalTable(seasonKey, divisionName){
+  const season = state.finalByKey[seasonKey];
+  const div = season?.divisions?.[divisionName];
+  const rows = (div?.rows || []).slice().sort((a,b)=> (a.pos||0) - (b.pos||0));
+
+  els.tbody.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  rows.forEach((r, idx) => frag.appendChild(buildFinalRow(r, idx, seasonKey)));
+  els.tbody.appendChild(frag);
+
+  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName);
+  rebuildLegend();
+}
+      
         function buildIndex(items){
           const seasons = items.slice().sort((a,b)=> startYear(a.season) - startYear(b.season));
           state.seasons = seasons;
@@ -568,42 +678,56 @@
         }
 
         // Build an "As of" selector from match dates in the chosen season+division
-        function populateAsOf(seasonKey, divisionName){
-          const season = state.byKey[seasonKey];
-          if (!season) return;
+function populateAsOf(seasonKey, divisionName){
+  const season = state.byKey[seasonKey];
+  if (!season) return;
 
-          const div = season.divisions?.[divisionName];
-          const matches = Array.isArray(div?.matches) ? div.matches : [];
+  const div = season.divisions?.[divisionName];
+  const matches = Array.isArray(div?.matches) ? div.matches : [];
 
-          const dates = Array.from(new Set(matches.map(m => toISO(m.date)).filter(Boolean)))
-            .sort((a,b)=> isoToNum(a) - isoToNum(b));
+  // IMPORTANT: exclude play-offs from the date list
+  const leagueMatches = matches.filter(m => !m?.playoffs && !m?.playoff_round);
 
-          const sel = els.asofSel;
-          sel.innerHTML = '';
+  const dates = Array.from(
+    new Set(leagueMatches.map(m => toISO(m.date)).filter(Boolean))
+  ).sort((a,b)=> isoToNum(a) - isoToNum(b));
 
-          if (!dates.length){
-            sel.appendChild(createEl('option', { textContent:'—', disabled:true, selected:true }));
-            state.current.asof = null;
-            return;
-          }
+  const sel = els.asofSel;
+  sel.innerHTML = '';
 
-          // Default to latest date (end of season)
-          const latest = dates[dates.length - 1];
+  // Always include Final standings (default)
+  sel.appendChild(createEl('option', { value:'__FINAL__', textContent:'Final standings' }));
 
-          // Put latest first as "End of season (latest date)" and then list all dates.
-          // (keeps it simple + easy for you to sanity-check)
-          sel.appendChild(createEl('option', { value: latest, textContent: `End of season (${latest})` }));
+  if (!dates.length){
+    // If no league dates, lock to Final standings
+    sel.value = '__FINAL__';
+    state.current.asof = '__FINAL__';
+    return;
+  }
 
-          dates.forEach(d=>{
-            sel.appendChild(createEl('option', { value: d, textContent: d }));
-          });
+  // Group dates by month (YYYY-MM)
+  const byMonth = new Map();
+  for (const iso of dates){
+    const ym = iso.slice(0,7);
+    if (!byMonth.has(ym)) byMonth.set(ym, []);
+    byMonth.get(ym).push(iso);
+  }
 
-          // Keep existing selection if possible
-          const desired = state.current.asof && dates.includes(state.current.asof) ? state.current.asof : latest;
-          sel.value = desired;
-          state.current.asof = desired;
-        }
+  for (const [ym, arr] of byMonth.entries()){
+    const og = document.createElement('optgroup');
+    og.label = ym; // keeps it simple; can prettify later
+    arr.forEach(d => og.appendChild(createEl('option', { value:d, textContent:d })));
+    sel.appendChild(og);
+  }
 
+  // Default selection rules:
+  // - On season change: we force __FINAL__ elsewhere.
+  // - Otherwise: keep current selection if it exists; else default to __FINAL__.
+  const allOptions = Array.from(sel.querySelectorAll('option')).map(o => o.value);
+  const desired = (state.current.asof && allOptions.includes(state.current.asof)) ? state.current.asof : '__FINAL__';
+  sel.value = desired;
+  state.current.asof = desired;
+}
         // =========================
         // Standings calculation
         // =========================
@@ -658,27 +782,30 @@
           // Stats excluding expunged-team fixtures (if expunged has happened by asOf)
           const stats = new Map();
 
-          for (const m of matches){
-            const dateISO = toISO(m.date);
-            if (!dateISO) continue;
-            if (isoToNum(dateISO) > asNum) continue;
+for (const m of matches){
+  // IMPORTANT: never count play-offs in league standings
+  if (m?.playoffs || m?.playoff_round) continue;
 
-            const h = String(m.home_entity || m.home || '').trim();
-            const a = String(m.away_entity || m.away || '').trim();
-            if (!h || !a) continue;
+  const dateISO = toISO(m.date);
+  if (!dateISO) continue;
+  if (isoToNum(dateISO) > asNum) continue;
 
-            // If either team is expunged (by this asOf), remove the fixture entirely
-            if (expSet.has(canon(h)) || expSet.has(canon(a))) continue;
+  const h = String(m.home_entity || m.home || '').trim();
+  const a = String(m.away_entity || m.away || '').trim();
+  if (!h || !a) continue;
 
-            const hg = Number(m.home_goals);
-            const ag = Number(m.away_goals);
+  // If either team is expunged (by this asOf), remove the fixture entirely
+  if (expSet.has(canon(h)) || expSet.has(canon(a))) continue;
 
-            // Only count played games (both numeric)
-            if (!Number.isFinite(hg) || !Number.isFinite(ag)) continue;
+  const hg = Number(m.home_goals);
+  const ag = Number(m.away_goals);
 
-            addMatch(stats, h, a, hg, ag, ptsWin);
-          }
+  // Only count played games (both numeric)
+  if (!Number.isFinite(hg) || !Number.isFinite(ag)) continue;
 
+  addMatch(stats, h, a, hg, ag, ptsWin);
+}
+          
           // Build rows
           const rows = [];
           for (const team of allTeams){
@@ -853,25 +980,36 @@
               }
             }
 
-            const effectiveAsOf = state.current.asof || els.asofSel.value;
-            state.current.asof = effectiveAsOf;
+const effectiveAsOf = state.current.asof || els.asofSel.value;
+state.current.asof = effectiveAsOf;
 
-            setText(
-              els.caption,
-              withYear(`Standings — ${chosenDiv} (as of ${effectiveAsOf})`, seasonKey)
-            );
+if (effectiveAsOf === '__FINAL__'){
+  setText(
+    els.caption,
+    withYear(`Final standings — ${chosenDiv}`, seasonKey)
+  );
 
-            // Compute + render
-            els.tbody.innerHTML = '';
-            const rows = computeStandings(seasonKey, chosenDiv, effectiveAsOf);
+  // Render from league-tables.json (includes classes/movement)
+  renderFinalTable(seasonKey, chosenDiv);
 
-            const frag = document.createDocumentFragment();
-            rows.forEach((r, idx) => frag.appendChild(buildRow(r, idx, seasonKey)));
-            els.tbody.appendChild(frag);
+} else {
+  setText(
+    els.caption,
+    withYear(`Standings — ${chosenDiv} (as of ${effectiveAsOf})`, seasonKey)
+  );
 
-            renderSeasonDivisionNotesAndRefs(seasonKey, chosenDiv);
-            rebuildLegend();
+  // Compute + render from results.json (league-only; play-offs excluded)
+  els.tbody.innerHTML = '';
+  const rows = computeStandings(seasonKey, chosenDiv, effectiveAsOf);
 
+  const frag = document.createDocumentFragment();
+  rows.forEach((r, idx) => frag.appendChild(buildRow(r, idx, seasonKey)));
+  els.tbody.appendChild(frag);
+
+  renderSeasonDivisionNotesAndRefs(seasonKey, chosenDiv);
+  rebuildLegend();
+}
+            
             if (els.seasonSel.value !== seasonKey) els.seasonSel.value = seasonKey;
 
           } catch(e){
@@ -913,17 +1051,29 @@
           els.seasonSel.appendChild(loading);
 
           try{
-            const [resultsRes, metaRes, notesRes, expulsionsRaw] = await Promise.all([
-              fetch(RESULTS_SRC + (RESULTS_SRC.includes('?')?'&':'?') + 'v=' + Date.now(), { cache:'no-store', credentials:'omit' }),
-              fetchOptionalJson(CLUBS_META_SRC),
-              fetchOptionalJson(SEASON_NOTES_SRC),
-              fetchOptionalJson(EXPULSIONS_SRC)
-            ]);
-
+const [resultsRes, tablesRes, metaRes, notesRes, expulsionsRaw] = await Promise.all([
+  fetch(RESULTS_SRC + (RESULTS_SRC.includes('?')?'&':'?') + 'v=' + Date.now(), { cache:'no-store', credentials:'omit' }),
+  fetch(TABLES_SRC  + (TABLES_SRC.includes('?')?'&':'?')  + 'v=' + Date.now(), { cache:'no-store', credentials:'omit' }),
+  fetchOptionalJson(CLUBS_META_SRC),
+  fetchOptionalJson(SEASON_NOTES_SRC),
+  fetchOptionalJson(EXPULSIONS_SRC)
+]);
             if (!resultsRes.ok) throw new Error('Results: ' + resultsRes.status + ' ' + resultsRes.statusText);
 
             const resultsRaw = await safeJson(resultsRes);
+            
+if (!tablesRes.ok) throw new Error('Tables: ' + tablesRes.status + ' ' + tablesRes.statusText);
 
+const tablesRaw = await safeJson(tablesRes);
+
+// Index final tables
+const finalItems = normalizeTables(tablesRaw);
+if (!finalItems.length){
+  showErr('No seasons found in league-tables.json.', 'Expected seasons/divisions/rows.');
+  return;
+}
+buildFinalIndex(finalItems);
+            
             // Index main results
             const items = normalizeResults(resultsRaw);
             if (!items.length){
@@ -953,22 +1103,28 @@
             state.current.season = initialSeason;
             state.current.division = initialDiv;
 
-            renderTable(initialSeason, initialDiv, null);
+state.current.asof = '__FINAL__';
+renderTable(initialSeason, initialDiv, '__FINAL__');
+            
+els.seasonSel.addEventListener('change', ()=>{
+  const s = els.seasonSel.value;
+  state.current.season = s;
 
-            els.seasonSel.addEventListener('change', ()=>{
-              const s = els.seasonSel.value;
-              state.current.season = s;
-              // reset division to preferred default when season changes
-              const dn = Object.keys(state.byKey[s].divisions || {});
-              const d =
-                dn.includes('National') ? 'National' :
-                dn.includes('North') ? 'North' :
-                dn.includes('South') ? 'South' :
-                dn[0];
-              state.current.division = d;
-              renderTable(s, d, null);
-            });
+  // reset division to preferred default when season changes
+  const dn = Object.keys(state.byKey[s].divisions || {});
+  const d =
+    dn.includes('National') ? 'National' :
+    dn.includes('North') ? 'North' :
+    dn.includes('South') ? 'South' :
+    dn[0];
 
+  state.current.division = d;
+
+  // IMPORTANT: default to Final standings on season change
+  state.current.asof = '__FINAL__';
+
+  renderTable(s, d, '__FINAL__');
+});
             els.asofSel.addEventListener('change', ()=>{
               state.current.asof = els.asofSel.value;
               renderTable(state.current.season, state.current.division, state.current.asof);
