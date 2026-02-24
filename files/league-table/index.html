@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v2.5)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v2.6)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -640,11 +640,78 @@ function renderFinalTable(seasonKey, divisionName){
   els.tbody.appendChild(frag);
 
   // Apply dotted cut lines inferred from final standings
-  applyCutLinesToRenderedTable(inferCutsFromFinal(seasonKey, chosenDiv));
+  applyCutLinesToRenderedTable(inferCutsFromFinal(seasonKey, divisionName));
 
-  renderSeasonDivisionNotesAndRefs(seasonKey, chosenDiv);
+  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName);
   rebuildLegend();
+}
+      function inferCutsFromFinal(seasonKey, divisionName){
+  // Cache per season/division
+  if (!state.cutsBySeason.has(seasonKey)) state.cutsBySeason.set(seasonKey, new Map());
+  const seasonMap = state.cutsBySeason.get(seasonKey);
 
+  if (seasonMap.has(divisionName)) return seasonMap.get(divisionName);
+
+  const season = state.finalByKey[seasonKey];
+  const div = season?.divisions?.[divisionName];
+  const rows = Array.isArray(div?.rows) ? div.rows : [];
+
+  // Champion is always pos 1 (line after 1 is not needed per your note)
+  // Promotion / playoff / relegation inferred from classes in final table.
+  const promotedPos = rows
+    .filter(r => (r.classes || []).includes('promoted'))
+    .map(r => Number(r.pos))
+    .filter(n => Number.isFinite(n));
+
+  const playoffPos = rows
+    .filter(r => (r.classes || []).includes('playoff'))
+    .map(r => Number(r.pos))
+    .filter(n => Number.isFinite(n));
+
+  const relegatedPos = rows
+    .filter(r => (r.classes || []).includes('relegated'))
+    .map(r => Number(r.pos))
+    .filter(n => Number.isFinite(n));
+
+  const teamCount = rows.length;
+
+  // Promo cut is the LAST promoted position (if any)
+  const promoCut = promotedPos.length ? Math.max(...promotedPos) : null;
+
+  // Playoff cut is the LAST playoff position (if any)
+  const playoffCut = playoffPos.length ? Math.max(...playoffPos) : null;
+
+  // Relegation cut: number of relegated spots from the bottom, not the specific pos number.
+  // Example: if 4 teams relegated in a 22 team league => cut after pos 18 (safe above, relegation below)
+  const relegatedCount = relegatedPos.length;
+  const relegationCut = (relegatedCount && teamCount)
+    ? (teamCount - relegatedCount)
+    : null;
+
+  const cuts = { promo: promoCut, playoff: playoffCut, relegation: relegationCut };
+  seasonMap.set(divisionName, cuts);
+  return cuts;
+}
+
+function applyCutLinesToRenderedTable(cuts){
+  // Clear any previous cut classes
+  Array.from(els.tbody.rows).forEach(tr=>{
+    tr.classList.remove('cut-promo-after','cut-playoff-after','cut-relegation-after');
+  });
+
+  if (!cuts) return;
+
+  const byPos = new Map();
+  Array.from(els.tbody.rows).forEach(tr=>{
+    const posCell = tr.cells && tr.cells[0];
+    const pos = posCell ? Number(String(posCell.textContent||'').trim()) : NaN;
+    if (Number.isFinite(pos)) byPos.set(pos, tr);
+  });
+
+  if (cuts.promo && byPos.has(cuts.promo)) byPos.get(cuts.promo).classList.add('cut-promo-after');
+  if (cuts.playoff && byPos.has(cuts.playoff)) byPos.get(cuts.playoff).classList.add('cut-playoff-after');
+  if (cuts.relegation && byPos.has(cuts.relegation)) byPos.get(cuts.relegation).classList.add('cut-relegation-after');
+}
         function buildIndex(items){
           const seasons = items.slice().sort((a,b)=> startYear(a.season) - startYear(b.season));
           state.seasons = seasons;
@@ -1021,9 +1088,9 @@ if (effectiveAsOf === '__FINAL__'){
   els.tbody.appendChild(frag);
 
   // Apply dotted cut lines inferred from final standings
-  applyCutLinesToRenderedTable(inferCutsFromFinal(seasonKey, divisionName));
+  applyCutLinesToRenderedTable(inferCutsFromFinal(seasonKey, chosenDiv));
 
-  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName);
+  renderSeasonDivisionNotesAndRefs(seasonKey, chosenDiv);
   rebuildLegend();
 }
             
