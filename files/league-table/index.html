@@ -710,27 +710,29 @@ function populateAsOf(seasonKey, divisionName){
   const sel = els.asofSel;
   sel.innerHTML = '';
 
-  // Build flat list of dates (formatted)
-  dates.forEach(d=>{
+  // Build flat list of dates (formatted) BUT hide the final league date.
+  // Final standings will represent "end of season" instead.
+  const visibleDates = (dates.length > 1) ? dates.slice(0, -1) : [];
+
+  visibleDates.forEach(d=>{
     sel.appendChild(createEl('option', { value:d, textContent: formatISODateShort(d) }));
   });
 
-  // Add Final standings as LAST option
+  // Add Final standings as LAST option (always present)
   sel.appendChild(createEl('option', { value:'__FINAL__', textContent:'Final standings' }));
 
-  // Persist ONLY real dates; otherwise default to Final standings
+  // Persist selection if possible; otherwise default to Final
   const allValues = Array.from(sel.options).map(o => o.value);
-  const keep =
-    state.current.asof &&
-    state.current.asof !== '__FINAL__' &&
-    allValues.includes(state.current.asof);
+  const desired = (state.current.asof && allValues.includes(state.current.asof))
+    ? state.current.asof
+    : '__FINAL__';
 
-  sel.value = keep ? state.current.asof : '__FINAL__';
-  state.current.asof = sel.value;
-  // Store what the last available league date is (used to “push back” to final)
-  state.current.lastLeagueDate = dates.length ? dates[dates.length - 1] : null;
-}
-      
+  sel.value = desired;
+  state.current.asof = desired;
+
+  // No lastLeagueDate tracking (prevents keyboard "bounce" loops)
+  delete state.current.lastLeagueDate;
+  
         // =========================
         // Standings calculation
         // =========================
@@ -1130,14 +1132,6 @@ els.seasonSel.addEventListener('change', ()=>{
 });
 els.asofSel.addEventListener('change', ()=>{
   const v = els.asofSel.value;
-
-  // If user selects the last available league date, treat that as "Final standings"
-  if (state.current.lastLeagueDate && v === state.current.lastLeagueDate){
-    state.current.asof = '__FINAL__';
-    els.asofSel.value = '__FINAL__';
-    renderTable(state.current.season, state.current.division, '__FINAL__');
-    return;
-  }
 
   state.current.asof = v;
   renderTable(state.current.season, state.current.division, v);
