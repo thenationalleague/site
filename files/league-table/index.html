@@ -62,6 +62,8 @@
       tbody tr.cut-playoff-after td{ border-bottom:2px dotted #333; }
       tbody tr.cut-relegation-after td{ border-bottom:2px dotted #333; }
       /* Force white inside folded/expunged rows */
+      tbody tr.cut-champion-after td{ border-bottom:2px dotted #333; }
+      tbody tr.cut-playoff-byes-after td{ border-bottom:2px dotted #333; }
       tbody tr.folded td,
       tbody tr.expunged td{ color:#fff !important; }
 
@@ -640,63 +642,123 @@ function renderFinalTable(seasonKey, divisionName){
   els.tbody.appendChild(frag);
 
   // Apply dotted cut lines inferred from final standings
-  applyCutLinesToRenderedTable(inferCutsFromFinal(seasonKey, divisionName));
+  applyCutLinesToRenderedTable(inferCutsFromFinal(seasonKey, chosenDiv));
 
-  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName);
+  renderSeasonDivisionNotesAndRefs(seasonKey, chosenDiv);
   rebuildLegend();
 }
-      function inferCutsFromFinal(seasonKey, divisionName){
-  // Cache per season/division
+function collectDivisionNotesText(seasonKey, divisionName){
+  const raw = state.seasonNotes.get(String(seasonKey))?.get(String(divisionName)) || [];
+  return raw.map(x => String(x.note || '')).join(' \n ');
+}
+
+function inferPlayoffLinesFromNotes(seasonKey, divisionName){
+  const text = collectDivisionNotesText(seasonKey, divisionName);
+  const t = text.toLowerCase();
+
+  // Look for explicit position ranges first
+  // Examples it should match:
+  // "Play-offs introduced (positions 2-5)"
+  // "Six-team play-offs (positions 2-7; 2-3 byes)"
+  const mRange = /positions?\s*2\s*-\s*(5|7)\b/i.exec(text);
+  if (mRange){
+    const end = Number(mRange[1]);
+    if (end === 5) return { playoffCut: 5, byeCut: null };
+    if (end === 7) return { playoffCut: 7, byeCut: 3 };
+  }
+
+  // Look for "six-team" hints even if range not written
+  if (/\b(6|six)\s*[-\s]?team\b.*\bplay[-\s]?offs?\b/i.test(text) || /\bplay[-\s]?offs?\b.*\b(6|six)\s*[-\s]?team\b/i.test(text)){
+    return { playoffCut: 7, byeCut: 3 };
+  }
+
+  // Look for "2 and 3 have byes" without saying "six-team"
+  if (/\bbyes?\b/.test(t) && /\b2\b/.test(t) && /\b3\b/.test(t) && /\bplay/.test(t)){
+    return { playoffCut: 7, byeCut: 3 };
+  }
+
+  // Look for generic "play-offs introduced" without format (not enough info)
+  return null;
+}
+
+function inferPlayoffLinesFromFinalClasses(seasonKey, divisionName){
+  const season = state.finalByKey[seasonKey];
+  const div = season?.divisions?.[divisionName];
+  const rows = Array.isArray(div?.rows) ? div.rows : [];
+
+  // Consider both 'playoff' and 'promoted' as "in the playoff cohort" (final winner is also from that group)
+  const cohortPos = rows
+    .filter(r => {
+      const cls = r.classes || [];
+      return cls.includes('playoff') || cls.includes('promoted');
+    })
+    .map(r => Number(r.pos))
+    .filter(n => Number.isFinite(n) && n >= 2); // exclude champion
+
+  if (!cohortPos.length) return null;
+
+  const maxPos = Math.max(...cohortPos);
+
+  // If final table shows positions through 7 => six-team format (2-3 byes, 4-7 eliminators)
+  if (maxPos >= 7) return { playoffCut: 7, byeCut: 3 };
+
+  // If final table shows positions through 5 => four-team format (2-5)
+  if (maxPos >= 5) return { playoffCut: 5, byeCut: null };
+
+  return null;
+}
+
+function inferCutsFromFinal(seasonKey, divisionName){
   if (!state.cutsBySeason.has(seasonKey)) state.cutsBySeason.set(seasonKey, new Map());
   const seasonMap = state.cutsBySeason.get(seasonKey);
-
   if (seasonMap.has(divisionName)) return seasonMap.get(divisionName);
 
   const season = state.finalByKey[seasonKey];
   const div = season?.divisions?.[divisionName];
   const rows = Array.isArray(div?.rows) ? div.rows : [];
 
-  // Champion is always pos 1 (line after 1 is not needed per your note)
-  // Promotion / playoff / relegation inferred from classes in final table.
-  const promotedPos = rows
-    .filter(r => (r.classes || []).includes('promoted'))
-    .map(r => Number(r.pos))
-    .filter(n => Number.isFinite(n));
-
-  const playoffPos = rows
-    .filter(r => (r.classes || []).includes('playoff'))
-    .map(r => Number(r.pos))
-    .filter(n => Number.isFinite(n));
-
+  // --- relegation (your “from bottom” rule) ---
   const relegatedPos = rows
     .filter(r => (r.classes || []).includes('relegated'))
     .map(r => Number(r.pos))
     .filter(n => Number.isFinite(n));
 
   const teamCount = rows.length;
-
-  // Promo cut is the LAST promoted position (if any)
-  const promoCut = promotedPos.length ? Math.max(...promotedPos) : null;
-
-  // Playoff cut is the LAST playoff position (if any)
-  const playoffCut = playoffPos.length ? Math.max(...playoffPos) : null;
-
-  // Relegation cut: number of relegated spots from the bottom, not the specific pos number.
-  // Example: if 4 teams relegated in a 22 team league => cut after pos 18 (safe above, relegation below)
   const relegatedCount = relegatedPos.length;
   const relegationCut = (relegatedCount && teamCount)
     ? (teamCount - relegatedCount)
     : null;
 
-  const cuts = { promo: promoCut, playoff: playoffCut, relegation: relegationCut };
+  // --- champion dotted line always under 1st ---
+  const championCut = 1;
+
+  // --- playoff dotted lines: notes-first, fallback to final classes ---
+  const fromNotes = inferPlayoffLinesFromNotes(seasonKey, divisionName);
+  const fromFinal = inferPlayoffLinesFromFinalClasses(seasonKey, divisionName);
+  const playoffs = fromNotes || fromFinal; // notes override
+
+  const playoffCut = playoffs ? playoffs.playoffCut : null;
+  const byeCut = playoffs ? playoffs.byeCut : null;
+
+  const cuts = {
+    champion: championCut,
+    playoff: playoffCut,
+    playoffByes: byeCut,
+    relegation: relegationCut
+  };
+
   seasonMap.set(divisionName, cuts);
   return cuts;
 }
 
 function applyCutLinesToRenderedTable(cuts){
-  // Clear any previous cut classes
   Array.from(els.tbody.rows).forEach(tr=>{
-    tr.classList.remove('cut-promo-after','cut-playoff-after','cut-relegation-after');
+    tr.classList.remove(
+      'cut-champion-after',
+      'cut-playoff-after',
+      'cut-playoff-byes-after',
+      'cut-relegation-after'
+    );
   });
 
   if (!cuts) return;
@@ -708,11 +770,12 @@ function applyCutLinesToRenderedTable(cuts){
     if (Number.isFinite(pos)) byPos.set(pos, tr);
   });
 
-  if (cuts.promo && byPos.has(cuts.promo)) byPos.get(cuts.promo).classList.add('cut-promo-after');
+  if (cuts.champion && byPos.has(cuts.champion)) byPos.get(cuts.champion).classList.add('cut-champion-after');
+  if (cuts.playoffByes && byPos.has(cuts.playoffByes)) byPos.get(cuts.playoffByes).classList.add('cut-playoff-byes-after');
   if (cuts.playoff && byPos.has(cuts.playoff)) byPos.get(cuts.playoff).classList.add('cut-playoff-after');
   if (cuts.relegation && byPos.has(cuts.relegation)) byPos.get(cuts.relegation).classList.add('cut-relegation-after');
 }
-        function buildIndex(items){
+      function buildIndex(items){
           const seasons = items.slice().sort((a,b)=> startYear(a.season) - startYear(b.season));
           state.seasons = seasons;
           state.byKey = {};
