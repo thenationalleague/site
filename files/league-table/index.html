@@ -232,13 +232,28 @@
         const startYear = s => { const m=/^(\d{4})/.exec(String(s)||''); return m?+m[1]:0; };
         const classForGD = gd => gd>0?'gd-pos': gd<0?'gd-neg':'gd-zero';
         const toISO = s => String(s||'').slice(0,10); // "YYYY-MM-DD"
-        const isoToNum = iso => {
+
+        function formatISODateShort(iso){
+          // iso: YYYY-MM-DD -> "Sat 18 Aug 1984"
+          const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));
+          if (!m) return String(iso||'');
+          const y = +m[1], mo = +m[2], d = +m[3];
+
+          // Use UTC to avoid local TZ shifting the day
+          const dt = new Date(Date.UTC(y, mo - 1, d));
+          const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+          const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+          const dow = days[dt.getUTCDay()];
+          return `${dow} ${String(d)} ${months[mo - 1]} ${y}`;
+        }
+
+        const isoToNum = (iso) => {
           // Convert YYYY-MM-DD to comparable number YYYYMMDD
           const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));
           if (!m) return 0;
           return (+m[1])*10000 + (+m[2])*100 + (+m[3]);
         };
-
         // Points rule (simple + historic default)
         // 2 points for a win before 1981-82; otherwise 3 points.
         function pointsForWin(seasonKey){
@@ -685,7 +700,7 @@ function populateAsOf(seasonKey, divisionName){
   const div = season.divisions?.[divisionName];
   const matches = Array.isArray(div?.matches) ? div.matches : [];
 
-  // IMPORTANT: exclude play-offs from the date list
+  // Exclude play-offs from date list
   const leagueMatches = matches.filter(m => !m?.playoffs && !m?.playoff_round);
 
   const dates = Array.from(
@@ -695,39 +710,27 @@ function populateAsOf(seasonKey, divisionName){
   const sel = els.asofSel;
   sel.innerHTML = '';
 
-  // Always include Final standings (default)
+  // Build flat list of dates (formatted)
+  dates.forEach(d=>{
+    sel.appendChild(createEl('option', { value:d, textContent: formatISODateShort(d) }));
+  });
+
+  // Add Final standings as LAST option
   sel.appendChild(createEl('option', { value:'__FINAL__', textContent:'Final standings' }));
 
-  if (!dates.length){
-    // If no league dates, lock to Final standings
-    sel.value = '__FINAL__';
-    state.current.asof = '__FINAL__';
-    return;
-  }
+  // Persist ONLY real dates; otherwise default to Final standings
+  const allValues = Array.from(sel.options).map(o => o.value);
+  const keep =
+    state.current.asof &&
+    state.current.asof !== '__FINAL__' &&
+    allValues.includes(state.current.asof);
 
-  // Group dates by month (YYYY-MM)
-  const byMonth = new Map();
-  for (const iso of dates){
-    const ym = iso.slice(0,7);
-    if (!byMonth.has(ym)) byMonth.set(ym, []);
-    byMonth.get(ym).push(iso);
-  }
-
-  for (const [ym, arr] of byMonth.entries()){
-    const og = document.createElement('optgroup');
-    og.label = ym; // keeps it simple; can prettify later
-    arr.forEach(d => og.appendChild(createEl('option', { value:d, textContent:d })));
-    sel.appendChild(og);
-  }
-
-  // Default selection rules:
-  // - On season change: we force __FINAL__ elsewhere.
-  // - Otherwise: keep current selection if it exists; else default to __FINAL__.
-  const allOptions = Array.from(sel.querySelectorAll('option')).map(o => o.value);
-  const desired = (state.current.asof && allOptions.includes(state.current.asof)) ? state.current.asof : '__FINAL__';
-  sel.value = desired;
-  state.current.asof = desired;
+  sel.value = keep ? state.current.asof : '__FINAL__';
+  state.current.asof = sel.value;
+  // Store what the last available league date is (used to “push back” to final)
+  state.current.lastLeagueDate = dates.length ? dates[dates.length - 1] : null;
 }
+      
         // =========================
         // Standings calculation
         // =========================
@@ -773,8 +776,8 @@ function populateAsOf(seasonKey, divisionName){
           // Collect all teams mentioned (so expunged teams still appear)
           const allTeams = new Set();
           for (const m of matches){
-            const h = String(m.home_entity || m.home || '').trim();
-            const a = String(m.away_entity || m.away || '').trim();
+            const h = String(m.home || '').trim();
+            const a = String(m.away || '').trim();
             if (h) allTeams.add(h);
             if (a) allTeams.add(a);
           }
@@ -790,8 +793,8 @@ for (const m of matches){
   if (!dateISO) continue;
   if (isoToNum(dateISO) > asNum) continue;
 
-  const h = String(m.home_entity || m.home || '').trim();
-  const a = String(m.away_entity || m.away || '').trim();
+  const h = String(m.home || '').trim();
+  const a = String(m.away || '').trim();
   if (!h || !a) continue;
 
   // If either team is expunged (by this asOf), remove the fixture entirely
@@ -850,13 +853,13 @@ for (const m of matches){
           return slug ? ('row-' + slug) : ('row-' + slugify(label || ''));
         }
 
-        function buildRow(r, idx, seasonKey){
-          let slug = '';
-          const fromName = bestEffortSlugFromName(r.team, seasonKey);
-          if (fromName) slug = fromName;
+function buildRow(r, idx, seasonKey){
+  // Prefer meta-based display name if we can map entity/team -> slug
+  const rawName = String(r.team || '').trim();
+  const slug = bestEffortSlugFromName(rawName, seasonKey) || '';
 
-          const label = slug ? displayNameForSeason(slug, seasonKey) : r.team;
-
+  const label = slug ? displayNameForSeason(slug, seasonKey) : rawName;
+  
           const tr = document.createElement('tr');
           tr.id = rowIdFor(slug, label);
 
@@ -1125,11 +1128,21 @@ els.seasonSel.addEventListener('change', ()=>{
 
   renderTable(s, d, '__FINAL__');
 });
-            els.asofSel.addEventListener('change', ()=>{
-              state.current.asof = els.asofSel.value;
-              renderTable(state.current.season, state.current.division, state.current.asof);
-            });
+els.asofSel.addEventListener('change', ()=>{
+  const v = els.asofSel.value;
 
+  // If user selects the last available league date, treat that as "Final standings"
+  if (state.current.lastLeagueDate && v === state.current.lastLeagueDate){
+    state.current.asof = '__FINAL__';
+    els.asofSel.value = '__FINAL__';
+    renderTable(state.current.season, state.current.division, '__FINAL__');
+    return;
+  }
+
+  state.current.asof = v;
+  renderTable(state.current.season, state.current.division, v);
+});
+            
             clearErr();
 
           } catch(err){
