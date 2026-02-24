@@ -642,9 +642,9 @@ function renderFinalTable(seasonKey, divisionName){
   els.tbody.appendChild(frag);
 
   // Apply dotted cut lines inferred from final standings
-  applyCutLinesToRenderedTable(inferCutsFromFinal(seasonKey, chosenDiv));
+  applyCutLinesToRenderedTable(inferCutsFromFinal(seasonKey, divisionName));
 
-  renderSeasonDivisionNotesAndRefs(seasonKey, chosenDiv);
+  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName);
   rebuildLegend();
 }
 function collectDivisionNotesText(seasonKey, divisionName){
