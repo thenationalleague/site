@@ -57,7 +57,10 @@
 
       /* Expunged rows */
       tbody tr.expunged{ --row-bg:#555; color:#fff; }
-
+      /* Cut lines (inferred from final standings) */
+      tbody tr.cut-promo-after td{ border-bottom:2px dotted #333; }
+      tbody tr.cut-playoff-after td{ border-bottom:2px dotted #333; }
+      tbody tr.cut-relegation-after td{ border-bottom:2px dotted #333; }
       /* Force white inside folded/expunged rows */
       tbody tr.folded td,
       tbody tr.expunged td{ color:#fff !important; }
@@ -207,12 +210,14 @@
 
         // =========================
         // State
-        // =========================
-          const state = {
+        // =========================          const state = {
             seasons: [],               // seasons from results.json
             byKey: {},                 // seasonKey -> season (results.json)
             finalByKey: {},            // seasonKey -> season (league-tables.json)
             current: { season:null, division:null, asof:null },
+
+            // NEW: inferred cut lines per season+division (from final standings)
+            cutsBySeason: new Map(),   // Map<seasonKey, Map<divisionName, {promo:number|null, playoff:number|null, relegation:number|null}>>
           
             // meta/name helpers
             metaBySlug: new Map(),     // Map<slug, clubMeta>
@@ -224,6 +229,7 @@
             // expulsions: Map<season, Map<division, Array<{team,date}>>>
             expulsions: new Map()
           };
+      
         // =========================
         // Utils
         // =========================
@@ -632,10 +638,32 @@ function renderFinalTable(seasonKey, divisionName){
   rows.forEach((r, idx) => frag.appendChild(buildFinalRow(r, idx, seasonKey)));
   els.tbody.appendChild(frag);
 
+  // Apply dotted cut lines inferred from final standings
+  applyCutLinesToRenderedTable(inferCutsFromFinal(seasonKey, divisionName));
+
   renderSeasonDivisionNotesAndRefs(seasonKey, divisionName);
   rebuildLegend();
 }
       
+          const state = {
+            seasons: [],               // seasons from results.json
+            byKey: {},                 // seasonKey -> season (results.json)
+            finalByKey: {},            // seasonKey -> season (league-tables.json)
+            current: { season:null, division:null, asof:null },
+
+            // NEW: inferred cut lines per season+division (from final standings)
+            cutsBySeason: new Map(),   // Map<seasonKey, Map<divisionName, {promo:number|null, playoff:number|null, relegation:number|null}>>
+          
+            // meta/name helpers
+            metaBySlug: new Map(),     // Map<slug, clubMeta>
+            aliasMap: new Map(),       // Map<canonName, Set<slug>>
+          
+            // season notes (unchanged)
+            seasonNotes: new Map(),    // Map<season, Map<division, Array<{team,note}>>>
+          
+            // expulsions: Map<season, Map<division, Array<{team,date}>>>
+            expulsions: new Map()
+          };      
         function buildIndex(items){
           const seasons = items.slice().sort((a,b)=> startYear(a.season) - startYear(b.season));
           state.seasons = seasons;
@@ -1011,7 +1039,10 @@ if (effectiveAsOf === '__FINAL__'){
   rows.forEach((r, idx) => frag.appendChild(buildRow(r, idx, seasonKey)));
   els.tbody.appendChild(frag);
 
-  renderSeasonDivisionNotesAndRefs(seasonKey, chosenDiv);
+  // Apply dotted cut lines inferred from final standings
+  applyCutLinesToRenderedTable(inferCutsFromFinal(seasonKey, divisionName));
+
+  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName);
   rebuildLegend();
 }
             
