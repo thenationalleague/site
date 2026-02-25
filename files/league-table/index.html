@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.1)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.4)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -107,11 +107,18 @@
       tbody tr.clinched-relegated{ --row-bg:var(--pink); color:#000; }
 
       /* Subtle semi vs eliminator marker (NOT a box outline) */
-      tbody tr.clinched-po-semi td{ box-shadow: inset 4px 0 0 rgba(10,125,42,.55); }
-      tbody tr.clinched-po-elim td{ box-shadow: inset 4px 0 0 rgba(107,76,194,.50); }      .season-note[hidden]{ display:none; }
       .note-line{ white-space:normal; margin:2px 0; }
       .season-note[hidden]{ display:none; }
       .note-line{ white-space:normal; margin:2px 0; }
+      /* Row-level semi vs eliminator marker (continuous, no cell seams) */
+      tbody tr.clinched-po-semi{
+        background-image: linear-gradient(to right, rgba(10,125,42,.55) 0, rgba(10,125,42,.55) 4px, transparent 4px);
+        background-repeat: no-repeat;
+      }
+      tbody tr.clinched-po-elim{
+        background-image: linear-gradient(to right, rgba(107,76,194,.50) 0, rgba(107,76,194,.50) 4px, transparent 4px);
+        background-repeat: no-repeat;
+      }
       .note-line.note-flash{ animation: noteGlow 1200ms ease-out; }
       @keyframes noteGlow { from{ background:#fff4cc; } to{ background:transparent; } }
 
@@ -657,8 +664,8 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
       continue; // don't also label play-offs
     }
 
-    // Play-offs (mathematical)
-    if (hasPlayoffs && poFieldEndPos != null && pos >= 2 && pos <= poFieldEndPos && outsiderPlayoffMax != null && ptsNow > outsiderPlayoffMax){
+    // Play-offs (mathematical) — include pos 1 (leaders can clinch a play-off berth before clinching the title)
+    if (hasPlayoffs && poFieldEndPos != null && pos >= 1 && pos <= poFieldEndPos && outsiderPlayoffMax != null && ptsNow > outsiderPlayoffMax){
       if (poByeEndPos == null){
         // 4-team: everyone in 2–5 is effectively a semi-finalist
         r.classes.push('clinched-po-semi');
