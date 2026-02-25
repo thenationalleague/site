@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v2.7)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v2.8)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -388,10 +388,17 @@
         function indexSeasonFormats(raw){
           // Accept season-notes.json as either:
           //  A) [ ...notes... ]  (no formats)
-          //  B) { notes:[...], formats:[...] }
-          //  C) { formats:[...] }
+          //  B) { notes:[...], seasonFormat:[...] }   (preferred)
+          //  C) { notes:[...], formats:[...] }        (legacy)
+          //  D) { seasonFormat:[...] } or { formats:[...] }
           state.seasonFormats.clear();
-          const list = Array.isArray(raw) ? [] : Array.isArray(raw?.formats) ? raw.formats : [];
+
+          const list =
+            Array.isArray(raw) ? [] :
+            Array.isArray(raw?.seasonFormat) ? raw.seasonFormat :
+            Array.isArray(raw?.formats) ? raw.formats :
+            [];
+
           for (const it of list){
             if (!it?.season || !it?.division) continue;
 
@@ -1225,6 +1232,17 @@ state.current.asof = effectiveAsOf;
 
 if (effectiveAsOf === '__FINAL__'){
   const leagueTitle = leagueTitleFromFinalTables(seasonKey, chosenDiv);
+
+  setText(
+    els.caption,
+    `${leagueTitle} — Final standings`
+  );
+
+  // Render from league-tables.json (includes classes/movement)
+  renderFinalTable(seasonKey, chosenDiv);
+
+} else {
+  const leagueTitle = leagueTitleFromFinalTables(seasonKey, chosenDiv);
   const prettyAsOf = formatISODateShort(effectiveAsOf);
 
   setText(
@@ -1232,15 +1250,6 @@ if (effectiveAsOf === '__FINAL__'){
     `${leagueTitle} (as of ${prettyAsOf})`
   );
   
-  // Render from league-tables.json (includes classes/movement)
-  renderFinalTable(seasonKey, chosenDiv);
-
-} else {
-  setText(
-    els.caption,
-    withYear(`Standings — ${chosenDiv} (as of ${effectiveAsOf})`, seasonKey)
-  );
-
   // Compute + render from results.json (league-only; play-offs excluded)
   els.tbody.innerHTML = '';
   const rows = computeStandings(seasonKey, chosenDiv, effectiveAsOf);
