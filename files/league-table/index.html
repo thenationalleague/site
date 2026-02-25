@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.5)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.7)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -12,6 +12,8 @@
         --head-bg:#000; --head-fg:#fff;
         --zebra-odd:#f6f6f6; --zebra-even:#fff;
         --gold:gold; --silver:#cfead6; --blue:#e8f0ff; --pink:#ffe0e6;
+        --blue-elim:#e8f0ff;   /* lighter */
+        --blue-semi:#cddfff;   /* darker */
         --gd-pos:#0a7d2a; --gd-zero:#555; --gd-neg:#b00020;
         --ring:#d0d7de;
       }
@@ -48,7 +50,9 @@
       tbody tr:hover{ background:var(--row-bg, transparent); }
       tbody tr.champion{ --row-bg:var(--gold); color:#000; }
       tbody tr.promoted{ --row-bg:var(--silver); color:#000; }
-      tbody tr.playoff{  --row-bg:var(--blue); color:#000; }
+      tbody tr.playoff{  --row-bg:var(--blue-elim); color:#000; }
+      tbody tr.playoff-semi{ --row-bg:var(--blue-semi); color:#000; }
+      tbody tr.playoff-elim{ --row-bg:var(--blue-elim); color:#000; }
       tbody tr.relegated{--row-bg:var(--pink); color:#000; }
       tbody tr.folded{ --row-bg:#000; color:#fff; }
 
@@ -102,8 +106,8 @@
       .season-note{ margin-top:.5rem; padding:10px 12px; border-left:4px solid #9e0000; background:#f8f8f8; color:#222; }
       /* Date-specific clinched statuses (ONLY when mathematically secured) */
       tbody tr.clinched-champion{ --row-bg:var(--gold); color:#000; }
-      tbody tr.clinched-po-semi{ --row-bg:var(--blue); color:#000; }
-      tbody tr.clinched-po-elim{ --row-bg:var(--blue); color:#000; }
+      tbody tr.clinched-po-semi{ --row-bg:var(--blue-semi); color:#000; }
+      tbody tr.clinched-po-elim{ --row-bg:var(--blue-elim); color:#000; }
       tbody tr.clinched-relegated{ --row-bg:var(--pink); color:#000; }
 
       /* Subtle semi vs eliminator marker (NOT a box outline) */
@@ -985,10 +989,28 @@ function renderFinalTable(seasonKey, divisionName){
   const rows = (div?.rows || []).slice().sort((a,b)=> (a.pos||0) - (b.pos||0));
 
   els.tbody.innerHTML = '';
-  const frag = document.createDocumentFragment();
-  rows.forEach((r, idx) => frag.appendChild(buildFinalRow(r, idx, seasonKey)));
-  els.tbody.appendChild(frag);
+  const format = getPlayoffFormatForSeason(seasonKey, divisionName);
 
+  const frag = document.createDocumentFragment();
+  rows.forEach((r, idx) => {
+    const tr = buildFinalRow(r, idx, seasonKey);
+
+    // Add semi vs eliminator tone for final-table playoff qualifiers (NOT the play-off winner)
+    if (format && tr.classList.contains('playoff')){
+      const pos = Number(r.pos);
+      if (Number.isFinite(pos) && pos >= 2 && pos <= format.fieldEnd){
+        if (format.byeEnd == null){
+          tr.classList.add('playoff-semi');
+        } else {
+          tr.classList.add(pos <= format.byeEnd ? 'playoff-semi' : 'playoff-elim');
+        }
+      }
+    }
+
+    frag.appendChild(tr);
+  });
+  els.tbody.appendChild(frag);
+  
   // IMPORTANT: never show dotted cut lines on Final standings (final table already has colour coding)
   applyCutLinesToRenderedTable(null);
   
@@ -1098,7 +1120,30 @@ function inferCutsFromFinal(seasonKey, divisionName){
   seasonMap.set(divisionName, cuts);
   return cuts;
 }
+function getPlayoffFormatForSeason(seasonKey, divisionName){
+  // Prefer explicit seasonFormat rules; fall back to inferred cuts.
+  const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
 
+  // 4-team playoffs: positions 2–5 (all treated as “semi” tier)
+  if (fmt && Number(fmt.playoffsSemi || 0) === 0 && Number(fmt.playoffsElim || 0) === 4){
+    return { fieldEnd: 5, byeEnd: null };
+  }
+
+  // 6-team playoffs: positions 2–3 byes (semi), 4–7 eliminators
+  if (fmt && Number(fmt.playoffsSemi || 0) === 2 && Number(fmt.playoffsElim || 0) === 4){
+    return { fieldEnd: 7, byeEnd: 3 };
+  }
+
+  const cuts = inferCutsFromFinal(seasonKey, divisionName);
+  if (!cuts || !cuts.playoff) return null;
+
+  // If we can infer 7 + bye at 3 => 6-team, else 5 => 4-team
+  if (cuts.playoff === 7) return { fieldEnd: 7, byeEnd: 3 };
+  if (cuts.playoff === 5) return { fieldEnd: 5, byeEnd: null };
+
+  return null;
+}
+      
 function applyCutLinesToRenderedTable(cuts){
   Array.from(els.tbody.rows).forEach(tr=>{
     tr.classList.remove(
