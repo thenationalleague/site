@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v2.9)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.0)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -99,24 +99,17 @@
       .error{ display:none; background:#ffe9ec; color:#b00020; border:1px solid #f0b9c2; padding:8px 10px; border-radius:8px; margin:.5rem 0; font-weight:600; white-space:pre-wrap; }
 
       .season-note{ margin-top:.5rem; padding:10px 12px; border-left:4px solid #9e0000; background:#f8f8f8; color:#222; }
-            /* Clinched badges (date-specific tables only) */
-      .badge{
-        display:inline-block;
-        font-size:.72em;
-        line-height:1;
-        padding:2px 7px;
-        border-radius:999px;
-        border:1px solid #999;
-        background:#fff;
-        color:#111;
-        margin-right:6px;
-        vertical-align:middle;
-      }
-      .badge-champ{ border-color:#8a6d00; }
-      .badge-po{ border-color:#1a4fb3; }
-      .badge-po-semi{ border-color:#0a7d2a; }
-      .badge-po-elim{ border-color:#6b4cc2; }
-      .badge-rel{ border-color:#b00020; }
+      /* Date-specific "zones" (positions), derived from seasonFormat */
+      tbody tr.playoff-semi{ --row-bg:var(--blue); color:#000; }
+      tbody tr.playoff-elim{ --row-bg:var(--blue); color:#000; }
+      tbody tr.relegation-zone{ --row-bg:var(--pink); color:#000; }
+
+      /* Optional: subtle visual distinction between semi vs eliminator */
+      tbody tr.playoff-semi td{ box-shadow: inset 4px 0 0 rgba(10,125,42,.55); }
+      tbody tr.playoff-elim td{ box-shadow: inset 4px 0 0 rgba(107,76,194,.50); }
+
+      /* Optional: "clinched" emphasis (still using zone colours) */
+      tbody tr.clinched td{ box-shadow: inset 0 0 0 2px rgba(17,17,17,.35); }
       .season-note[hidden]{ display:none; }
       .note-line{ white-space:normal; margin:2px 0; }
       .note-line.note-flash{ animation: noteGlow 1200ms ease-out; }
@@ -470,7 +463,71 @@
             relegation: relegationCut
           };
         }
-function addClinchBadgesAndClasses(seasonKey, divisionName, asOfISO, rows, matches){
+function applyZonesFromSeasonFormat(seasonKey, divisionName, rows){
+  const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
+  if (!fmt) return rows;
+
+  const teamCount = rows.length;
+  const relPlaces = Math.max(0, Number(fmt.relegation || 0));
+
+  const poSemi = Number(fmt.playoffsSemi || 0);
+  const poElim = Number(fmt.playoffsElim || 0);
+  const hasPlayoffs = (poSemi > 0 || poElim > 0);
+
+  // Determine playoff ranges by supported formats:
+  // 4-team: positions 2–5 (all are semi-finalists)
+  // 6-team: positions 2–3 byes (semi), 4–7 eliminators
+  let poFieldEndPos = null;
+  let poByeEndPos = null;
+
+  if (hasPlayoffs && poSemi === 0 && poElim === 4){
+    poFieldEndPos = 5;
+    poByeEndPos = null;
+  }
+  if (hasPlayoffs && poSemi === 2 && poElim === 4){
+    poFieldEndPos = 7;
+    poByeEndPos = 3;
+  }
+
+  for (const r of rows){
+    r.classes = Array.isArray(r.classes) ? r.classes : [];
+
+    // keep expunged styling intact
+    if (r.classes.includes('expunged')) continue;
+
+    const pos = Number(r.pos);
+
+    // Champions position (always pos 1)
+    if (pos === 1 && !r.classes.includes('champion')) r.classes.push('champion');
+
+    // Play-off zones (positions only — not "qualified")
+    if (hasPlayoffs && poFieldEndPos != null && pos >= 2 && pos <= poFieldEndPos){
+      if (poByeEndPos == null){
+        // 4-team: everyone in 2–5 is a semi-final position
+        if (!r.classes.includes('playoff-semi')) r.classes.push('playoff-semi');
+      } else {
+        // 6-team: 2–3 semi byes; 4–7 eliminators
+        if (pos <= poByeEndPos){
+          if (!r.classes.includes('playoff-semi')) r.classes.push('playoff-semi');
+        } else {
+          if (!r.classes.includes('playoff-elim')) r.classes.push('playoff-elim');
+        }
+      }
+    }
+
+    // Relegation zone (positions only — not "relegated")
+    if (relPlaces > 0){
+      const safeLinePos = teamCount - relPlaces;
+      if (Number.isFinite(safeLinePos) && pos > safeLinePos){
+        if (!r.classes.includes('relegation-zone')) r.classes.push('relegation-zone');
+      }
+    }
+  }
+
+  return rows;
+}
+
+function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
   const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
   if (!fmt) return rows;
 
@@ -521,7 +578,6 @@ function addClinchBadgesAndClasses(seasonKey, divisionName, asOfISO, rows, match
 
   const teamCount = rows.length;
 
-  // Helpers
   const maxOf = (filterFn)=>{
     let m = -Infinity;
     for (const r of rows){
@@ -532,7 +588,7 @@ function addClinchBadgesAndClasses(seasonKey, divisionName, asOfISO, rows, match
     return (m === -Infinity) ? null : m;
   };
 
-  // Champions (supports champions > 1, though you’ll basically always be 1 here)
+  // Champions
   const champSlots = Math.max(1, Number(fmt.champions || 1));
   const outsiderChampMax = maxOf(r => Number(r.pos) > champSlots);
 
@@ -541,11 +597,9 @@ function addClinchBadgesAndClasses(seasonKey, divisionName, asOfISO, rows, match
   const poElim = Number(fmt.playoffsElim || 0);
   const hasPlayoffs = (poSemi > 0 || poElim > 0);
 
-  // Determine playoff lines (by format)
-  // 4-team: positions 2–5 (no eliminators)
-  // 6-team: positions 2–7, byes 2–3, eliminators 4–7
-  let poFieldEndPos = null;  // last playoff position (5 or 7)
-  let poByeEndPos = null;    // last bye position (3) for 6-team
+  let poFieldEndPos = null;
+  let poByeEndPos = null;
+
   if (hasPlayoffs && poSemi === 0 && poElim === 4){
     poFieldEndPos = 5;
     poByeEndPos = null;
@@ -559,58 +613,50 @@ function addClinchBadgesAndClasses(seasonKey, divisionName, asOfISO, rows, match
     ? maxOf(r => Number(r.pos) > poFieldEndPos)
     : null;
 
-  const outsiderByeMax = (poByeEndPos != null)
-    ? maxOf(r => Number(r.pos) > poByeEndPos)
-    : null;
-
-  // Relegation
+  // Relegation (mathematical relegation only)
   const relPlaces = Math.max(0, Number(fmt.relegation || 0));
   const safePos = (relPlaces > 0) ? (teamCount - relPlaces) : null;
   const safePtsNow = (safePos && safePos >= 1 && safePos <= teamCount)
     ? Number(rows[safePos - 1].Pts || 0)
     : null;
 
-  // Apply labels (date-specific tables only)
   for (const r of rows){
-    r.badges = [];
     r.classes = Array.isArray(r.classes) ? r.classes : [];
+
+    // keep expunged styling intact
+    if (r.classes.includes('expunged')) continue;
 
     const pos = Number(r.pos);
     const ptsNow = Number(r.Pts || 0);
     const team = String(r.team || '').trim();
     const teamMax = maxPts.get(team);
 
-    // Champions
+    let clinched = false;
+
+    // Clinched champions
     if (pos <= champSlots && outsiderChampMax != null && ptsNow > outsiderChampMax){
-      r.badges.push({ text:'Champions', className:'badge-champ', title:'Mathematically champions' });
+      clinched = true;
     }
 
-    // Play-offs (generic qualification)
+    // Clinched play-off place (not just "in positions")
     if (hasPlayoffs && poFieldEndPos != null && pos >= 2 && pos <= poFieldEndPos && outsiderPlayoffMax != null && ptsNow > outsiderPlayoffMax){
-      r.badges.push({ text:'Qualified for Play-offs', className:'badge-po', title:'Mathematically qualified for play-offs' });
-
-      // Semi-finals vs Eliminators split
-      if (poByeEndPos == null){
-        // 4-team: everyone is a semi-finalist
-        r.badges.push({ text:'Qualified for Play-off Semi-finals', className:'badge-po-semi', title:'Mathematically in the play-off semi-finals' });
-      } else {
-        // 6-team: byes 2–3
-        if (pos <= poByeEndPos && outsiderByeMax != null && ptsNow > outsiderByeMax){
-          r.badges.push({ text:'Qualified for Play-off Semi-finals', className:'badge-po-semi', title:'Mathematically qualified for semi-finals (bye)' });
-        } else {
-          r.badges.push({ text:'Qualified for Play-off Eliminators', className:'badge-po-elim', title:'Mathematically qualified for eliminators' });
-        }
-      }
+      clinched = true;
     }
 
-    // Relegated
+    // Clinched relegation (mathematically)
     if (relPlaces > 0 && safePtsNow != null && Number.isFinite(teamMax) && teamMax < safePtsNow){
-      r.badges.push({ text:'Relegated', className:'badge-rel', title:'Mathematically relegated' });
+      clinched = true;
+
+      // Optional: if you want “Relegated” colour (pink) to stay but wording to be “Relegation zone” in legend,
+      // we keep the zone class and just emphasise clinched.
     }
+
+    if (clinched && !r.classes.includes('clinched')) r.classes.push('clinched');
   }
 
   return rows;
 }
+      
         function leagueTitleFromFinalTables(seasonKey, divisionName){
           // Pull human league title from league-tables.json
           // Expecting: finalByKey[seasonKey].divisions[divisionName].title
@@ -1321,23 +1367,7 @@ function buildRow(r, idx, seasonKey){
               tr.appendChild(td);
               return;
             }
-
-            // Team column: allow clinch badges
-            if (i === 2){
-              const badges = Array.isArray(r.badges) ? r.badges : [];
-              badges.forEach(b=>{
-                const span = document.createElement('span');
-                span.className = 'badge ' + (b.className || '');
-                span.textContent = b.text || '';
-                if (b.title) span.title = b.title;
-                td.appendChild(span);
-              });
-
-              td.appendChild(document.createTextNode(String(val != null ? val : '')));
-              tr.appendChild(td);
-              return;
-            }
-
+            
             setText(td, (val != null ? val : ''));
             tr.appendChild(td);
           });
@@ -1345,34 +1375,49 @@ function buildRow(r, idx, seasonKey){
           return tr;
         }
 
-        function rebuildLegend(){
-          const rows = Array.from(els.tbody.rows);
-          const has = {
-            champion: rows.some(r=> r.classList.contains('champion')),
-            promoted: rows.some(r=> r.classList.contains('promoted')),
-            playoff:  rows.some(r=> r.classList.contains('playoff')),
-            relegated:rows.some(r=> r.classList.contains('relegated')),
-            folded:   rows.some(r=> r.classList.contains('folded')),
-            expunged: rows.some(r=> r.classList.contains('expunged'))
-          };
+function rebuildLegend(){
+  const rows = Array.from(els.tbody.rows);
 
-          els.legend.replaceChildren(createEl('strong',{textContent:'Legend:'}), document.createTextNode(' '));
-          const parts=[];
-          if (has.champion) parts.push(['gold','Champions']);
-          if (has.promoted) parts.push(['silver','Play-off Winner']);
-          if (has.playoff)  parts.push(['blue','Qualified for Play-offs']);
-          if (has.relegated)parts.push(['pink','Relegated']);
-          if (has.folded)   parts.push(['black','Folded']);
-          if (has.expunged) parts.push(['grey','Expunged']);
+  const has = {
+    champion: rows.some(r=> r.classList.contains('champion')),
+    promoted: rows.some(r=> r.classList.contains('promoted')),            // final-table only
+    playoffFinal: rows.some(r=> r.classList.contains('playoff')),         // final-table only
+    playoffSemi: rows.some(r=> r.classList.contains('playoff-semi')),     // date-table
+    playoffElim: rows.some(r=> r.classList.contains('playoff-elim')),     // date-table
+    relegatedFinal: rows.some(r=> r.classList.contains('relegated')),     // final-table only
+    relegationZone: rows.some(r=> r.classList.contains('relegation-zone')),// date-table
+    folded: rows.some(r=> r.classList.contains('folded')),
+    expunged: rows.some(r=> r.classList.contains('expunged'))
+  };
 
-          if (!parts.length){ els.legend.appendChild(document.createTextNode('—')); return; }
-          parts.forEach(([cls,label],i)=>{
-            els.legend.appendChild(createEl('span',{ class:'swatch '+cls, 'aria-hidden':'true' }));
-            els.legend.appendChild(document.createTextNode(label));
-            if (i < parts.length - 1) els.legend.appendChild(document.createTextNode(', '));
-          });
-        }
+  const isFinalTable = has.promoted || has.playoffFinal || has.relegatedFinal;
 
+  els.legend.replaceChildren(createEl('strong',{textContent:'Legend:'}), document.createTextNode(' '));
+  const parts = [];
+
+  if (has.champion) parts.push(['gold','Champions']);
+
+  if (isFinalTable){
+    if (has.promoted) parts.push(['silver','Play-off Winner']);
+    if (has.playoffFinal) parts.push(['blue','Qualified for Play-offs']);
+    if (has.relegatedFinal) parts.push(['pink','Relegated']);
+  } else {
+    if (has.playoffSemi) parts.push(['blue','Play-off Semi-finals positions']);
+    if (has.playoffElim) parts.push(['blue','Play-off Eliminators positions']);
+    if (has.relegationZone) parts.push(['pink','Relegation zone']);
+  }
+
+  if (has.folded) parts.push(['black','Folded']);
+  if (has.expunged) parts.push(['grey','Expunged']);
+
+  if (!parts.length){ els.legend.appendChild(document.createTextNode('—')); return; }
+  parts.forEach(([cls,label],i)=>{
+    els.legend.appendChild(createEl('span',{ class:'swatch '+cls, 'aria-hidden':'true' }));
+    els.legend.appendChild(document.createTextNode(label));
+    if (i < parts.length - 1) els.legend.appendChild(document.createTextNode(', '));
+  });
+}
+      
         function renderTable(seasonKey, preferredDivision, asOfISO){
           try{
             const season = state.byKey[seasonKey];
@@ -1438,9 +1483,12 @@ if (effectiveAsOf === '__FINAL__'){
 
   let rows = computeStandings(seasonKey, chosenDiv, asOfISO);
 
-  // Add clinch badges/classes (date-specific tables only)
-  rows = addClinchBadgesAndClasses(seasonKey, chosenDiv, asOfISO, rows, matches);
+  // Apply "position zones" (always visible in date-specific tables)
+  rows = applyZonesFromSeasonFormat(seasonKey, chosenDiv, rows);
 
+  // Optional clinched emphasis (subtle outline)
+  rows = applyClinchedEmphasis(seasonKey, chosenDiv, asOfISO, rows, matches);
+  
   const frag = document.createDocumentFragment();
   rows.forEach((r, idx) => frag.appendChild(buildRow(r, idx, seasonKey)));
   els.tbody.appendChild(frag);
