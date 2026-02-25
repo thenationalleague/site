@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.4)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.5)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -594,19 +594,10 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
 
   const teamCount = rows.length;
 
-  const maxOf = (filterFn)=>{
-    let m = -Infinity;
-    for (const r of rows){
-      if (!filterFn(r)) continue;
-      const v = maxPts.get(String(r.team||'').trim());
-      if (Number.isFinite(v) && v > m) m = v;
-    }
-    return (m === -Infinity) ? null : m;
-  };
+  // Champions / play-off clinches are calculated as "guaranteed top-K" based on max possible points.
+  // A team is guaranteed top-K if its current points are greater than the Kth-highest maxPts among ALL OTHER teams.
 
-  // Champions
   const champSlots = Math.max(1, Number(fmt.champions || 1));
-  const outsiderChampMax = maxOf(r => Number(r.pos) > champSlots);
 
   // Play-offs format
   const poSemi = Number(fmt.playoffsSemi || 0);
@@ -619,6 +610,27 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
   if (hasPlayoffs && poSemi === 0 && poElim === 4){
     poFieldEndPos = 5;
     poByeEndPos = null;
+  }
+  if (hasPlayoffs && poSemi === 2 && poElim === 4){
+    poFieldEndPos = 7;
+    poByeEndPos = 3;
+  }
+
+  function kthHighestMaxPtsAmongOthers(teamName, k){
+    const vals = [];
+    for (const r of rows){
+      const t = String(r.team || '').trim();
+      if (!t) continue;
+      if (t === teamName) continue;
+      const v = maxPts.get(t);
+      if (Number.isFinite(v)) vals.push(v);
+    }
+    vals.sort((a,b)=> b - a);
+    if (k <= 0) return null;
+    if (vals.length < k) return null;
+    return vals[k - 1];
+  }
+  
   }
   if (hasPlayoffs && poSemi === 2 && poElim === 4){
     poFieldEndPos = 7;
@@ -658,27 +670,39 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
       c !== 'clinched-relegated'
     );
 
-    // Champions (mathematical)
-    if (pos <= champSlots && outsiderChampMax != null && ptsNow > outsiderChampMax){
+    // Champions (guaranteed top-1)
+    // If current points exceed the highest maxPts of any other team, the title is secured.
+    const top1Threshold = kthHighestMaxPtsAmongOthers(team, 1);
+    if (top1Threshold != null && ptsNow > top1Threshold){
       r.classes.push('clinched-champion');
       continue; // don't also label play-offs
     }
 
-    // Play-offs (mathematical) — include pos 1 (leaders can clinch a play-off berth before clinching the title)
-    if (hasPlayoffs && poFieldEndPos != null && pos >= 1 && pos <= poFieldEndPos && outsiderPlayoffMax != null && ptsNow > outsiderPlayoffMax){
-      if (poByeEndPos == null){
-        // 4-team: everyone in 2–5 is effectively a semi-finalist
-        r.classes.push('clinched-po-semi');
-      } else {
-        // 6-team: 2–3 are semi-final byes (ONLY if top-3 is mathematically secured)
-        if (pos <= poByeEndPos && outsiderByeMax != null && ptsNow > outsiderByeMax){
+    // Play-offs (guaranteed top-K)
+    // For 4-team playoffs: K=5 (positions 1–5 are "top-5")
+    // For 6-team playoffs: K=7 (positions 1–7 are "top-7"), and byes are top-3.
+    if (hasPlayoffs && poFieldEndPos != null){
+      const topFieldThreshold = kthHighestMaxPtsAmongOthers(team, poFieldEndPos);
+      const hasClinchedField = (topFieldThreshold != null && ptsNow > topFieldThreshold);
+
+      if (hasClinchedField){
+        if (poByeEndPos == null){
+          // 4-team: everyone who clinches top-5 is effectively a semi-final position
           r.classes.push('clinched-po-semi');
         } else {
-          r.classes.push('clinched-po-elim');
+          // 6-team: upgrade to "semi bye" only once top-3 is also guaranteed
+          const topByeThreshold = kthHighestMaxPtsAmongOthers(team, poByeEndPos);
+          const hasClinchedBye = (topByeThreshold != null && ptsNow > topByeThreshold);
+
+          if (hasClinchedBye){
+            r.classes.push('clinched-po-semi');
+          } else {
+            r.classes.push('clinched-po-elim');
+          }
         }
       }
     }
-
+    
     // Relegated (mathematical)
     if (relPlaces > 0 && safePtsNow != null && Number.isFinite(teamMax) && teamMax < safePtsNow){
       r.classes.push('clinched-relegated');
@@ -1439,16 +1463,20 @@ function rebuildLegend(){
     if (has.playoffFinal) parts.push(['blue','Qualified for Play-offs']);
     if (has.relegatedFinal) parts.push(['pink','Relegated']);
   } else {
-    if (has.clinchedChampion) parts.push(['gold','Champions (mathematical)']);
-    if (has.clinchedPoSemi) parts.push(['blue','Qualified for Play-off Semi-finals (mathematical)']);
-    if (has.clinchedPoElim) parts.push(['blue','Qualified for Play-off Eliminators (mathematical)']);
-    if (has.clinchedRelegated) parts.push(['pink','Relegated (mathematical)']);
+    if (has.clinchedChampion) parts.push(['gold','Champions']);
+    if (has.clinchedPoSemi) parts.push(['blue','Qualified for Play-off Semi-finals']);
+    if (has.clinchedPoElim) parts.push(['blue','Qualified for Play-off Eliminators']);
+    if (has.clinchedRelegated) parts.push(['pink','Relegated']);
   }
 
   if (has.folded) parts.push(['black','Folded']);
   if (has.expunged) parts.push(['grey','Expunged']);
 
-  if (!parts.length){ els.legend.appendChild(document.createTextNode('—')); return; }
+  if (!parts.length){
+    els.legend.style.display = 'none';
+    return;
+  }
+  els.legend.style.display = '';
   parts.forEach(([cls,label],i)=>{
     els.legend.appendChild(createEl('span',{ class:'swatch '+cls, 'aria-hidden':'true' }));
     els.legend.appendChild(document.createTextNode(label));
