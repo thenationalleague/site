@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v2.8)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v2.9)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -99,6 +99,24 @@
       .error{ display:none; background:#ffe9ec; color:#b00020; border:1px solid #f0b9c2; padding:8px 10px; border-radius:8px; margin:.5rem 0; font-weight:600; white-space:pre-wrap; }
 
       .season-note{ margin-top:.5rem; padding:10px 12px; border-left:4px solid #9e0000; background:#f8f8f8; color:#222; }
+            /* Clinched badges (date-specific tables only) */
+      .badge{
+        display:inline-block;
+        font-size:.72em;
+        line-height:1;
+        padding:2px 7px;
+        border-radius:999px;
+        border:1px solid #999;
+        background:#fff;
+        color:#111;
+        margin-right:6px;
+        vertical-align:middle;
+      }
+      .badge-champ{ border-color:#8a6d00; }
+      .badge-po{ border-color:#1a4fb3; }
+      .badge-po-semi{ border-color:#0a7d2a; }
+      .badge-po-elim{ border-color:#6b4cc2; }
+      .badge-rel{ border-color:#b00020; }
       .season-note[hidden]{ display:none; }
       .note-line{ white-space:normal; margin:2px 0; }
       .note-line.note-flash{ animation: noteGlow 1200ms ease-out; }
@@ -452,7 +470,147 @@
             relegation: relegationCut
           };
         }
+function addClinchBadgesAndClasses(seasonKey, divisionName, asOfISO, rows, matches){
+  const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
+  if (!fmt) return rows;
 
+  const ptsWin = pointsForWin(seasonKey);
+  const asNum = isoToNum(asOfISO);
+
+  // Expunged teams as-of
+  const expSet = expungedTeamsFor(seasonKey, divisionName, asOfISO);
+
+  // Remaining league matches per team (unplayed as-of OR dated after as-of)
+  const remaining = new Map();
+  const ensure = (t)=> { if (!remaining.has(t)) remaining.set(t, 0); };
+
+  for (const m of (matches || [])){
+    if (m?.playoffs || m?.playoff_round) continue;
+
+    const dateISO = toISO(m.date);
+    if (!dateISO) continue;
+
+    const h = String(m.home || '').trim();
+    const a = String(m.away || '').trim();
+    if (!h || !a) continue;
+
+    // ignore fixtures involving expunged teams (as-of)
+    if (expSet.has(canon(h)) || expSet.has(canon(a))) continue;
+
+    const hg = Number(m.home_goals);
+    const ag = Number(m.away_goals);
+    const played = (Number.isFinite(hg) && Number.isFinite(ag));
+
+    const isFuture = isoToNum(dateISO) > asNum;
+    const countsAsRemaining = isFuture || !played;
+
+    if (countsAsRemaining){
+      ensure(h); ensure(a);
+      remaining.set(h, remaining.get(h) + 1);
+      remaining.set(a, remaining.get(a) + 1);
+    }
+  }
+
+  // Max possible points per team
+  const maxPts = new Map();
+  for (const r of rows){
+    const team = String(r.team || '').trim();
+    const rem = remaining.get(team) || 0;
+    maxPts.set(team, Number(r.Pts || 0) + ptsWin * rem);
+  }
+
+  const teamCount = rows.length;
+
+  // Helpers
+  const maxOf = (filterFn)=>{
+    let m = -Infinity;
+    for (const r of rows){
+      if (!filterFn(r)) continue;
+      const v = maxPts.get(String(r.team||'').trim());
+      if (Number.isFinite(v) && v > m) m = v;
+    }
+    return (m === -Infinity) ? null : m;
+  };
+
+  // Champions (supports champions > 1, though you’ll basically always be 1 here)
+  const champSlots = Math.max(1, Number(fmt.champions || 1));
+  const outsiderChampMax = maxOf(r => Number(r.pos) > champSlots);
+
+  // Play-offs
+  const poSemi = Number(fmt.playoffsSemi || 0);
+  const poElim = Number(fmt.playoffsElim || 0);
+  const hasPlayoffs = (poSemi > 0 || poElim > 0);
+
+  // Determine playoff lines (by format)
+  // 4-team: positions 2–5 (no eliminators)
+  // 6-team: positions 2–7, byes 2–3, eliminators 4–7
+  let poFieldEndPos = null;  // last playoff position (5 or 7)
+  let poByeEndPos = null;    // last bye position (3) for 6-team
+  if (hasPlayoffs && poSemi === 0 && poElim === 4){
+    poFieldEndPos = 5;
+    poByeEndPos = null;
+  }
+  if (hasPlayoffs && poSemi === 2 && poElim === 4){
+    poFieldEndPos = 7;
+    poByeEndPos = 3;
+  }
+
+  const outsiderPlayoffMax = (poFieldEndPos != null)
+    ? maxOf(r => Number(r.pos) > poFieldEndPos)
+    : null;
+
+  const outsiderByeMax = (poByeEndPos != null)
+    ? maxOf(r => Number(r.pos) > poByeEndPos)
+    : null;
+
+  // Relegation
+  const relPlaces = Math.max(0, Number(fmt.relegation || 0));
+  const safePos = (relPlaces > 0) ? (teamCount - relPlaces) : null;
+  const safePtsNow = (safePos && safePos >= 1 && safePos <= teamCount)
+    ? Number(rows[safePos - 1].Pts || 0)
+    : null;
+
+  // Apply labels (date-specific tables only)
+  for (const r of rows){
+    r.badges = [];
+    r.classes = Array.isArray(r.classes) ? r.classes : [];
+
+    const pos = Number(r.pos);
+    const ptsNow = Number(r.Pts || 0);
+    const team = String(r.team || '').trim();
+    const teamMax = maxPts.get(team);
+
+    // Champions
+    if (pos <= champSlots && outsiderChampMax != null && ptsNow > outsiderChampMax){
+      r.badges.push({ text:'Champions', className:'badge-champ', title:'Mathematically champions' });
+    }
+
+    // Play-offs (generic qualification)
+    if (hasPlayoffs && poFieldEndPos != null && pos >= 2 && pos <= poFieldEndPos && outsiderPlayoffMax != null && ptsNow > outsiderPlayoffMax){
+      r.badges.push({ text:'Qualified for Play-offs', className:'badge-po', title:'Mathematically qualified for play-offs' });
+
+      // Semi-finals vs Eliminators split
+      if (poByeEndPos == null){
+        // 4-team: everyone is a semi-finalist
+        r.badges.push({ text:'Qualified for Play-off Semi-finals', className:'badge-po-semi', title:'Mathematically in the play-off semi-finals' });
+      } else {
+        // 6-team: byes 2–3
+        if (pos <= poByeEndPos && outsiderByeMax != null && ptsNow > outsiderByeMax){
+          r.badges.push({ text:'Qualified for Play-off Semi-finals', className:'badge-po-semi', title:'Mathematically qualified for semi-finals (bye)' });
+        } else {
+          r.badges.push({ text:'Qualified for Play-off Eliminators', className:'badge-po-elim', title:'Mathematically qualified for eliminators' });
+        }
+      }
+    }
+
+    // Relegated
+    if (relPlaces > 0 && safePtsNow != null && Number.isFinite(teamMax) && teamMax < safePtsNow){
+      r.badges.push({ text:'Relegated', className:'badge-rel', title:'Mathematically relegated' });
+    }
+  }
+
+  return rows;
+}
         function leagueTitleFromFinalTables(seasonKey, divisionName){
           // Pull human league title from league-tables.json
           // Expecting: finalByKey[seasonKey].divisions[divisionName].title
@@ -952,15 +1110,25 @@ function populateAsOf(seasonKey, divisionName){
   const sel = els.asofSel;
   sel.innerHTML = '';
 
-  // Build flat list of dates (formatted) BUT hide the final league date.
-  // Final standings will represent "end of season" instead.
-  const visibleDates = (dates.length > 1) ? dates.slice(0, -1) : [];
+  // Track last regular-season league date (for "__REGULAR_END__")
+  const lastLeagueDate = dates.length ? dates[dates.length - 1] : null;
+  state.current.lastLeagueDate = lastLeagueDate;
 
+  // Show all league dates except the last one (keeps the selector usable)
+  const visibleDates = (dates.length > 1) ? dates.slice(0, -1) : [];
   visibleDates.forEach(d=>{
     sel.appendChild(createEl('option', { value:d, textContent: formatISODateShort(d) }));
   });
 
-  // Add Final standings as LAST option (always present)
+  // If play-offs exist for this season/division, add an "End of regular season" option
+  const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
+  const hasPlayoffs = !!(fmt && (Number(fmt.playoffsElim || 0) > 0));
+
+  if (hasPlayoffs && lastLeagueDate){
+    sel.appendChild(createEl('option', { value:'__REGULAR_END__', textContent:'End of regular season' }));
+  }
+
+  // Final standings always present
   sel.appendChild(createEl('option', { value:'__FINAL__', textContent:'Final standings' }));
 
   // Persist selection if possible; otherwise default to Final
@@ -971,11 +1139,8 @@ function populateAsOf(seasonKey, divisionName){
 
   sel.value = desired;
   state.current.asof = desired;
-
-  // No lastLeagueDate tracking (prevents keyboard "bounce" loops)
-  delete state.current.lastLeagueDate;
 }
-        // =========================
+      // =========================
         // Standings calculation
         // =========================
         function initTeamStats(){
@@ -1157,6 +1322,22 @@ function buildRow(r, idx, seasonKey){
               return;
             }
 
+            // Team column: allow clinch badges
+            if (i === 2){
+              const badges = Array.isArray(r.badges) ? r.badges : [];
+              badges.forEach(b=>{
+                const span = document.createElement('span');
+                span.className = 'badge ' + (b.className || '');
+                span.textContent = b.text || '';
+                if (b.title) span.title = b.title;
+                td.appendChild(span);
+              });
+
+              td.appendChild(document.createTextNode(String(val != null ? val : '')));
+              tr.appendChild(td);
+              return;
+            }
+
             setText(td, (val != null ? val : ''));
             tr.appendChild(td);
           });
@@ -1230,37 +1411,43 @@ function buildRow(r, idx, seasonKey){
 const effectiveAsOf = state.current.asof || els.asofSel.value;
 state.current.asof = effectiveAsOf;
 
+const leagueTitle = leagueTitleFromFinalTables(seasonKey, chosenDiv);
+
 if (effectiveAsOf === '__FINAL__'){
-  const leagueTitle = leagueTitleFromFinalTables(seasonKey, chosenDiv);
-
-  setText(
-    els.caption,
-    `${leagueTitle} — Final standings`
-  );
-
-  // Render from league-tables.json (includes classes/movement)
+  // Final standings: use league-tables.json, no dotted lines, no clinch logic
+  setText(els.caption, leagueTitle);
   renderFinalTable(seasonKey, chosenDiv);
 
 } else {
-  const leagueTitle = leagueTitleFromFinalTables(seasonKey, chosenDiv);
-  const prettyAsOf = formatISODateShort(effectiveAsOf);
+  // Date-specific (and regular-end) standings: computed from results.json
+  let asOfISO = effectiveAsOf;
 
-  setText(
-    els.caption,
-    `${leagueTitle} (as of ${prettyAsOf})`
-  );
-  
+  if (effectiveAsOf === '__REGULAR_END__'){
+    asOfISO = state.current.lastLeagueDate || effectiveAsOf;
+  }
+
+  const prettyAsOf = formatISODateShort(asOfISO);
+  setText(els.caption, `${leagueTitle} (as of ${prettyAsOf})`);
+
   // Compute + render from results.json (league-only; play-offs excluded)
   els.tbody.innerHTML = '';
-  const rows = computeStandings(seasonKey, chosenDiv, effectiveAsOf);
+
+  const seasonObj = state.byKey[seasonKey];
+  const divObj = seasonObj?.divisions?.[chosenDiv];
+  const matches = Array.isArray(divObj?.matches) ? divObj.matches : [];
+
+  let rows = computeStandings(seasonKey, chosenDiv, asOfISO);
+
+  // Add clinch badges/classes (date-specific tables only)
+  rows = addClinchBadgesAndClasses(seasonKey, chosenDiv, asOfISO, rows, matches);
 
   const frag = document.createDocumentFragment();
   rows.forEach((r, idx) => frag.appendChild(buildRow(r, idx, seasonKey)));
   els.tbody.appendChild(frag);
 
-  // Apply dotted cut lines ONLY in date-specific tables, using start-of-season format rules
+  // Apply dotted cut lines ONLY in computed tables, using start-of-season format rules
   applyCutLinesToRenderedTable(cutsFromSeasonFormats(seasonKey, chosenDiv, rows.length));
-  
+
   renderSeasonDivisionNotesAndRefs(seasonKey, chosenDiv);
   rebuildLegend();
 }
