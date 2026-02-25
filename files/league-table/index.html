@@ -631,20 +631,6 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
     return vals[k - 1];
   }
   
-  }
-  if (hasPlayoffs && poSemi === 2 && poElim === 4){
-    poFieldEndPos = 7;
-    poByeEndPos = 3;
-  }
-
-  const outsiderPlayoffMax = (poFieldEndPos != null)
-    ? maxOf(r => Number(r.pos) > poFieldEndPos)
-    : null;
-
-  const outsiderByeMax = (poByeEndPos != null)
-    ? maxOf(r => Number(r.pos) > poByeEndPos)
-    : null;
-
   // Relegation (mathematical)
   const relPlaces = Math.max(0, Number(fmt.relegation || 0));
   const safePos = (relPlaces > 0) ? (teamCount - relPlaces) : null;
