@@ -1,779 +1,1663 @@
-[
-  {
-    "season":"1979-80",
-    "division":"National",
-    "team":"Altrincham",
-    "entity":"Altrincham",
-    "note":"Applied for election to the Football League as Champions, but failed to secure enough votes (Darlington  49, Crewe Alexandra 48, Hereford United 48, Rochdale 26, Altrincham 25)."
-  },
-  {
-    "season":"1980-81",
-    "division":"National",
-    "team":"Altrincham",
-    "entity":"Altrincham",
-    "note":"Applied for election to the Football League as Champions, but failed to secure enough votes (Tranmere Rovers  48, Hereford United 46, York City 46, Halifax Town 41, Altrincham 15)."
-  },
-  {
-    "season":"1981-82",
-    "division":"National",
-    "team":"Telford United",
-    "entity":"Telford United",
-    "note":"Applied for election to the Football League as third-place finishers, but failed to secure enough votes (Northamppton Town 53, Crewe Alexandra 50, Rochdale 48, Scunthorpe United 48, Telford United 13)."
-  },
-  {
-    "season":"1982-83",
-    "division":"National",
-    "team":"Maidstone United",
-    "entity":"Maidstone United (original)",
-    "note":"Applied for election to the Football League as runners-up, but failed to secure enough votes (Blackpool 52, Crewe Alexandra 49, Hereford United 49, Hartlepool United 36, Maidstone United 26)."
-  },
-  {
-    "season":"1983-84",
-    "division":"National",
-    "team":"Maidstone United",
-    "entity":"Maidstone United (original)",
-    "note":"Applied for election to the Football League as Champions, but failed to secure enough votes (Chester City 52, Halifax Town 52, Rochdale 50, Hartlepool United 32, Maidstone United 22)."
-  },
-  {
-    "season":"1984-85",
-    "division":"National",
-    "team":"Bath City",
-    "entity":"Bath City",
-    "note":"Applied for election to the Football League as fourth-placed, but failed to secure enough votes (Northampton Town 52, Stockport County 50, Torquay United 50, Halifax Town 48, Bath City 8)."
-  },
-  {
-    "season":"1984-85",
-    "division":"National",
-    "team":"Gateshead",
-    "entity":"Gateshead",
-    "note":"Deducted 1 point."
-  },
-  {
-    "season":"1985-86",
-    "division":"National",
-    "team":"Enfield",
-    "entity":"Enfield",
-    "note":"Applied for election to the Football League as Champions, but failed to secure enough votes (Exeter City 64, Preston North End 62.5, Cambridge United 61, Torquay United 61, Enfield 7.5."
-  },
-  {
-    "season":"1986-87",
-    "division":"National",
-    "team":"Nuneaton Borough",
-    "entity":"Nuneaton Borough",
-    "note":"Demoted to the Southern League Premier Division due to financial irregularities."
-  },
-  {
-    "season":"1988-89",
-    "division":"National",
-    "team":"Newport County",
-    "entity":"Newport County",
-    "note":"Expelled on 27 February 1989 due to failure to fulfil fixtures, and record expunged."
-  },
-  {
-    "season":"1991-92",
-    "division":"National",
-    "team":"Redbridge Forest",
-    "entity":"Redbridge Forest",
-    "note":"Merged with Dagenham at the conclusion of the season and competed from 1992-93 as Dagenham & Redbridge."
-  },
-  {
-    "season":"1992-93",
-    "division":"National",
-    "team":"Dagenham & Redbridge",
-    "entity":"Dagenham & Redbridge",
-    "note":"Deducted 1 point."
-  },
-  {
-    "season":"1993-94",
-    "division":"National",
-    "team":"Kidderminster Harriers",
-    "entity":"Kidderminster Harriers",
-    "note":"Denied promotion to the Football League despite being crowned Champions due to failure to meet ground requirements."
-  },
-  {
-    "season":"1993-94",
-    "division":"National",
-    "team":"Merthyr Tydfil",
-    "entity":"Merthyr Tydfil",
-    "note":"Deducted 2 points."
-  },
-  {
-    "season":"1994-95",
-    "division":"National",
-    "team":"Macclesfield Town",
-    "entity":"Macclesfield Town",
-    "note":"Denied promotion to the Football League despite being crowned Champions due to failure to meet ground requirements."
-  },
-  {
-    "season":"1994-95",
-    "division":"National",
-    "team":"Yeovil Town",
-    "entity":"Yeovil Town",
-    "note":"Deducted 1 point."
-  },
-  {
-    "season":"1995-96",
-    "division":"National",
-    "team":"Stevenage Borough",
-    "entity":"Stevenage Borough",
-    "note":"Denied promotion to the Football League despite being crowned Champions due to failure to meet ground requirements."
-  },
-  {
-    "season":"1997-98",
-    "division":"National",
-    "team":"Slough Town",
-    "entity":"Slough Town",
-    "note":"Demoted to the Isthmian League Premier Division due to failure to meet Football Conference ground requirements."
-  },
-  {
-    "season":"1998-99",
-    "division":"National",
-    "team":"Barrow",
-    "entity":"Barrow",
-    "note":"Demoted to the Northern Premier League Premier Division due to entering administration."
-  },
-  {
-    "season":"2001-02",
-    "division":"National",
-    "team":"Scarborough",
-    "entity":"Scarborough",
-    "note":"Deducted 1 point."
-  },
-  {
-    "season":"2003-04",
-    "division":"National",
-    "team":"Telford United",
-    "entity":"Telford United",
-    "note":"Folded upon the conclusion of the season."
-  },
-  {
-    "season":"2003-04",
-    "division":"National",
-    "team":"Margate",
-    "entity":"Margate",
-    "note":"Demoted to Football Conference South due to failure to meet Football Conference ground requirements."
-  },
-  {
-    "season":"2003-04",
-    "division":"National",
-    "team":"Burton Albion",
-    "entity":"Burton Albion",
-    "note":"Deducted 1 point."
-  },
-  {
-    "season":"2004-05",
-    "division":"National",
-    "team":"Northwich Victoria",
-    "entity":"Northwich Victoria",
-    "note":"Demoted to Football Conference North due to failure to meet Football Conference ground requirements."
-  },
-  {
-    "season":"2004-05",
-    "division":"National",
-    "team":"Northwich Victoria",
-    "entity":"Northwich Victoria",
-    "note":"Deducted 10 points due to entering administration."
-  },
-  {
-    "season":"2004-05",
-    "division":"National",
-    "team":"Tamworth",
-    "entity":"Tamworth",
-    "note":"Deducted 3 points."
-  },
-  {
-    "season":"2004-05",
-    "division":"North",
-    "team":"Redditch United",
-    "entity":"Redditch United",
-    "note":"Deducted 3 points."
-  },
-  {
-    "season":"2004-05",
-    "division":"North",
-    "team":"Worksop Town",
-    "entity":"Worksop Town",
-    "note":"Deducted 10 points."
-  },
-  {
-    "season":"2004-05",
-    "division":"South",
-    "team":"Hornchurch",
-    "entity":"Hornchurch (original)",
-    "note":"Deducted 10 points."
-  },
-  {
-    "season":"2004-05",
-    "division":"South",
-    "team":"Margate",
-    "entity":"Margate",
-    "note":"Deducted 10 points."
-  },
-  {
-    "season":"2004-05",
-    "division":"South",
-    "team":"Redbridge",
-    "entity":"Redbridge",
-    "note":"Deducted 3 points."
-  },
-  {
-    "season":"2005-06",
-    "division":"National",
-    "team":"Canvey Island",
-    "entity":"Canvey Island",
-    "note":"Voluntarily resigned to the Isthmian League Division One North."
-  },
-  {
-    "season":"2005-06",
-    "division":"National",
-    "team":"Scarborough",
-    "entity":"Scarborough",
-    "note":"Demoted to the Football Conference North due to failure to fulfil Football Conference financial guidelines."
-  },
-  {
-    "season":"2005-06",
-    "division":"National",
-    "team":"Altrincham",
-    "entity":"Altrincham",
-    "note":"Deducted 18 points."
-  },
-  {
-    "season":"2005-06",
-    "division":"North",
-    "team":"Leigh RMI",
-    "entity":"Leigh RMI",
-    "note":"Deducted 1 point."
-  },
-  {
-    "season":"2005-06",
-    "division":"South",
-    "team":"Weymouth",
-    "entity":"Weymouth",
-    "note":"Deducted 1 point."
-  },
-  {
-    "season":"2005-06",
-    "division":"South",
-    "team":"Havant & Waterlooville",
-    "entity":"Havant & Waterlooville",
-    "note":"Deducted 3 points."
-  },
-  {
-    "season":"2005-06",
-    "division":"South",
-    "team":"Cambridge City",
-    "entity":"Cambridge City",
-    "note":"Deducted 3 points."
-  },
-  {
-    "season":"2005-06",
-    "division":"South",
-    "team":"Maidenhead United",
-    "entity":"Maidenhead United",
-    "note":"Deducted 2 points."
-  },
-  {
-    "season":"2006-07",
-    "division":"National",
-    "team":"Crawley Town",
-    "entity":"Crawley Town",
-    "note":"Deducted 10 points."
-  },
-  {
-    "season":"2006-07",
-    "division":"North",
-    "team":"Moor Green",
-    "entity":"Moor Green",
-    "note":"Merged with Solihull Borough at the conclusion of the season and competed from 2007-08 as Solihull Moors."
-  },
-  {
-    "season":"2006-07",
-    "division":"North",
-    "team":"Scarborough",
-    "entity":"Scarborough",
-    "note":"Deducted 10 points."
-  },
-  {
-    "season":"2006-07",
-    "division":"North",
-    "team":"Lancaster City",
-    "entity":"Lancaster City",
-    "note":"Deducted 10 points."
-  },
-  {
-    "season":"2006-07",
-    "division":"North",
-    "team":"Scarborough",
-    "entity":"Scarborough",
-    "note":"Folded upon the conclusion of the season."
-  },
-  {
-    "season":"2007-08",
-    "division":"National",
-    "team":"Crawley Town",
-    "entity":"Crawley Town",
-    "note":"Deducted 6 points"
-  },
-  {
-    "season":"2007-08",
-    "division":"National",
-    "team":"Halifax Town",
-    "entity":"Halifax Town",
-    "note":"Deducted 10 points; folded upon the conclusion of the season."
-  },
-  {
-    "season":"2007-08",
-    "division":"North",
-    "team":"Nuneaton Borough",
-    "entity":"Nuneaton Borough",
-    "note":"Demoted to Southern League Division One Midlands as a result of liquidation and reformed immediately as Nuneaton Town."
-  },
-  {
-    "season":"2007-08",
-    "division":"North",
-    "team":"Boston United",
-    "entity":"Boston United",
-    "note":"Demoted to Northern Premier League Premier Division due to failure to exit administration."
-  },
-  {
-    "season":"2007-08",
-    "division":"South",
-    "team":"Cambridge City",
-    "entity":"Cambridge City",
-    "note":"Demoted to Southern League Premier Division due to failure to meet Football Conference South ground requirements."
-  },
-  {
-    "season":"2008-09",
-    "division":"National",
-    "team":"Oxford United",
-    "entity":"Oxford United",
-    "note":"Deducted 5 points."
-  },
-  {
-    "season":"2008-09",
-    "division":"National",
-    "team":"Crawley Town",
-    "entity":"Crawley Town",
-    "note":"Deducted 1 point."
-  },
-  {
-    "season":"2008-09",
-    "division":"National",
-    "team":"Mansfield Town",
-    "entity":"Mansfield Town",
-    "note":"Deducted 4 points."
-  },
-  {
-    "season":"2008-09",
-    "division":"North",
-    "team":"King's Lynn",
-    "entity":"King's Lynn",
-    "note":"Demoted to Northern Premier League Premier Division due to failure to meet Football Conference North ground requirements."
-  },
-  {
-    "season":"2008-09",
-    "division":"North",
-    "team":"Northwich Victoria",
-    "entity":"Northwich Victoria",
-    "note":"Deducted 10 points due to entering administration."
-  },
-  {
-    "season":"2008-09",
-    "division":"North",
-    "team":"Tamworth",
-    "entity":"Tamworth",
-    "note":"Deducted 3 points."
-  },
-  {
-    "season":"2008-09",
-    "division":"South",
-    "team":"Team Bath",
-    "entity":"Team Bath",
-    "note":"Folded upon the conclusion of the season."
-  },
-  {
-    "season":"2008-09",
-    "division":"South",
-    "team":"Fisher Athletic",
-    "entity":"Fisher Athletic",
-    "note":"Folded upon the conclusion of the season."
-  },
-  {
-    "season":"2008-09",
-    "division":"South",
-    "team":"Bognor Regis Towm",
-    "entity":"Bognor Regis Towm",
-    "note":"Deducted 7 points."
-  },
-  {
-    "season":"2009-10",
-    "division":"National",
-    "team":"Salisbury City",
-    "entity":"Salisbury City",
-    "note":"Deducted 10 points."
-  },
-  {
-    "season":"2009-10",
-    "division":"National",
-    "team":"Salisbury City",
-    "entity":"Salisbury City",
-    "note":"Demoted to Southern League Premier Division due to failure to exit administration."
-  },
-  {
-    "season":"2009-10",
-    "division":"National",
-    "team":"Gateshead",
-    "entity":"Gateshead",
-    "note":"Deducted 1 point."
-  },
-  {
-    "season":"2009-10",
-    "division":"National",
-    "team":"Grays Athletic",
-    "entity":"Grays Athletic",
-    "note":"Deducted 2 points."
-  },
-  {
-    "season":"2009-10",
-    "division":"National",
-    "team":"Grays Athletic",
-    "entity":"Grays Athletic",
-    "note":"Declined to join Football Conference South upon relegation and instead joined Isthmian League Division One North."
-  },
-  {
-    "season":"2009-10",
-    "division":"National",
-    "team":"Chester City",
-    "entity":"Chester City",
-    "note":"Initially deducted 25 points, and then expelled on 26 February 2010, and record expunged."
-  },
-  {
-    "season":"2009-10",
-    "division":"North",
-    "team":"Northwich Victoria",
-    "entity":"Northwich Victoria",
-    "note":"Begun season with 10-point deduction."
-  },
-  {
-    "season":"2009-10",
-    "division":"North",
-    "team":"Farsley Celtic",
-    "entity":"Farsley Celtic",
-    "note":"Begun season with 10-point deduction."
-  },
-  {
-    "season":"2009-10",
-    "division":"North",
-    "team":"Northwich Victoria",
-    "entity":"Northwich Victoria",
-    "note":"Demoted to Northern Premier League Premier Division due to financial issues."
-  },
-  {
-    "season":"2009-10",
-    "division":"North",
-    "team":"Farsley Celtic",
-    "entity":"Farsley Celtic",
-    "note":"Resigned and folded on 8 March 2010, and record expunged."
-  },
-  {
-    "season":"2010-11",
-    "division":"National",
-    "team":"Kidderminster Harriers",
-    "entity":"Kidderminster Harriers",
-    "note":"Deducted 5 points."
-  },
-  {
-    "season":"2010-11",
-    "division":"National",
-    "team":"Histon",
-    "entity":"Histon",
-    "note":"Deducted 5 points."
-  },
-  {
-    "season":"2010-11",
-    "division":"National",
-    "team":"Kettering Town",
-    "entity":"Kettering Town",
-    "note":"Deducted 2 points."
-  },
-  {
-    "season":"2010-11",
-    "division":"National",
-    "team":"Rushden & Diamonds",
-    "entity":"Rushden & Diamonds",
-    "note":"Deducted 5 points."
-  },
-  {
-    "season":"2010-11",
-    "division":"National",
-    "team":"Rushden & Diamonds",
-    "entity":"Rushden & Diamonds",
-    "note":"Folded upon the conclusion of the season."
-  },
-  {
-    "season":"2010-11",
-    "division":"North",
-    "team":"Redditch United",
-    "entity":"Redditch United",
-    "note":"Deducted 5 points."
-  },
-  {
-    "season":"2010-11",
-    "division":"North",
-    "team":"Ilkeston Town",
-    "entity":"Ilkeston Town",
-    "note":"Expelled on 16 September 2010, and record expunged."
-  },
-  {
-    "season":"2010-11",
-    "division":"South",
-    "team":"Welling United",
-    "entity":"Welling United",
-    "note":"Deducted 5 points."
-  },
-  {
-    "season":"2010-11",
-    "division":"South",
-    "team":"St Albans City",
-    "entity":"St Albans City",
-    "note":"Deducted 10 points."
-  },
-  {
-    "season":"2011-12",
-    "division":"National",
-    "team":"Darlington",
-    "entity":"Darlington (original)",
-    "note":"Deducted 10 points; folded upon the conclusion of the season."
-  },
-  {
-    "season":"2011-12",
-    "division":"North",
-    "team":"Nuneaton Town",
-    "entity":"Nuneaton Town",
-    "note":"Deducted 6 points."
-  },
-  {
-    "season":"2011-12",
-    "division":"South",
-    "team":"Farnborough",
-    "entity":"Farnborough",
-    "note":"Deducted 5 points."
-  },
-  {
-    "season":"2012-13",
-    "division":"North",
-    "team":"Solihull Moors",
-    "entity":"Solihull Moors",
-    "note":"Deducted 3 points."
-  },
-  {
-    "season":"2012-13",
-    "division":"North",
-    "team":"Workington",
-    "entity":"Workington",
-    "note":"Deducted 4 points."
-  },
-  {
-    "season":"2012-13",
-    "division":"North",
-    "team":"Hinckley United",
-    "entity":"Hinckley United",
-    "note":"Deducted 6 points."
-  },
-  {
-    "season":"2012-13",
-    "division":"South",
-    "team":"Salisbury City",
-    "entity":"Salisbury City",
-    "note":"Deducted 1 point."
-  },
-  {
-    "season":"2012-13",
-    "division":"South",
-    "team":"Farnborough",
-    "entity":"Farnborough",
-    "note":"Deducted 14 points."
-  },
-  {
-    "season":"2012-13",
-    "division":"South",
-    "team":"Truro City",
-    "entity":"Truro City",
-    "note":"Deducted 10 points."
-  },
-  {
-    "season":"2013-14",
-    "division":"National",
-    "team":"Alfreton Town",
-    "entity":"Alfreton Town",
-    "note":"Deducted 3 points."
-  },
-  {
-    "season":"2013-14",
-    "division":"National",
-    "team":"Salisbury City",
-    "entity":"Salisbury City",
-    "note":"Folded upon the conclusion of the season."
-  },
-  {
-    "season":"2013-14",
-    "division":"National",
-    "team":"Aldershot Town",
-    "entity":"Aldershot Town",
-    "note":"Deducted 10 points."
-  },
-  {
-    "season":"2013-14",
-    "division":"National",
-    "team":"Hereford United",
-    "entity":"Hereford United",
-    "note":"Demoted to Southern League Premier Division due to financial irregularities."
-  },
-  {
-    "season":"2013-14",
-    "division":"North",
-    "team":"Vauxhall Motors",
-    "entity":"Vauxhall Motors",
-    "note":"Voluntarily resigned to the West Cheshire League."
-  },
-  {
-    "season":"2013-14",
-    "division":"North",
-    "team":"Harrogate Town",
-    "entity":"Harrogate Town",
-    "note":"Deducted 3 points."
-  },
-  {
-    "season":"2013-14",
-    "division":"North",
-    "team":"Oxford City",
-    "entity":"Oxford City",
-    "note":"Deducted 3 points."
-  },
-  {
-    "season":"2014-15",
-    "division":"National",
-    "team":"Forest Green Rovers",
-    "entity":"Forest Green Rovers",
-    "note":"Deducted 3 points."
-  },
-  {
-    "season":"2014-15",
-    "division":"National",
-    "team":"AFC Telford United",
-    "entity":"AFC Telford United",
-    "note":"Deducted 3 points."
-  },
-  {
-    "season":"2014-15",
-    "division":"National",
-    "team":"Nuneaton Town",
-    "entity":"Nuneaton Town",
-    "note":"Deducted 3 points."
-  },
-  {
-    "season":"2015-16",
-    "division":"North",
-    "team":"Nuneaton Town",
-    "entity":"Nuneaton Town",
-    "note":"Deducted 3 points."
-  },
-  {
-    "season":"2017-18",
-    "division":"South",
-    "team":"Braintree Town",
-    "entity":"Braintree Town",
-    "note":"Deducted 1 point."
-  },
-  {
-    "season":"2018-19",
-    "division":"National",
-    "team":"Gateshead",
-    "entity":"Gateshead",
-    "note":"Deducted 9 points."
-  },
-  {
-    "season":"2018-19",
-    "division":"National",
-    "team":"Gateshead",
-    "entity":"Gateshead",
-    "note":"Demoted to National League North due to financial irregularities."
-  },
-  {
-    "season":"2018-19",
-    "division":"National",
-    "team":"Braintree Town",
-    "entity":"Braintree Town",
-    "note":"Deducted 3 points."
-  },
-  {
-    "season":"2018-19",
-    "division":"South",
-    "team":"Concord Rangers",
-    "entity":"Concord Rangers",
-    "note":"Deducted 3 points."
-  },
-  {
-    "season":"2020-21",
-    "division":"National",
-    "team":"Dover Athletic",
-    "entity":"Dover Athletic",
-    "note":"Expelled on 26 March 2021, and record expunged; due to the curtailment of both the National North and South seasons, there was no relegation from the National League."
-  },
-  {
-    "season":"2020-21",
-    "division":"National",
-    "team":"Macclesfield Town",
-    "entity":"Macclesfield Town",
-    "note":"Initially deducted 17 points, and then expelled on 29 September 2020, and record expunged."
-  },
-  {
-    "season":"2020-21",
-    "division":"North",
-    "team":"Gloucester City",
-    "entity":"Gloucester City",
-    "note":"Crowned champions, but due to the curtailment of the National League North season, there was no promotion to the National League."
-  },
-  {
-    "season":"2020-21",
-    "division":"South",
-    "team":"Dorking Wanderers",
-    "entity":"Dorking Wanderers",
-    "note":"Crowned champions, but due to the curtailment of the National League North season, there was no promotion to the National League."
-  },
-  {
-    "season":"2021-22",
-    "division":"National",
-    "team":"Dover Athletic",
-    "entity":"Dover Athletic",
-    "note":"Deducted 12 points."
-  },
-  {
-    "season":"2022-23",
-    "division":"National",
-    "team":"Gateshead",
-    "entity":"Gateshead",
-    "note":"Deducted 1 point."
-  },
-  {
-    "season":"2022-23",
-    "division":"South",
-    "team":"Welling United",
-    "entity":"Welling United",
-    "note":"Deducted 1 point."
-  },
-  {
-    "season":"2023-24",
-    "division":"National",
-    "team":"Southend United",
-    "entity":"Southend United",
-    "note":"Deducted 10 points."
-  },
-  {
-    "season":"2023-24",
-    "division":"South",
-    "team":"Torquay United",
-    "entity":"Torquay United",
-    "note":"Deducted 11 points."
-  }
-]
+{
+  "notes": [
+    {
+      "season": "1979-80",
+      "division": "National",
+      "team": "Altrincham",
+      "entity": "Altrincham",
+      "note": "Applied for election to the Football League as Champions, but failed to secure enough votes (Darlington  49, Crewe Alexandra 48, Hereford United 48, Rochdale 26, Altrincham 25)."
+    },
+    {
+      "season": "1980-81",
+      "division": "National",
+      "team": "Altrincham",
+      "entity": "Altrincham",
+      "note": "Applied for election to the Football League as Champions, but failed to secure enough votes (Tranmere Rovers  48, Hereford United 46, York City 46, Halifax Town 41, Altrincham 15)."
+    },
+    {
+      "season": "1981-82",
+      "division": "National",
+      "team": "Telford United",
+      "entity": "Telford United",
+      "note": "Applied for election to the Football League as third-place finishers, but failed to secure enough votes (Northamppton Town 53, Crewe Alexandra 50, Rochdale 48, Scunthorpe United 48, Telford United 13)."
+    },
+    {
+      "season": "1982-83",
+      "division": "National",
+      "team": "Maidstone United",
+      "entity": "Maidstone United (original)",
+      "note": "Applied for election to the Football League as runners-up, but failed to secure enough votes (Blackpool 52, Crewe Alexandra 49, Hereford United 49, Hartlepool United 36, Maidstone United 26)."
+    },
+    {
+      "season": "1983-84",
+      "division": "National",
+      "team": "Maidstone United",
+      "entity": "Maidstone United (original)",
+      "note": "Applied for election to the Football League as Champions, but failed to secure enough votes (Chester City 52, Halifax Town 52, Rochdale 50, Hartlepool United 32, Maidstone United 22)."
+    },
+    {
+      "season": "1984-85",
+      "division": "National",
+      "team": "Bath City",
+      "entity": "Bath City",
+      "note": "Applied for election to the Football League as fourth-placed, but failed to secure enough votes (Northampton Town 52, Stockport County 50, Torquay United 50, Halifax Town 48, Bath City 8)."
+    },
+    {
+      "season": "1984-85",
+      "division": "National",
+      "team": "Gateshead",
+      "entity": "Gateshead",
+      "note": "Deducted 1 point."
+    },
+    {
+      "season": "1985-86",
+      "division": "National",
+      "team": "Enfield",
+      "entity": "Enfield",
+      "note": "Applied for election to the Football League as Champions, but failed to secure enough votes (Exeter City 64, Preston North End 62.5, Cambridge United 61, Torquay United 61, Enfield 7.5."
+    },
+    {
+      "season": "1986-87",
+      "division": "National",
+      "team": "Nuneaton Borough",
+      "entity": "Nuneaton Borough",
+      "note": "Demoted to the Southern League Premier Division due to financial irregularities."
+    },
+    {
+      "season": "1988-89",
+      "division": "National",
+      "team": "Newport County",
+      "entity": "Newport County",
+      "note": "Expelled on 27 February 1989 due to failure to fulfil fixtures, and record expunged."
+    },
+    {
+      "season": "1991-92",
+      "division": "National",
+      "team": "Redbridge Forest",
+      "entity": "Redbridge Forest",
+      "note": "Merged with Dagenham at the conclusion of the season and competed from 1992-93 as Dagenham & Redbridge."
+    },
+    {
+      "season": "1992-93",
+      "division": "National",
+      "team": "Dagenham & Redbridge",
+      "entity": "Dagenham & Redbridge",
+      "note": "Deducted 1 point."
+    },
+    {
+      "season": "1993-94",
+      "division": "National",
+      "team": "Kidderminster Harriers",
+      "entity": "Kidderminster Harriers",
+      "note": "Denied promotion to the Football League despite being crowned Champions due to failure to meet ground requirements."
+    },
+    {
+      "season": "1993-94",
+      "division": "National",
+      "team": "Merthyr Tydfil",
+      "entity": "Merthyr Tydfil",
+      "note": "Deducted 2 points."
+    },
+    {
+      "season": "1994-95",
+      "division": "National",
+      "team": "Macclesfield Town",
+      "entity": "Macclesfield Town",
+      "note": "Denied promotion to the Football League despite being crowned Champions due to failure to meet ground requirements."
+    },
+    {
+      "season": "1994-95",
+      "division": "National",
+      "team": "Yeovil Town",
+      "entity": "Yeovil Town",
+      "note": "Deducted 1 point."
+    },
+    {
+      "season": "1995-96",
+      "division": "National",
+      "team": "Stevenage Borough",
+      "entity": "Stevenage Borough",
+      "note": "Denied promotion to the Football League despite being crowned Champions due to failure to meet ground requirements."
+    },
+    {
+      "season": "1997-98",
+      "division": "National",
+      "team": "Slough Town",
+      "entity": "Slough Town",
+      "note": "Demoted to the Isthmian League Premier Division due to failure to meet Football Conference ground requirements."
+    },
+    {
+      "season": "1998-99",
+      "division": "National",
+      "team": "Barrow",
+      "entity": "Barrow",
+      "note": "Demoted to the Northern Premier League Premier Division due to entering administration."
+    },
+    {
+      "season": "2001-02",
+      "division": "National",
+      "team": "Scarborough",
+      "entity": "Scarborough",
+      "note": "Deducted 1 point."
+    },
+    {
+      "season": "2003-04",
+      "division": "National",
+      "team": "Telford United",
+      "entity": "Telford United",
+      "note": "Folded upon the conclusion of the season."
+    },
+    {
+      "season": "2003-04",
+      "division": "National",
+      "team": "Margate",
+      "entity": "Margate",
+      "note": "Demoted to Football Conference South due to failure to meet Football Conference ground requirements."
+    },
+    {
+      "season": "2003-04",
+      "division": "National",
+      "team": "Burton Albion",
+      "entity": "Burton Albion",
+      "note": "Deducted 1 point."
+    },
+    {
+      "season": "2004-05",
+      "division": "National",
+      "team": "Northwich Victoria",
+      "entity": "Northwich Victoria",
+      "note": "Demoted to Football Conference North due to failure to meet Football Conference ground requirements."
+    },
+    {
+      "season": "2004-05",
+      "division": "National",
+      "team": "Northwich Victoria",
+      "entity": "Northwich Victoria",
+      "note": "Deducted 10 points due to entering administration."
+    },
+    {
+      "season": "2004-05",
+      "division": "National",
+      "team": "Tamworth",
+      "entity": "Tamworth",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2004-05",
+      "division": "North",
+      "team": "Redditch United",
+      "entity": "Redditch United",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2004-05",
+      "division": "North",
+      "team": "Worksop Town",
+      "entity": "Worksop Town",
+      "note": "Deducted 10 points."
+    },
+    {
+      "season": "2004-05",
+      "division": "South",
+      "team": "Hornchurch",
+      "entity": "Hornchurch (original)",
+      "note": "Deducted 10 points."
+    },
+    {
+      "season": "2004-05",
+      "division": "South",
+      "team": "Margate",
+      "entity": "Margate",
+      "note": "Deducted 10 points."
+    },
+    {
+      "season": "2004-05",
+      "division": "South",
+      "team": "Redbridge",
+      "entity": "Redbridge",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2005-06",
+      "division": "National",
+      "team": "Canvey Island",
+      "entity": "Canvey Island",
+      "note": "Voluntarily resigned to the Isthmian League Division One North."
+    },
+    {
+      "season": "2005-06",
+      "division": "National",
+      "team": "Scarborough",
+      "entity": "Scarborough",
+      "note": "Demoted to the Football Conference North due to failure to fulfil Football Conference financial guidelines."
+    },
+    {
+      "season": "2005-06",
+      "division": "National",
+      "team": "Altrincham",
+      "entity": "Altrincham",
+      "note": "Deducted 18 points."
+    },
+    {
+      "season": "2005-06",
+      "division": "North",
+      "team": "Leigh RMI",
+      "entity": "Leigh RMI",
+      "note": "Deducted 1 point."
+    },
+    {
+      "season": "2005-06",
+      "division": "South",
+      "team": "Weymouth",
+      "entity": "Weymouth",
+      "note": "Deducted 1 point."
+    },
+    {
+      "season": "2005-06",
+      "division": "South",
+      "team": "Havant & Waterlooville",
+      "entity": "Havant & Waterlooville",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2005-06",
+      "division": "South",
+      "team": "Cambridge City",
+      "entity": "Cambridge City",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2005-06",
+      "division": "South",
+      "team": "Maidenhead United",
+      "entity": "Maidenhead United",
+      "note": "Deducted 2 points."
+    },
+    {
+      "season": "2006-07",
+      "division": "National",
+      "team": "Crawley Town",
+      "entity": "Crawley Town",
+      "note": "Deducted 10 points."
+    },
+    {
+      "season": "2006-07",
+      "division": "North",
+      "team": "Moor Green",
+      "entity": "Moor Green",
+      "note": "Merged with Solihull Borough at the conclusion of the season and competed from 2007-08 as Solihull Moors."
+    },
+    {
+      "season": "2006-07",
+      "division": "North",
+      "team": "Scarborough",
+      "entity": "Scarborough",
+      "note": "Deducted 10 points."
+    },
+    {
+      "season": "2006-07",
+      "division": "North",
+      "team": "Lancaster City",
+      "entity": "Lancaster City",
+      "note": "Deducted 10 points."
+    },
+    {
+      "season": "2006-07",
+      "division": "North",
+      "team": "Scarborough",
+      "entity": "Scarborough",
+      "note": "Folded upon the conclusion of the season."
+    },
+    {
+      "season": "2007-08",
+      "division": "National",
+      "team": "Crawley Town",
+      "entity": "Crawley Town",
+      "note": "Deducted 6 points"
+    },
+    {
+      "season": "2007-08",
+      "division": "National",
+      "team": "Halifax Town",
+      "entity": "Halifax Town",
+      "note": "Deducted 10 points; folded upon the conclusion of the season."
+    },
+    {
+      "season": "2007-08",
+      "division": "North",
+      "team": "Nuneaton Borough",
+      "entity": "Nuneaton Borough",
+      "note": "Demoted to Southern League Division One Midlands as a result of liquidation and reformed immediately as Nuneaton Town."
+    },
+    {
+      "season": "2007-08",
+      "division": "North",
+      "team": "Boston United",
+      "entity": "Boston United",
+      "note": "Demoted to Northern Premier League Premier Division due to failure to exit administration."
+    },
+    {
+      "season": "2007-08",
+      "division": "South",
+      "team": "Cambridge City",
+      "entity": "Cambridge City",
+      "note": "Demoted to Southern League Premier Division due to failure to meet Football Conference South ground requirements."
+    },
+    {
+      "season": "2008-09",
+      "division": "National",
+      "team": "Oxford United",
+      "entity": "Oxford United",
+      "note": "Deducted 5 points."
+    },
+    {
+      "season": "2008-09",
+      "division": "National",
+      "team": "Crawley Town",
+      "entity": "Crawley Town",
+      "note": "Deducted 1 point."
+    },
+    {
+      "season": "2008-09",
+      "division": "National",
+      "team": "Mansfield Town",
+      "entity": "Mansfield Town",
+      "note": "Deducted 4 points."
+    },
+    {
+      "season": "2008-09",
+      "division": "North",
+      "team": "King's Lynn",
+      "entity": "King's Lynn",
+      "note": "Demoted to Northern Premier League Premier Division due to failure to meet Football Conference North ground requirements."
+    },
+    {
+      "season": "2008-09",
+      "division": "North",
+      "team": "Northwich Victoria",
+      "entity": "Northwich Victoria",
+      "note": "Deducted 10 points due to entering administration."
+    },
+    {
+      "season": "2008-09",
+      "division": "North",
+      "team": "Tamworth",
+      "entity": "Tamworth",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2008-09",
+      "division": "South",
+      "team": "Team Bath",
+      "entity": "Team Bath",
+      "note": "Folded upon the conclusion of the season."
+    },
+    {
+      "season": "2008-09",
+      "division": "South",
+      "team": "Fisher Athletic",
+      "entity": "Fisher Athletic",
+      "note": "Folded upon the conclusion of the season."
+    },
+    {
+      "season": "2008-09",
+      "division": "South",
+      "team": "Bognor Regis Towm",
+      "entity": "Bognor Regis Towm",
+      "note": "Deducted 7 points."
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "team": "Salisbury City",
+      "entity": "Salisbury City",
+      "note": "Deducted 10 points."
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "team": "Salisbury City",
+      "entity": "Salisbury City",
+      "note": "Demoted to Southern League Premier Division due to failure to exit administration."
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "team": "Gateshead",
+      "entity": "Gateshead",
+      "note": "Deducted 1 point."
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "team": "Grays Athletic",
+      "entity": "Grays Athletic",
+      "note": "Deducted 2 points."
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "team": "Grays Athletic",
+      "entity": "Grays Athletic",
+      "note": "Declined to join Football Conference South upon relegation and instead joined Isthmian League Division One North."
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "team": "Chester City",
+      "entity": "Chester City",
+      "note": "Initially deducted 25 points, and then expelled on 26 February 2010, and record expunged."
+    },
+    {
+      "season": "2009-10",
+      "division": "North",
+      "team": "Northwich Victoria",
+      "entity": "Northwich Victoria",
+      "note": "Begun season with 10-point deduction."
+    },
+    {
+      "season": "2009-10",
+      "division": "North",
+      "team": "Farsley Celtic",
+      "entity": "Farsley Celtic",
+      "note": "Begun season with 10-point deduction."
+    },
+    {
+      "season": "2009-10",
+      "division": "North",
+      "team": "Northwich Victoria",
+      "entity": "Northwich Victoria",
+      "note": "Demoted to Northern Premier League Premier Division due to financial issues."
+    },
+    {
+      "season": "2009-10",
+      "division": "North",
+      "team": "Farsley Celtic",
+      "entity": "Farsley Celtic",
+      "note": "Resigned and folded on 8 March 2010, and record expunged."
+    },
+    {
+      "season": "2010-11",
+      "division": "National",
+      "team": "Kidderminster Harriers",
+      "entity": "Kidderminster Harriers",
+      "note": "Deducted 5 points."
+    },
+    {
+      "season": "2010-11",
+      "division": "National",
+      "team": "Histon",
+      "entity": "Histon",
+      "note": "Deducted 5 points."
+    },
+    {
+      "season": "2010-11",
+      "division": "National",
+      "team": "Kettering Town",
+      "entity": "Kettering Town",
+      "note": "Deducted 2 points."
+    },
+    {
+      "season": "2010-11",
+      "division": "National",
+      "team": "Rushden & Diamonds",
+      "entity": "Rushden & Diamonds",
+      "note": "Deducted 5 points."
+    },
+    {
+      "season": "2010-11",
+      "division": "National",
+      "team": "Rushden & Diamonds",
+      "entity": "Rushden & Diamonds",
+      "note": "Folded upon the conclusion of the season."
+    },
+    {
+      "season": "2010-11",
+      "division": "North",
+      "team": "Redditch United",
+      "entity": "Redditch United",
+      "note": "Deducted 5 points."
+    },
+    {
+      "season": "2010-11",
+      "division": "North",
+      "team": "Ilkeston Town",
+      "entity": "Ilkeston Town",
+      "note": "Expelled on 16 September 2010, and record expunged."
+    },
+    {
+      "season": "2010-11",
+      "division": "South",
+      "team": "Welling United",
+      "entity": "Welling United",
+      "note": "Deducted 5 points."
+    },
+    {
+      "season": "2010-11",
+      "division": "South",
+      "team": "St Albans City",
+      "entity": "St Albans City",
+      "note": "Deducted 10 points."
+    },
+    {
+      "season": "2011-12",
+      "division": "National",
+      "team": "Darlington",
+      "entity": "Darlington (original)",
+      "note": "Deducted 10 points; folded upon the conclusion of the season."
+    },
+    {
+      "season": "2011-12",
+      "division": "North",
+      "team": "Nuneaton Town",
+      "entity": "Nuneaton Town",
+      "note": "Deducted 6 points."
+    },
+    {
+      "season": "2011-12",
+      "division": "South",
+      "team": "Farnborough",
+      "entity": "Farnborough",
+      "note": "Deducted 5 points."
+    },
+    {
+      "season": "2012-13",
+      "division": "North",
+      "team": "Solihull Moors",
+      "entity": "Solihull Moors",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2012-13",
+      "division": "North",
+      "team": "Workington",
+      "entity": "Workington",
+      "note": "Deducted 4 points."
+    },
+    {
+      "season": "2012-13",
+      "division": "North",
+      "team": "Hinckley United",
+      "entity": "Hinckley United",
+      "note": "Deducted 6 points."
+    },
+    {
+      "season": "2012-13",
+      "division": "South",
+      "team": "Salisbury City",
+      "entity": "Salisbury City",
+      "note": "Deducted 1 point."
+    },
+    {
+      "season": "2012-13",
+      "division": "South",
+      "team": "Farnborough",
+      "entity": "Farnborough",
+      "note": "Deducted 14 points."
+    },
+    {
+      "season": "2012-13",
+      "division": "South",
+      "team": "Truro City",
+      "entity": "Truro City",
+      "note": "Deducted 10 points."
+    },
+    {
+      "season": "2013-14",
+      "division": "National",
+      "team": "Alfreton Town",
+      "entity": "Alfreton Town",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2013-14",
+      "division": "National",
+      "team": "Salisbury City",
+      "entity": "Salisbury City",
+      "note": "Folded upon the conclusion of the season."
+    },
+    {
+      "season": "2013-14",
+      "division": "National",
+      "team": "Aldershot Town",
+      "entity": "Aldershot Town",
+      "note": "Deducted 10 points."
+    },
+    {
+      "season": "2013-14",
+      "division": "National",
+      "team": "Hereford United",
+      "entity": "Hereford United",
+      "note": "Demoted to Southern League Premier Division due to financial irregularities."
+    },
+    {
+      "season": "2013-14",
+      "division": "North",
+      "team": "Vauxhall Motors",
+      "entity": "Vauxhall Motors",
+      "note": "Voluntarily resigned to the West Cheshire League."
+    },
+    {
+      "season": "2013-14",
+      "division": "North",
+      "team": "Harrogate Town",
+      "entity": "Harrogate Town",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2013-14",
+      "division": "North",
+      "team": "Oxford City",
+      "entity": "Oxford City",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2014-15",
+      "division": "National",
+      "team": "Forest Green Rovers",
+      "entity": "Forest Green Rovers",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2014-15",
+      "division": "National",
+      "team": "AFC Telford United",
+      "entity": "AFC Telford United",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2014-15",
+      "division": "National",
+      "team": "Nuneaton Town",
+      "entity": "Nuneaton Town",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2015-16",
+      "division": "North",
+      "team": "Nuneaton Town",
+      "entity": "Nuneaton Town",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2017-18",
+      "division": "South",
+      "team": "Braintree Town",
+      "entity": "Braintree Town",
+      "note": "Deducted 1 point."
+    },
+    {
+      "season": "2018-19",
+      "division": "National",
+      "team": "Gateshead",
+      "entity": "Gateshead",
+      "note": "Deducted 9 points."
+    },
+    {
+      "season": "2018-19",
+      "division": "National",
+      "team": "Gateshead",
+      "entity": "Gateshead",
+      "note": "Demoted to National League North due to financial irregularities."
+    },
+    {
+      "season": "2018-19",
+      "division": "National",
+      "team": "Braintree Town",
+      "entity": "Braintree Town",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2018-19",
+      "division": "South",
+      "team": "Concord Rangers",
+      "entity": "Concord Rangers",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2020-21",
+      "division": "National",
+      "team": "Dover Athletic",
+      "entity": "Dover Athletic",
+      "note": "Expelled on 26 March 2021, and record expunged; due to the curtailment of both the National North and South seasons, there was no relegation from the National League."
+    },
+    {
+      "season": "2020-21",
+      "division": "National",
+      "team": "Macclesfield Town",
+      "entity": "Macclesfield Town",
+      "note": "Initially deducted 17 points, and then expelled on 29 September 2020, and record expunged."
+    },
+    {
+      "season": "2020-21",
+      "division": "North",
+      "team": "Gloucester City",
+      "entity": "Gloucester City",
+      "note": "Crowned champions, but due to the curtailment of the National League North season, there was no promotion to the National League."
+    },
+    {
+      "season": "2020-21",
+      "division": "South",
+      "team": "Dorking Wanderers",
+      "entity": "Dorking Wanderers",
+      "note": "Crowned champions, but due to the curtailment of the National League North season, there was no promotion to the National League."
+    },
+    {
+      "season": "2021-22",
+      "division": "National",
+      "team": "Dover Athletic",
+      "entity": "Dover Athletic",
+      "note": "Deducted 12 points."
+    },
+    {
+      "season": "2022-23",
+      "division": "National",
+      "team": "Gateshead",
+      "entity": "Gateshead",
+      "note": "Deducted 1 point."
+    },
+    {
+      "season": "2022-23",
+      "division": "South",
+      "team": "Welling United",
+      "entity": "Welling United",
+      "note": "Deducted 1 point."
+    },
+    {
+      "season": "2023-24",
+      "division": "National",
+      "team": "Southend United",
+      "entity": "Southend United",
+      "note": "Deducted 10 points."
+    },
+    {
+      "season": "2023-24",
+      "division": "South",
+      "team": "Torquay United",
+      "entity": "Torquay United",
+      "note": "Deducted 11 points."
+    }
+  ],
+  "seasonFormat": [
+    {
+      "season": "1979-80",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 1
+    },
+    {
+      "season": "1980-81",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "1981-82",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "1982-83",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 2
+    },
+    {
+      "season": "1983-84",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 2
+    },
+    {
+      "season": "1984-85",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "1985-86",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "1986-87",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "1987-88",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "1988-89",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "1989-90",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "1990-91",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 2
+    },
+    {
+      "season": "1991-92",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 2
+    },
+    {
+      "season": "1992-93",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "1993-94",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "1994-95",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "1995-96",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "1996-97",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "1997-98",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "1998-99",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "1999-00",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2000-01",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2001-02",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2002-03",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2003-04",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2004-05",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2004-05",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2004-05",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2005-06",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2005-06",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 2
+    },
+    {
+      "season": "2005-06",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 2
+    },
+    {
+      "season": "2006-07",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2006-07",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2006-07",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2007-08",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2007-08",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2007-08",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2008-09",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2008-09",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2008-09",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2009-10",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 2
+    },
+    {
+      "season": "2009-10",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 2
+    },
+    {
+      "season": "2010-11",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2010-11",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2010-11",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2011-12",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2011-12",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 2
+    },
+    {
+      "season": "2011-12",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 2
+    },
+    {
+      "season": "2012-13",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2012-13",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2012-13",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2013-14",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2013-14",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2013-14",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2014-15",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2014-15",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2014-15",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 2
+    },
+    {
+      "season": "2015-16",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2015-16",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2015-16",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2016-17",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2016-17",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2016-17",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2017-18",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2017-18",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2017-18",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2018-19",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2018-19",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2018-19",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2019-20",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2019-20",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 2
+    },
+    {
+      "season": "2019-20",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 2
+    },
+    {
+      "season": "2020-21",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2020-21",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 0
+    },
+    {
+      "season": "2020-21",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 0,
+        "eliminator": 0
+      },
+      "relegation": 0
+    },
+    {
+      "season": "2021-22",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 3
+    },
+    {
+      "season": "2021-22",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 1
+    },
+    {
+      "season": "2021-22",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 1
+    },
+    {
+      "season": "2022-23",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2022-23",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2022-23",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2023-24",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2023-24",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2023-24",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2024-25",
+      "division": "National",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2024-25",
+      "division": "North",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 4
+    },
+    {
+      "season": "2024-25",
+      "division": "South",
+      "champions": 1,
+      "playoffs": {
+        "semi": 2,
+        "eliminator": 4
+      },
+      "relegation": 4
+    }
+  ]
+}
