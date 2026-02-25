@@ -378,9 +378,22 @@
         }
         function parsePlayoffsValue(v){
           // Returns { semi:number, elim:number }
-          // - "4"   => {semi:0, elim:4}  (4-team playoffs: positions 2–5)
-          // - "2,4" => {semi:2, elim:4}  (6-team playoffs: byes 2–3, eliminators 4–7)
-          // - ""/0  => {semi:0, elim:0}
+          // Supports BOTH:
+          //  A) object: { semi:2, eliminator:4 } or { semi:2, elim:4 }
+          //  B) string: "4" or "2,4"
+          //  C) empty/0
+
+          // Object form (your current season-notes.json)
+          if (v && typeof v === 'object' && !Array.isArray(v)){
+            const semi = Number(v.semi ?? 0);
+            const elim = Number(v.eliminator ?? v.elim ?? 0);
+            return {
+              semi: Number.isFinite(semi) ? semi : 0,
+              elim: Number.isFinite(elim) ? elim : 0
+            };
+          }
+
+          // String/number form (legacy)
           const raw = String(v ?? '').trim();
           if (!raw || raw === '0') return { semi:0, elim:0 };
 
@@ -395,7 +408,7 @@
           if (!Number.isFinite(n) || n <= 0) return { semi:0, elim:0 };
           return { semi:0, elim:n };
         }
-
+      
         function indexSeasonFormats(raw){
           // Accept season-notes.json as either:
           //  A) [ ...notes... ]  (no formats)
