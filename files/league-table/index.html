@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v2.6)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v2.7)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -232,7 +232,9 @@
             // expulsions: Map<season, Map<division, Array<{team,date}>>>
             expulsions: new Map()
           };
-      
+          // Season formats (champions / playoffs / relegation), keyed by season+division
+          // Map<seasonKey, Map<divisionName, {champions:number, playoffsSemi:number, playoffsElim:number, relegation:number}>>
+          state.seasonFormats = new Map();
         // =========================
         // Utils
         // =========================
@@ -363,7 +365,101 @@
             dm.get(d).push({ team:String(it.team), note:String(it.note) });
           }
         }
+        function parsePlayoffsValue(v){
+          // Returns { semi:number, elim:number }
+          // - "4"   => {semi:0, elim:4}  (4-team playoffs: positions 2–5)
+          // - "2,4" => {semi:2, elim:4}  (6-team playoffs: byes 2–3, eliminators 4–7)
+          // - ""/0  => {semi:0, elim:0}
+          const raw = String(v ?? '').trim();
+          if (!raw || raw === '0') return { semi:0, elim:0 };
 
+          if (raw.includes(',')){
+            const parts = raw.split(',').map(x => Number(String(x).trim()));
+            const semi = Number.isFinite(parts[0]) ? parts[0] : 0;
+            const elim = Number.isFinite(parts[1]) ? parts[1] : 0;
+            return { semi, elim };
+          }
+
+          const n = Number(raw);
+          if (!Number.isFinite(n) || n <= 0) return { semi:0, elim:0 };
+          return { semi:0, elim:n };
+        }
+
+        function indexSeasonFormats(raw){
+          // Accept season-notes.json as either:
+          //  A) [ ...notes... ]  (no formats)
+          //  B) { notes:[...], formats:[...] }
+          //  C) { formats:[...] }
+          state.seasonFormats.clear();
+          const list = Array.isArray(raw) ? [] : Array.isArray(raw?.formats) ? raw.formats : [];
+          for (const it of list){
+            if (!it?.season || !it?.division) continue;
+
+            const s = String(it.season);
+            const d = String(it.division);
+
+            const champions = Number(it.champions ?? 1);
+            const rel = Number(it.relegation ?? 0);
+            const po = parsePlayoffsValue(it.playoffs);
+
+            if (!state.seasonFormats.has(s)) state.seasonFormats.set(s, new Map());
+            state.seasonFormats.get(s).set(d, {
+              champions: Number.isFinite(champions) ? champions : 1,
+              playoffsSemi: po.semi,
+              playoffsElim: po.elim,
+              relegation: Number.isFinite(rel) ? rel : 0
+            });
+          }
+        }
+
+        function cutsFromSeasonFormats(seasonKey, divisionName, teamCount){
+          const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
+          if (!fmt) return null;
+
+          const championCut = 1;
+
+          let playoffCut = null;
+          let byeCut = null;
+
+          // 4-team playoffs (positions 2–5): dotted after 5
+          if (fmt.playoffsSemi === 0 && fmt.playoffsElim === 4){
+            playoffCut = 5;
+          }
+
+          // 6-team playoffs (positions 2–7): dotted after 3 (byes) and after 7 (field)
+          if (fmt.playoffsSemi === 2 && fmt.playoffsElim === 4){
+            byeCut = 3;
+            playoffCut = 7;
+          }
+
+          let relegationCut = null;
+          const relPlaces = Number(fmt.relegation || 0);
+          if (Number.isFinite(teamCount) && teamCount > 0 && relPlaces > 0){
+            relegationCut = teamCount - relPlaces;
+          }
+
+          return {
+            champion: championCut,
+            playoff: playoffCut,
+            playoffByes: byeCut,
+            relegation: relegationCut
+          };
+        }
+
+        function leagueTitleFromFinalTables(seasonKey, divisionName){
+          // Pull human league title from league-tables.json
+          // Expecting: finalByKey[seasonKey].divisions[divisionName].title
+          const div = state.finalByKey?.[seasonKey]?.divisions?.[divisionName];
+          const t = String(div?.title || '').trim();
+
+          if (!t) return divisionName;
+
+          // Ensure season appears once (in case your title is just league name)
+          const norm = s => s.replace(/[\u2013\u2014\u2212]/g, '-');
+          const y = String(seasonKey || '').trim();
+          return norm(t).includes(norm(y)) ? t : (t + ' ' + y);
+        }
+      
         function combineNotes(parts){
           const clean = (s)=> String(s||'').trim().replace(/[\s.;:,]+$/,'');
           const lowerFirst = (s)=> s ? s[0].toLowerCase()+s.slice(1) : s;
@@ -641,9 +737,9 @@ function renderFinalTable(seasonKey, divisionName){
   rows.forEach((r, idx) => frag.appendChild(buildFinalRow(r, idx, seasonKey)));
   els.tbody.appendChild(frag);
 
-  // Apply dotted cut lines inferred from final standings
-  applyCutLinesToRenderedTable(inferCutsFromFinal(seasonKey, divisionName));
-
+  // IMPORTANT: never show dotted cut lines on Final standings (final table already has colour coding)
+  applyCutLinesToRenderedTable(null);
+  
   renderSeasonDivisionNotesAndRefs(seasonKey, divisionName);
   rebuildLegend();
 }
@@ -1128,11 +1224,14 @@ const effectiveAsOf = state.current.asof || els.asofSel.value;
 state.current.asof = effectiveAsOf;
 
 if (effectiveAsOf === '__FINAL__'){
+  const leagueTitle = leagueTitleFromFinalTables(seasonKey, chosenDiv);
+  const prettyAsOf = formatISODateShort(effectiveAsOf);
+
   setText(
     els.caption,
-    withYear(`Final standings — ${chosenDiv}`, seasonKey)
+    `${leagueTitle} (as of ${prettyAsOf})`
   );
-
+  
   // Render from league-tables.json (includes classes/movement)
   renderFinalTable(seasonKey, chosenDiv);
 
@@ -1150,9 +1249,9 @@ if (effectiveAsOf === '__FINAL__'){
   rows.forEach((r, idx) => frag.appendChild(buildRow(r, idx, seasonKey)));
   els.tbody.appendChild(frag);
 
-  // Apply dotted cut lines inferred from final standings
-  applyCutLinesToRenderedTable(inferCutsFromFinal(seasonKey, chosenDiv));
-
+  // Apply dotted cut lines ONLY in date-specific tables, using start-of-season format rules
+  applyCutLinesToRenderedTable(cutsFromSeasonFormats(seasonKey, chosenDiv, rows.length));
+  
   renderSeasonDivisionNotesAndRefs(seasonKey, chosenDiv);
   rebuildLegend();
 }
@@ -1237,6 +1336,7 @@ buildFinalIndex(finalItems);
 
             // Initial render (earliest season, first division, end-of-season date)
             const initialSeason = state.seasons[0].season;
+            if (notesRes) indexSeasonFormats(notesRes);
             els.seasonSel.value = initialSeason;
 
             // Choose division now so we can populate as-of
