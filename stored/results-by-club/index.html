@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" data-season-version="v2.3">
+<html lang="en" data-season-version="v2.4">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Team Seasons</title>
 
 <style>
-  /* v2.3: only changes:
-     - hide Result column on narrow screens (≤820px) to avoid duplicate W/D/L
-     - add narrow-screen column widths (Date 16%, Score 10%, Home/Away 37% each)
-     - keep venue segmented control styles from v2.2
-     - (row coloration for includes remains removed, per v2.1)
+  /* v2.4: changes:
+     - Abandoned + awarded games: show A-A with an asterisk on the awarded side (*A-A / A-A*)
+     - Derive W/D/L from awarded outcome (when status=abandoned, count_goals=false, count_points=true)
+     - Otherwise keep existing behaviour
   */
 
   #h2h{ --ff: inherit; --fvs: normal; }
@@ -255,10 +254,8 @@
 </div>
 
 <script>
-/*! Team-Seasons v2.2 — changes from v2.1:
-    • Fix Play-off label rendering (tiny grey line under date; no NaN)
-    • Add All/Home/Away/Neutral filter (same segmented control UX as H2H)
-*/
+/*! Team-Seasons v2.4 — Abandoned+awarded: show A-A with asterisk; derive W/D/L from awarded */
+  
 (function(){
   var JSON_SRC = window.H2H_JSON_URL || "https://raw.githubusercontent.com/rckd-nl/website/main/results.json";
   function dirOf(u){ try{ var url=new URL(u,location.href); url.pathname=url.pathname.replace(/[^/]+$/,''); return url.toString(); }catch(_){ var i=String(u).lastIndexOf('/'); return i>-1 ? u.slice(0,i+1) : ''; } }
@@ -393,8 +390,43 @@
     VENUEBOX.style.display='block';
   }
 
+    function isAbandonedAwarded(m){
+    if(!m) return false;
+    if(String(m.status||'').toLowerCase()!=='abandoned') return false;
+    if(m.count_goals !== false) return false;
+    if(m.count_points !== true) return false;
+    var a=String(m.awarded||'').toLowerCase();
+    return a==='home' || a==='away' || a==='draw';
+  }
+
+  function displayScoreForMatch(m){
+    // Abandoned + awarded games should show A-A with award-side asterisk
+    if(isAbandonedAwarded(m)){
+      var a=String(m.awarded||'').toLowerCase();
+      if(a==='home') return '*A-A';
+      if(a==='away') return 'A-A*';
+      return 'A-A'; // draw
+    }
+    return m.score ? String(m.score) : (String(m.home_goals)+'\u2013'+String(m.away_goals));
+  }
+
+  function resultFromAwarded(m, clubSet){
+    var a=String(m.awarded||'').toLowerCase();
+    if(a==='draw') return 'D';
+    if(a==='home') return clubSet.has(m.home_entity_norm) ? 'W' : 'L';
+    if(a==='away') return clubSet.has(m.away_entity_norm) ? 'W' : 'L';
+    return '';
+  }
+  
   function normResultVal(val){ if(!val) return ''; var v=String(val).trim().toUpperCase(); if(v==='HOME') v='H'; if(v==='AWAY') v='A'; if(v==='DRAW') v='D'; if(v==='WIN'||v==='LOSS'||v==='W'||v==='L') return v; if(v==='H'||v==='A'||v==='D') return v; return ''; }
+
   function resultFromJSON(m,clubSet){
+    // v2.4 — abandoned + awarded: W/D/L from awarded (not on-pitch goals)
+    if(isAbandonedAwarded(m)){
+      var ar = resultFromAwarded(m, clubSet);
+      if(ar) return ar;
+    }
+
     var r=normResultVal(m.result);
     if(r==='W'||r==='L'||r==='D') return r;
     if(r==='D') return 'D';
@@ -404,7 +436,7 @@
     var homeWin=m.home_goals>m.away_goals, isHome=clubSet.has(m.home_entity_norm);
     return (homeWin&&isHome)||(!homeWin&&!isHome)?'W':'L';
   }
-
+  
   /* Play-off info — tiny grey line (fix NaN by explicit string join) */
   function playoffTinyLine(m){
     if(!m.playoffs) return '';
@@ -540,8 +572,8 @@
     for(var i=0;i<mm.length;i++){
       var m=mm[i];
       var dateFull=fmtDateFull(m.date), dateShort=fmtDateShort(m.date), dateSlim=fmtDateSlim(m.date);
-      var scoreTxt = m.score ? String(m.score) : (String(m.home_goals)+'\u2013'+String(m.away_goals));
-
+      var scoreTxt = displayScoreForMatch(m);
+      
       var res=resultFromJSON(m,clubSet);
       var resBadge='<span class="pill '+(res==='W'?'w':res==='D'?'d':'l')+'">'+res+'</span>';
       var tinyBadge='<div class="tiny"><span class="badge '+(res==='W'?'w':res==='D'?'d':'l')+'">'+res+'</span></div>';
