@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" data-h2h-version="v2.7.9">
+<html lang="en" data-h2h-version="v2.7.13">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Head to Head</title>
 
 <style>
-/*! H2H v2.7.8 — Stack multi-club toggles vertically in both bars (keeps 2.7.7 fixes) */
+/*! H2H v2.7.13 — Abandoned+awarded: show A-A with asterisk; derive W/D/L from awarded */
   #h2h{ --ff: inherit; --fvs: normal; }
   #h2h, #h2h *{ font-family: var(--ff) !important; font-variation-settings: var(--fvs, normal); }
   #h2h select, #h2h button, #h2h input{ font: inherit; line-height: inherit; }
@@ -299,8 +299,8 @@
 </div>
 
 <script>
-/*! H2H v2.7.7 — Fix opponent-change handler (remove CLUb typo), keep 12s timeout + UX from 2.7.6 */
-(function(){
+/*! H2H v2.7.13 — Abandoned+awarded: show A-A with asterisk; derive W/D/L from awarded */
+  (function(){
   var JSON_SRC = window.H2H_JSON_URL || "https://raw.githubusercontent.com/rckd-nl/website/main/results.json";
   function dirOf(u){ try{ var url=new URL(u,location.href); url.pathname=url.pathname.replace(/[^/]+$/,''); return url.toString(); }catch(_){ var i=String(u).lastIndexOf('/'); return i>-1 ? u.slice(0,i+1) : ''; } }
   var META_SRC = window.H2H_CLUBS_META_URL || (dirOf(JSON_SRC) + "clubs-meta.json");
@@ -426,26 +426,52 @@
     });
   }
 
-  function updateVenueButtons(primaryKey,opponentKey){
-    var clubSet=new Set([primaryKey].concat(Array.from(includedRelatedClub)));
-    var oppSet =new Set([opponentKey].concat(Array.from(includedRelatedOpp)));
-    var subset=allMatches.filter(function(m){
-      return (clubSet.has(m.home_entity_norm)&&oppSet.has(m.away_entity_norm)) || (clubSet.has(m.away_entity_norm)&&oppSet.has(m.home_entity_norm));
-    });
-    var hasN=subset.some(function(m){ return isNeutral(m); });
-    var hasH=subset.some(function(m){ return !isNeutral(m)&&clubSet.has(m.home_entity_norm); });
-    var hasA=subset.some(function(m){ return !isNeutral(m)&&clubSet.has(m.away_entity_norm); });
-    var btnH=VENUEBOX.querySelector('button[data-val="home"]');
-    var btnA=VENUEBOX.querySelector('button[data-val="away"]');
-    var btnN=VENUEBOX.querySelector('button[data-val="neutral"]');
-    btnH.style.display=hasH?'inline-block':'none';
-    btnA.style.display=hasA?'inline-block':'none';
-    btnN.style.display=hasN?'inline-block':'none';
-    if((venueFilter==='home'&&!hasH)||(venueFilter==='away'&&!hasA)||(venueFilter==='neutral'&&!hasN)) setVenue('all');
+  function isAbandonedAwarded(m){
+    if(!m) return false;
+    if(String(m.status||'').toLowerCase()!=='abandoned') return false;
+    if(m.count_goals !== false) return false;
+    if(m.count_points !== true) return false;
+    var a=String(m.awarded||'').toLowerCase();
+    return a==='home' || a==='away' || a==='draw';
   }
 
-  function normResultVal(val){ if(!val) return ''; var v=String(val).trim().toUpperCase(); if(v==='HOME') v='H'; if(v==='AWAY') v='A'; if(v==='DRAW') v='D'; if(v==='WIN'||v==='LOSS'||v==='W'||v==='L') return v; if(v==='H'||v==='A'||v==='D') return v; return ''; }
+  function displayScoreForMatch(m){
+    // Abandoned + awarded games should show A-A with award-side asterisk
+    if(isAbandonedAwarded(m)){
+      var a=String(m.awarded||'').toLowerCase();
+      if(a==='home') return '*A-A';
+      if(a==='away') return 'A-A*';
+      return 'A-A'; // draw
+    }
+    return m.score ? String(m.score) : (String(m.home_goals)+'\u2013'+String(m.away_goals));
+  }
+
+  function resultFromAwarded(m, clubSet){
+    var a=String(m.awarded||'').toLowerCase();
+    if(a==='draw') return 'D';
+    if(a==='home') return clubSet.has(m.home_entity_norm) ? 'W' : 'L';
+    if(a==='away') return clubSet.has(m.away_entity_norm) ? 'W' : 'L';
+    return '';
+  }
+
+  function normResultVal(val){
+    if(!val) return '';
+    var v=String(val).trim().toUpperCase();
+    if(v==='HOME') v='H';
+    if(v==='AWAY') v='A';
+    if(v==='DRAW') v='D';
+    if(v==='WIN'||v==='LOSS'||v==='W'||v==='L') return v;
+    if(v==='H'||v==='A'||v==='D') return v;
+    return '';
+  }
+
   function resultFromJSON(m,clubSet){
+    // v2.7.13 — abandoned + awarded: W/D/L from awarded (not on-pitch goals)
+    if(isAbandonedAwarded(m)){
+      var ar = resultFromAwarded(m, clubSet);
+      if(ar) return ar;
+    }
+
     var r=normResultVal(m.result);
     if(r==='W'||r==='L'||r==='D') return r;
     if(r==='D') return 'D';
@@ -455,7 +481,7 @@
     var homeWin=m.home_goals>m.away_goals, isHome=clubSet.has(m.home_entity_norm);
     return (homeWin&&isHome)||(!homeWin&&!isHome)?'W':'L';
   }
-
+    
   function onClubChange(){
     try{
       includedRelatedClub.clear(); includedRelatedOpp.clear();
@@ -611,8 +637,8 @@ function extraBlockHTML(m, clubSet){
       var m=mm[i];
       var dateFull=fmtDateFull(m.date), dateShort=fmtDateShort(m.date), dateSlim=fmtDateSlim(m.date);
       var seasonText=(m.season||'') + (m.cross_division ? ' Play-offs' : '');
-      var scoreTxt = m.score ? String(m.score) : (String(m.home_goals)+'\u2013'+String(m.away_goals));
-
+      var scoreTxt = displayScoreForMatch(m);
+      
       var res=resultFromJSON(m,clubSet);
       var resBadge='<span class="pill '+(res==='W'?'w':res==='D'?'d':'l')+'">'+res+'</span>';
       var tinyBadge='<div class="tiny"><span class="badge '+(res==='W'?'w':res==='D'?'d':'l')+'">'+res+'</span></div>';
