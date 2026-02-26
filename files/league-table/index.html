@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.9)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.12)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -841,11 +841,13 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
 
           const groups = new Map();
           for (const x of raw){
-            const key = canon(x.team);
+            // Display groups by canonical entity when possible (team label remains as provided)
+            const key = canon(x.entity || x.team || '');
+            if (!key) continue;
             if (!groups.has(key)) groups.set(key, { team: x.team, notes: [] });
             groups.get(key).notes.push(x.note);
           }
-
+          
           const rowsArr = Array.from(els.tbody.rows);
           const entries = [];
           for (const {team, notes} of groups.values()){
@@ -926,13 +928,13 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
           }
 
           // 2) season-notes.json (type: expulsion)
+          // Canonical match key is entity (team is display-only)
           const notes = activeNotesFor(seasonKey, divisionName, asOfISO, includeUndated);
           notes
             .filter(n => n.type === 'expulsion')
-            .forEach(n => out.add(canon(n.team)));
+            .forEach(n => out.add(canon(n.entity || '')));
 
           return out;
-        }
       
         // =========================
         // Results normalize/index
@@ -1127,13 +1129,16 @@ function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows){
   const includeUndated = true;
   const notes = activeNotesFor(seasonKey, divisionName, asOfISO, includeUndated);
 
-  const notesByTeam = new Map(); // canon -> list
+  // Canonical match key is ALWAYS entity.
+  // r.team (from results.json) is the canonical entity string.
+  const notesByEntity = new Map(); // canon(entity) -> list
   for (const n of notes){
-    const k = canon(n.team);
-    if (!notesByTeam.has(k)) notesByTeam.set(k, []);
-    notesByTeam.get(k).push(n);
+    const k = canon(n.entity || '');
+    if (!k) continue;
+    if (!notesByEntity.has(k)) notesByEntity.set(k, []);
+    notesByEntity.get(k).push(n);
   }
-
+  
   const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
   const teamCount = rows.length;
 
@@ -1159,9 +1164,14 @@ function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows){
   // Global toggles from notes (no_relegation affects entire division)
   const hasNoRelegation = notes.some(n => n.type === 'no_relegation');
 
-  // Global no_playoffs can be team-specific in your list; treat as team-level removal
-  const teamsNoPlayoffs = new Set(notes.filter(n => n.type === 'no_playoffs').map(n => canon(n.team)));
-
+  // no_playoffs is entity-specific (canonical)
+  const teamsNoPlayoffs = new Set(
+    notes
+      .filter(n => n.type === 'no_playoffs')
+      .map(n => canon(n.entity || ''))
+      .filter(Boolean)
+  );
+  
   // Apply base final zones
   rows.forEach(r=>{
     r.classes = Array.isArray(r.classes) ? r.classes : [];
@@ -1206,9 +1216,9 @@ function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows){
   const championKey = canon(championTeam);
 
   // Champion promoted unless not_promoted exists for that team
-  const champNotes = notesByTeam.get(championKey) || [];
+  const champNotes = notesByEntity.get(championKey) || [];
   const champNotPromoted = champNotes.some(n => n.type === 'not_promoted');
-
+  
   // IMPORTANT:
   // Champions should stay GOLD (champion class) and only get an ↑ arrow.
   // Do NOT add the 'promoted' class here (that styling is reserved for the play-off winner = silver).
@@ -1235,7 +1245,7 @@ function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows){
   // Demotion (note) forces relegated+down
   for (const r of rows){
     const k = canon(r.team);
-    const tnotes = notesByTeam.get(k) || [];
+    const tnotes = notesByEntity.get(k) || [];
     if (tnotes.some(n => n.type === 'demotion')){
       if (!r.classes.includes('relegated')) r.classes.push('relegated');
       r.move = 'down';
@@ -1245,7 +1255,7 @@ function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows){
   // Reprieve removes relegated + down arrow
   for (const r of rows){
     const k = canon(r.team);
-    const tnotes = notesByTeam.get(k) || [];
+    const tnotes = notesByEntity.get(k) || [];
     if (tnotes.some(n => n.type === 'reprieve')){
       r.classes = r.classes.filter(c => c !== 'relegated');
       if (r.move === 'down') r.move = '';
@@ -1263,7 +1273,7 @@ function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows){
   // Folded: black row + down arrow (no expunging of results)
   for (const r of rows){
     const k = canon(r.team);
-    const tnotes = notesByTeam.get(k) || [];
+    const tnotes = notesByEntity.get(k) || [];
     if (tnotes.some(n => n.type === 'folded')){
       r.classes = r.classes.filter(c => c !== 'relegated');
       if (!r.classes.includes('folded')) r.classes.push('folded');
@@ -1274,7 +1284,7 @@ function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows){
   // Expulsion: expunged styling + down arrow (results already expunged by standings calc once effective)
   for (const r of rows){
     const k = canon(r.team);
-    const tnotes = notesByTeam.get(k) || [];
+    const tnotes = notesByEntity.get(k) || [];
     if (tnotes.some(n => n.type === 'expulsion')){
       r.classes = r.classes.filter(c => c !== 'relegated');
       if (!r.classes.includes('expunged')) r.classes.push('expunged');
@@ -1413,35 +1423,36 @@ function collectDivisionNotesText(seasonKey, divisionName){
   return raw.map(x => String(x.note || '')).join(' \n ');
 }
 
-function inferPlayoffLinesFromNotes(seasonKey, divisionName){
-  const text = collectDivisionNotesText(seasonKey, divisionName);
-  const t = text.toLowerCase();
+function inferPlayoffLinesFromFinalClasses(seasonKey, divisionName){
+  const season = state.finalByKey[seasonKey];
+  const div = season?.divisions?.[divisionName];
+  const rows = Array.isArray(div?.rows) ? div.rows : [];
 
-  // Look for explicit position ranges first
-  // Examples it should match:
-  // "Play-offs introduced (positions 2-5)"
-  // "Six-team play-offs (positions 2-7; 2-3 byes)"
-  const mRange = /positions?\s*2\s*-\s*(5|7)\b/i.exec(text);
-  if (mRange){
-    const end = Number(mRange[1]);
-    if (end === 5) return { playoffCut: 5, byeCut: null };
-    if (end === 7) return { playoffCut: 7, byeCut: 3 };
-  }
+  // IMPORTANT:
+  // Only infer play-offs from explicit 'playoff' classes.
+  // Do NOT use 'promoted' for inference because some seasons/tables may use it for automatic promotion,
+  // which would create "phantom playoffs" (e.g., 1979-80).
+  const cohortPos = rows
+    .filter(r => {
+      const cls = r.classes || [];
+      return cls.includes('playoff');
+    })
+    .map(r => Number(r.pos))
+    .filter(n => Number.isFinite(n) && n >= 2); // exclude champion
 
-  // Look for "six-team" hints even if range not written
-  if (/\b(6|six)\s*[-\s]?team\b.*\bplay[-\s]?offs?\b/i.test(text) || /\bplay[-\s]?offs?\b.*\b(6|six)\s*[-\s]?team\b/i.test(text)){
-    return { playoffCut: 7, byeCut: 3 };
-  }
+  if (!cohortPos.length) return null;
 
-  // Look for "2 and 3 have byes" without saying "six-team"
-  if (/\bbyes?\b/.test(t) && /\b2\b/.test(t) && /\b3\b/.test(t) && /\bplay/.test(t)){
-    return { playoffCut: 7, byeCut: 3 };
-  }
+  const maxPos = Math.max(...cohortPos);
 
-  // Look for generic "play-offs introduced" without format (not enough info)
+  // If final table shows positions through 7 => six-team format (2-3 byes, 4-7 eliminators)
+  if (maxPos >= 7) return { playoffCut: 7, byeCut: 3 };
+
+  // If final table shows positions through 5 => four-team format (2-5)
+  if (maxPos >= 5) return { playoffCut: 5, byeCut: null };
+
   return null;
 }
-
+      
 function inferPlayoffLinesFromFinalClasses(seasonKey, divisionName){
   const season = state.finalByKey[seasonKey];
   const div = season?.divisions?.[divisionName];
@@ -1789,12 +1800,13 @@ for (const m of matches){
 
           if (!notes.length) return rows;
 
-          const deltaByTeam = new Map(); // canon(team) -> sum pointsValue
+          const deltaByTeam = new Map(); // canon(entity) -> sum pointsValue
           for (const n of notes){
-            const k = canon(n.team);
+            const k = canon(n.entity || '');
+            if (!k) continue;
             deltaByTeam.set(k, (deltaByTeam.get(k) || 0) + Number(n.pointsValue));
           }
-
+          
           // apply
           rows.forEach(r=>{
             const k = canon(r.team);
