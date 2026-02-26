@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.7)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.8)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -250,7 +250,10 @@
           
             // season notes (unchanged)
             seasonNotes: new Map(),    // Map<season, Map<division, Array<{team,note}>>>
-          
+            
+            // season notes (full objects for rules)
+            seasonNotesFull: new Map(), // Map<season, Map<division, Array<noteObj>>>
+            
             // expulsions: Map<season, Map<division, Array<{team,date}>>>
             expulsions: new Map()
           };
@@ -281,12 +284,31 @@
           return `${dow} ${String(d)} ${months[mo - 1]} ${y}`;
         }
 
-        const isoToNum = (iso) => {
-          // Convert YYYY-MM-DD to comparable number YYYYMMDD
-          const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));
-          if (!m) return 0;
-          return (+m[1])*10000 + (+m[2])*100 + (+m[3]);
-        };
+        function isNoteActiveAsOf(noteObj, asOfISO, includeUndated){
+          const ed = noteObj?.effectiveDate;
+
+          // Undated notes apply only when explicitly included (derived final)
+          if (!ed) return !!includeUndated;
+
+          // Special marker supported in your JSON already
+          if (ed === 'start_of_season') return true;
+
+          // Date-based
+          if (/^\d{4}-\d{2}-\d{2}$/.test(ed)){
+            return isoToNum(ed) <= isoToNum(asOfISO);
+          }
+
+          // Unknown strings: treat as NOT active unless includeUndated
+          return !!includeUndated;
+        }
+
+        function activeNotesFor(seasonKey, divisionName, asOfISO, includeUndated){
+          const fm = state.seasonNotesFull.get(String(seasonKey));
+          if (!fm) return [];
+          const arr = fm.get(String(divisionName)) || [];
+          return arr.filter(n => isNoteActiveAsOf(n, asOfISO, includeUndated));
+        }
+      
         // Points rule (simple + historic default)
         // 2 points for a win before 1981-82; otherwise 3 points.
         function pointsForWin(seasonKey){
@@ -376,17 +398,40 @@
         // =========================
         function indexSeasonNotes(raw){
           state.seasonNotes.clear();
+          state.seasonNotesFull.clear();
+
           const list = Array.isArray(raw) ? raw : Array.isArray(raw?.notes) ? raw.notes : [];
+
           for (const it of list){
             if (!it?.season || !it?.division || !it?.team || !it?.note) continue;
+
             const s = String(it.season);
             const d = String(it.division);
+
+            // 1) simple store for display (existing behaviour)
             if (!state.seasonNotes.has(s)) state.seasonNotes.set(s, new Map());
             const dm = state.seasonNotes.get(s);
             if (!dm.has(d)) dm.set(d, []);
             dm.get(d).push({ team:String(it.team), note:String(it.note) });
+
+            // 2) full store for rules
+            if (!state.seasonNotesFull.has(s)) state.seasonNotesFull.set(s, new Map());
+            const fm = state.seasonNotesFull.get(s);
+            if (!fm.has(d)) fm.set(d, []);
+
+            fm.get(d).push({
+              season: s,
+              division: d,
+              team: String(it.team),
+              entity: String(it.entity || it.team || ''),
+              type: String(it.type || 'general').toLowerCase(),
+              pointsValue: (it.pointsValue != null && it.pointsValue !== '') ? Number(it.pointsValue) : null,
+              effectiveDate: (it.effectiveDate != null && it.effectiveDate !== '') ? String(it.effectiveDate) : null,
+              note: String(it.note)
+            });
           }
         }
+      
         function parsePlayoffsValue(v){
           // Returns { semi:number, elim:number }
           // Supports BOTH:
@@ -558,8 +603,8 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
   const ptsWin = pointsForWin(seasonKey);
   const asNum = isoToNum(asOfISO);
 
-  const expSet = expungedTeamsFor(seasonKey, divisionName, asOfISO);
-
+  const expSet = expungedTeamsFor(seasonKey, divisionName, asOfISO, false);
+  
   // Remaining league matches per team (future-dated OR not yet played), excluding expunged fixtures
   const remaining = new Map();
   const ensure = (t)=> { if (!remaining.has(t)) remaining.set(t, 0); };
@@ -862,20 +907,28 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
           }
         }
 
-        function expungedTeamsFor(seasonKey, divisionName, asOfISO){
-          const dm = state.expulsions.get(String(seasonKey));
-          if (!dm) return new Set();
-
-          const arr = dm.get(String(divisionName)) || [];
-          const asNum = isoToNum(asOfISO);
-
+        function expungedTeamsFor(seasonKey, divisionName, asOfISO, includeUndated){
           const out = new Set();
-          for (const e of arr){
-            if (isoToNum(e.date) <= asNum) out.add(canon(e.team));
+
+          // 1) OPTIONAL expulsions.json (legacy support)
+          const dm = state.expulsions.get(String(seasonKey));
+          if (dm){
+            const arr = dm.get(String(divisionName)) || [];
+            const asNum = isoToNum(asOfISO);
+            for (const e of arr){
+              if (isoToNum(e.date) <= asNum) out.add(canon(e.team));
+            }
           }
+
+          // 2) season-notes.json (type: expulsion)
+          const notes = activeNotesFor(seasonKey, divisionName, asOfISO, includeUndated);
+          notes
+            .filter(n => n.type === 'expulsion')
+            .forEach(n => out.add(canon(n.team)));
+
           return out;
         }
-
+      
         // =========================
         // Results normalize/index
         // =========================
@@ -1017,6 +1070,332 @@ function renderFinalTable(seasonKey, divisionName){
   renderSeasonDivisionNotesAndRefs(seasonKey, divisionName);
   rebuildLegend();
 }
+
+function findPlayoffWinnerFromResults(seasonKey, divisionName){
+  const seasonObj = state.byKey[seasonKey];
+  const divObj = seasonObj?.divisions?.[divisionName];
+  const matches = Array.isArray(divObj?.matches) ? divObj.matches : [];
+
+  // Find a match that looks like the play-off final
+  // Accepts: m.playoffs===true OR m.playoff_round present
+  const finals = matches.filter(m => {
+    const pr = String(m.playoff_round || '').toLowerCase();
+    return !!(m?.playoffs || m?.playoff_round) && (pr.includes('final') || pr === 'f' || pr === 'final');
+  });
+
+  // Pick the latest-dated "final" if multiple
+  finals.sort((a,b)=> isoToNum(toISO(a.date)) - isoToNum(toISO(b.date)));
+  const fin = finals.length ? finals[finals.length - 1] : null;
+  if (!fin) return '';
+
+  const h = String(fin.home || '').trim();
+  const a = String(fin.away || '').trim();
+  const hg = Number(fin.home_goals);
+  const ag = Number(fin.away_goals);
+
+  if (!h || !a) return '';
+  if (!Number.isFinite(hg) || !Number.isFinite(ag)) return '';
+
+  if (hg > ag) return h;
+  if (ag > hg) return a;
+
+  // If level, attempt AET or pens fields if your results.json contains them
+  const hAet = Number(fin.home_goals_aet);
+  const aAet = Number(fin.away_goals_aet);
+  if (Number.isFinite(hAet) && Number.isFinite(aAet)){
+    if (hAet > aAet) return h;
+    if (aAet > hAet) return a;
+  }
+
+  const hPen = Number(fin.home_goals_pens);
+  const aPen = Number(fin.away_goals_pens);
+  if (Number.isFinite(hPen) && Number.isFinite(aPen)){
+    if (hPen > aPen) return h;
+    if (aPen > hPen) return a;
+  }
+
+  return '';
+}
+
+function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows){
+  // Derived final includes undated notes
+  const includeUndated = true;
+  const notes = activeNotesFor(seasonKey, divisionName, asOfISO, includeUndated);
+
+  const notesByTeam = new Map(); // canon -> list
+  for (const n of notes){
+    const k = canon(n.team);
+    if (!notesByTeam.has(k)) notesByTeam.set(k, []);
+    notesByTeam.get(k).push(n);
+  }
+
+  const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
+  const teamCount = rows.length;
+
+  // Zones from format (fallback to inferred cuts)
+  const cuts =
+    cutsFromSeasonFormats(seasonKey, divisionName, teamCount) ||
+    inferCutsFromFinal(seasonKey, divisionName) ||
+    { champion:1, playoff:null, playoffByes:null, relegation:null };
+
+  // Determine “relegated positions” from cuts.relegation
+  const relegationLinePos = (cuts && Number.isFinite(cuts.relegation)) ? Number(cuts.relegation) : null;
+
+  // Determine play-off field end
+  const poFmt = getPlayoffFormatForSeason(seasonKey, divisionName);
+  const playoffFieldEnd = poFmt ? poFmt.fieldEnd : null;
+
+  const playoffWinner = findPlayoffWinnerFromResults(seasonKey, divisionName);
+
+  // Global toggles from notes (no_relegation affects entire division)
+  const hasNoRelegation = notes.some(n => n.type === 'no_relegation');
+
+  // Global no_playoffs can be team-specific in your list; treat as team-level removal
+  const teamsNoPlayoffs = new Set(notes.filter(n => n.type === 'no_playoffs').map(n => canon(n.team)));
+
+  // Apply base final zones
+  rows.forEach(r=>{
+    r.classes = Array.isArray(r.classes) ? r.classes : [];
+    r.move = ''; // 'up' or 'down' only on final views
+
+    // Keep expunged as expunged
+    if (r.classes.includes('expunged')){
+      r.move = 'down';
+      return;
+    }
+
+    // Champion colouring
+    if (Number(r.pos) === 1){
+      if (!r.classes.includes('champion')) r.classes.push('champion');
+    }
+
+    // Play-off qualifiers colouring (positions 2..fieldEnd)
+    if (playoffFieldEnd && Number(r.pos) >= 2 && Number(r.pos) <= playoffFieldEnd){
+      if (!r.classes.includes('playoff')) r.classes.push('playoff');
+
+      // semi/eliminator tone
+      if (poFmt && poFmt.byeEnd == null){
+        if (!r.classes.includes('playoff-semi')) r.classes.push('playoff-semi');
+      } else if (poFmt && poFmt.byeEnd != null){
+        if (Number(r.pos) <= Number(poFmt.byeEnd)){
+          if (!r.classes.includes('playoff-semi')) r.classes.push('playoff-semi');
+        } else {
+          if (!r.classes.includes('playoff-elim')) r.classes.push('playoff-elim');
+        }
+      }
+    }
+
+    // Relegation colouring (final only)
+    if (!hasNoRelegation && relegationLinePos != null && Number(r.pos) > relegationLinePos){
+      if (!r.classes.includes('relegated')) r.classes.push('relegated');
+      r.move = 'down';
+    }
+  });
+
+  // Promotions (final only)
+  const championTeam = rows.find(r => Number(r.pos) === 1)?.team || '';
+  const championKey = canon(championTeam);
+
+  // Champion promoted unless not_promoted exists for that team
+  const champNotes = notesByTeam.get(championKey) || [];
+  const champNotPromoted = champNotes.some(n => n.type === 'not_promoted');
+
+  if (championTeam && !champNotPromoted){
+    const r = rows.find(x => canon(x.team) === championKey);
+    if (r){
+      if (!r.classes.includes('promoted')) r.classes.push('promoted');
+      r.move = 'up';
+    }
+  }
+
+  // Play-off winner promoted (unless no_playoffs or missing)
+  const poWinnerKey = canon(playoffWinner);
+  if (playoffWinner){
+    const r = rows.find(x => canon(x.team) === poWinnerKey);
+    if (r){
+      if (!teamsNoPlayoffs.has(poWinnerKey)){
+        if (!r.classes.includes('promoted')) r.classes.push('promoted');
+        r.move = 'up';
+      }
+    }
+  }
+
+  // Demotion (note) forces relegated+down
+  for (const r of rows){
+    const k = canon(r.team);
+    const tnotes = notesByTeam.get(k) || [];
+    if (tnotes.some(n => n.type === 'demotion')){
+      if (!r.classes.includes('relegated')) r.classes.push('relegated');
+      r.move = 'down';
+    }
+  }
+
+  // Reprieve removes relegated + down arrow
+  for (const r of rows){
+    const k = canon(r.team);
+    const tnotes = notesByTeam.get(k) || [];
+    if (tnotes.some(n => n.type === 'reprieve')){
+      r.classes = r.classes.filter(c => c !== 'relegated');
+      if (r.move === 'down') r.move = '';
+    }
+  }
+
+  // no_relegation removes all relegation colouring/arrows
+  if (hasNoRelegation){
+    for (const r of rows){
+      r.classes = r.classes.filter(c => c !== 'relegated');
+      if (r.move === 'down') r.move = '';
+    }
+  }
+
+  // Folded: black row + down arrow (no expunging of results)
+  for (const r of rows){
+    const k = canon(r.team);
+    const tnotes = notesByTeam.get(k) || [];
+    if (tnotes.some(n => n.type === 'folded')){
+      r.classes = r.classes.filter(c => c !== 'relegated');
+      if (!r.classes.includes('folded')) r.classes.push('folded');
+      r.move = 'down';
+    }
+  }
+
+  // Expulsion: expunged styling + down arrow (results already expunged by standings calc once effective)
+  for (const r of rows){
+    const k = canon(r.team);
+    const tnotes = notesByTeam.get(k) || [];
+    if (tnotes.some(n => n.type === 'expulsion')){
+      r.classes = r.classes.filter(c => c !== 'relegated');
+      if (!r.classes.includes('expunged')) r.classes.push('expunged');
+      r.move = 'down';
+    }
+  }
+
+  // no_playoffs: remove playoff colouring for that team on the final table
+  for (const r of rows){
+    const k = canon(r.team);
+    if (teamsNoPlayoffs.has(k)){
+      r.classes = r.classes.filter(c => c !== 'playoff' && c !== 'playoff-semi' && c !== 'playoff-elim');
+      // If they were promoted via play-offs, remove that too
+      r.classes = r.classes.filter(c => c !== 'promoted');
+      if (r.move === 'up') r.move = '';
+    }
+  }
+
+  // If champion was not promoted: keep champion colour but remove up arrow and promoted class
+  if (champNotPromoted && championTeam){
+    const r = rows.find(x => canon(x.team) === championKey);
+    if (r){
+      r.classes = r.classes.filter(c => c !== 'promoted');
+      if (r.move === 'up') r.move = '';
+    }
+  }
+
+  return rows;
+}
+
+function buildDerivedFinalRow(r, idx, seasonKey){
+  // Same label logic as buildRow, but includes movement arrow on final views
+  const rawName = String(r.team || '').trim();
+  const slug = bestEffortSlugFromName(rawName, seasonKey) || '';
+  const label = slug ? displayNameForSeason(slug, seasonKey) : rawName;
+
+  const tr = document.createElement('tr');
+  tr.id = rowIdFor(slug, label);
+  if (slug) tr.setAttribute('data-team-slug', slug);
+
+  (r.classes || []).forEach(c => tr.classList.add(c));
+
+  // Zebra only if not special
+  const hasSpecial =
+    tr.classList.contains('champion') ||
+    tr.classList.contains('promoted') ||
+    tr.classList.contains('playoff') ||
+    tr.classList.contains('relegated') ||
+    tr.classList.contains('folded') ||
+    tr.classList.contains('expunged');
+
+  if (!hasSpecial){
+    tr.classList.add((idx % 2 === 0) ? 'zebra-odd' : 'zebra-even');
+  }
+
+  tr.style.setProperty('--i', idx);
+  tr.classList.add('anim-in');
+
+  const mv = (r.move === 'up' || r.move === 'down') ? r.move : '';
+
+  const cells = [
+    r.pos,
+    { move: mv },
+    label,
+    r.P, r.W, r.D, r.L, r.GF, r.GA,
+    { gd:r.GD },
+    r.Pts
+  ];
+
+  cells.forEach((val, i)=>{
+    const td = document.createElement('td');
+
+    if (i === 1){
+      td.classList.add('move-col');
+      if (val && typeof val === 'object'){
+        if (val.move === 'up'){ setText(td,'↑'); td.classList.add('move-up'); td.title='Promoted'; td.setAttribute('aria-label','Promoted'); }
+        else if (val.move === 'down'){ setText(td,'↓'); td.classList.add('move-down'); td.title='Relegated'; td.setAttribute('aria-label','Relegated'); }
+        else { setText(td,''); td.classList.add('move-none'); }
+      } else { setText(td,''); td.classList.add('move-none'); }
+      tr.appendChild(td);
+      return;
+    }
+
+    if (i === 9){
+      let gd = Number((val && typeof val === 'object') ? val.gd : val);
+      if (!isFinite(gd)) gd = 0;
+      setText(td, gd > 0 ? ('+' + gd) : String(gd));
+      td.classList.add(classForGD(gd));
+      tr.appendChild(td);
+      return;
+    }
+
+    setText(td, (val != null ? val : ''));
+    tr.appendChild(td);
+  });
+
+  return tr;
+}
+
+function renderDerivedFinalTable(seasonKey, divisionName){
+  const seasonObj = state.byKey[seasonKey];
+  const divObj = seasonObj?.divisions?.[divisionName];
+  const matches = Array.isArray(divObj?.matches) ? divObj.matches : [];
+
+  // derived final uses last regular-season league date
+  const lastLeagueDate = state.current.lastLeagueDate;
+  if (!lastLeagueDate){
+    // fallback: just render the league-tables final if we can't find it
+    renderFinalTable(seasonKey, divisionName);
+    return;
+  }
+
+  // Compute as-of last league date (league-only) but include UNDATED notes now
+  let rows = computeStandings(seasonKey, divisionName, lastLeagueDate);
+
+  // Apply dated points deductions up to lastLeagueDate AND undated at derived-final
+  rows = applyPointsAdjustments(seasonKey, divisionName, lastLeagueDate, rows, true);
+
+  // Apply final zones + overrides from notes + arrows
+  rows = applyFinalRulesFromNotes(seasonKey, divisionName, lastLeagueDate, rows);
+
+  els.tbody.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  rows.forEach((r, idx)=> frag.appendChild(buildDerivedFinalRow(r, idx, seasonKey)));
+  els.tbody.appendChild(frag);
+
+  // No dotted cut lines on any final view
+  applyCutLinesToRenderedTable(null);
+
+  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName);
+  rebuildLegend();
+}
+      
 function collectDivisionNotesText(seasonKey, divisionName){
   const raw = state.seasonNotes.get(String(seasonKey))?.get(String(divisionName)) || [];
   return raw.map(x => String(x.note || '')).join(' \n ');
@@ -1260,15 +1639,21 @@ function populateAsOf(seasonKey, divisionName){
     sel.appendChild(createEl('option', { value:'__REGULAR_END__', textContent:'End of regular season' }));
   }
 
-  // Final standings always present
-  sel.appendChild(createEl('option', { value:'__FINAL__', textContent:'Final standings' }));
+  // Finals:
+  // 1) from league-tables.json (interim)
+  sel.appendChild(createEl('option', { value:'__FINAL_TABLES__', textContent:'Final – from league-tables' }));
 
+  // 2) derived from last regular-season date + notes (your long-term direction)
+  if (lastLeagueDate){
+    sel.appendChild(createEl('option', { value:'__FINAL_DERIVED__', textContent:'Final – from last date (derived)' }));
+  }
+  
   // Persist selection if possible; otherwise default to Final
   const allValues = Array.from(sel.options).map(o => o.value);
   const desired = (state.current.asof && allValues.includes(state.current.asof))
     ? state.current.asof
-    : '__FINAL__';
-
+    : '__FINAL_TABLES__';
+  
   sel.value = desired;
   state.current.asof = desired;
 }
@@ -1312,8 +1697,8 @@ function populateAsOf(seasonKey, divisionName){
           const asNum = isoToNum(asOfISO);
 
           // Expunged teams *as of* this date
-          const expSet = expungedTeamsFor(seasonKey, divisionName, asOfISO);
-
+          const expSet = expungedTeamsFor(seasonKey, divisionName, asOfISO, false);
+          
           // Collect all teams mentioned (so expunged teams still appear)
           const allTeams = new Set();
           for (const m of matches){
@@ -1386,7 +1771,37 @@ for (const m of matches){
 
           return rows;
         }
+        function applyPointsAdjustments(seasonKey, divisionName, asOfISO, rows, includeUndated){
+          const notes = activeNotesFor(seasonKey, divisionName, asOfISO, includeUndated)
+            .filter(n => n.type === 'points_deduction' && Number.isFinite(n.pointsValue));
 
+          if (!notes.length) return rows;
+
+          const deltaByTeam = new Map(); // canon(team) -> sum pointsValue
+          for (const n of notes){
+            const k = canon(n.team);
+            deltaByTeam.set(k, (deltaByTeam.get(k) || 0) + Number(n.pointsValue));
+          }
+
+          // apply
+          rows.forEach(r=>{
+            const k = canon(r.team);
+            if (!deltaByTeam.has(k)) return;
+            r.Pts = Number(r.Pts || 0) + deltaByTeam.get(k);
+          });
+
+          // re-sort and re-rank
+          rows.sort((a,b)=>{
+            if (b.Pts !== a.Pts) return b.Pts - a.Pts;
+            if (b.GD !== a.GD) return b.GD - a.GD;
+            if (b.GF !== a.GF) return b.GF - a.GF;
+            return String(a.team).localeCompare(String(b.team));
+          });
+          rows.forEach((r,i)=> r.pos = i + 1);
+
+          return rows;
+        }
+      
         // =========================
         // Render
         // =========================
@@ -1497,7 +1912,7 @@ function rebuildLegend(){
     if (has.clinchedChampion) parts.push(['gold','Champions']);
     if (has.clinchedPoSemi) parts.push(['blue','Qualified for Play-off Semi-finals']);
     if (has.clinchedPoElim) parts.push(['blue','Qualified for Play-off Eliminators']);
-    if (has.clinchedRelegated) parts.push(['pink','Relegated']);
+    if (has.clinchedRelegated) parts.push(['pink','Relegation zone']);
   }
 
   if (has.folded) parts.push(['black','Folded']);
@@ -1555,12 +1970,18 @@ state.current.asof = effectiveAsOf;
 
 const leagueTitle = leagueTitleFromFinalTables(seasonKey, chosenDiv);
 
-if (effectiveAsOf === '__FINAL__'){
-  // Final standings: use league-tables.json, no dotted lines, no clinch logic
+if (effectiveAsOf === '__FINAL_TABLES__'){
+  // Final – from league-tables.json (interim)
   setText(els.caption, leagueTitle);
   renderFinalTable(seasonKey, chosenDiv);
 
+} else if (effectiveAsOf === '__FINAL_DERIVED__'){
+  // Final – derived from last regular-season date + notes
+  setText(els.caption, leagueTitle + ' (derived)');
+  renderDerivedFinalTable(seasonKey, chosenDiv);
+
 } else {
+  
   // Date-specific (and regular-end) standings: computed from results.json
   let asOfISO = effectiveAsOf;
 
@@ -1579,6 +2000,9 @@ if (effectiveAsOf === '__FINAL__'){
   const matches = Array.isArray(divObj?.matches) ? divObj.matches : [];
 
   let rows = computeStandings(seasonKey, chosenDiv, asOfISO);
+
+  // Apply points deductions that are active as-of this date (undated notes do NOT apply mid-season)
+  rows = applyPointsAdjustments(seasonKey, chosenDiv, asOfISO, rows, false);
 
   // Apply clinched statuses ONLY (nothing is shown until mathematically secured)
   rows = applyClinchedEmphasis(seasonKey, chosenDiv, asOfISO, rows, matches);
@@ -1693,8 +2117,8 @@ buildFinalIndex(finalItems);
             state.current.season = initialSeason;
             state.current.division = initialDiv;
 
-state.current.asof = '__FINAL__';
-renderTable(initialSeason, initialDiv, '__FINAL__');
+state.current.asof = '__FINAL_TABLES__';
+renderTable(initialSeason, initialDiv, '__FINAL_TABLES__');
             
 els.seasonSel.addEventListener('change', ()=>{
   const s = els.seasonSel.value;
@@ -1710,10 +2134,10 @@ els.seasonSel.addEventListener('change', ()=>{
 
   state.current.division = d;
 
-  // IMPORTANT: default to Final standings on season change
-  state.current.asof = '__FINAL__';
+  // IMPORTANT: default to Final – from league-tables on season change
+  state.current.asof = '__FINAL_TABLES__';
 
-  renderTable(s, d, '__FINAL__');
+  renderTable(s, d, '__FINAL_TABLES__');
 });
 els.asofSel.addEventListener('change', ()=>{
   const v = els.asofSel.value;
