@@ -5,7 +5,7 @@
       "division": "National",
       "team": "Altrincham",
       "entity": "Altrincham",
-      "type": "general",
+      "type": "not_promoted",
       "note": "Applied for election to the Football League as Champions, but failed to secure enough votes (Darlington 49, Crewe Alexandra 48, Hereford United 48, Rochdale 26, Altrincham 25)."
     },
     {
@@ -13,7 +13,7 @@
       "division": "National",
       "team": "Altrincham",
       "entity": "Altrincham",
-      "type": "general",
+      "type": "not_promoted",
       "note": "Applied for election to the Football League as Champions, but failed to secure enough votes (Tranmere Rovers 48, Hereford United 46, York City 46, Halifax Town 41, Altrincham 15)."
     },
     {
@@ -21,7 +21,7 @@
       "division": "National",
       "team": "Telford United",
       "entity": "Telford United",
-      "type": "general",
+      "type": "not_promoted",
       "note": "Applied for election to the Football League as third-place finishers, but failed to secure enough votes (Northamppton Town 53, Crewe Alexandra 50, Rochdale 48, Scunthorpe United 48, Telford United 13)."
     },
     {
@@ -29,7 +29,7 @@
       "division": "National",
       "team": "Maidstone United",
       "entity": "Maidstone United (original)",
-      "type": "general",
+      "type": "not_promoted",
       "note": "Applied for election to the Football League as runners-up, but failed to secure enough votes (Blackpool 52, Crewe Alexandra 49, Hereford United 49, Hartlepool United 36, Maidstone United 26)."
     },
     {
@@ -37,7 +37,7 @@
       "division": "National",
       "team": "Maidstone United",
       "entity": "Maidstone United (original)",
-      "type": "general",
+      "type": "not_promoted",
       "note": "Applied for election to the Football League as Champions, but failed to secure enough votes (Chester City 52, Halifax Town 52, Rochdale 50, Hartlepool United 32, Maidstone United 22)."
     },
     {
@@ -45,7 +45,7 @@
       "division": "National",
       "team": "Bath City",
       "entity": "Bath City",
-      "type": "general",
+      "type": "not_promoted",
       "note": "Applied for election to the Football League as fourth-placed, but failed to secure enough votes (Northampton Town 52, Stockport County 50, Torquay United 50, Halifax Town 48, Bath City 8)."
     },
     {
@@ -62,7 +62,7 @@
       "division": "National",
       "team": "Enfield",
       "entity": "Enfield",
-      "type": "general",
+      "type": "not_promoted",
       "note": "Applied for election to the Football League as Champions, but failed to secure enough votes (Exeter City 64, Preston North End 62.5, Cambridge United 61, Torquay United 61, Enfield 7.5."
     },
     {
