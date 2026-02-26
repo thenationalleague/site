@@ -107,26 +107,20 @@
     colgroup{ display:none !important; }
     table{ table-layout:auto; }
     .tiny .badge{ display:inline-grid !important; }
-/* v2.7.12: narrow-only equal widths for Home & Away */
-@media (max-width: 820px){
-  /* keep League/Result hidden and colgroup off (you already have this) */
-  /* ...your existing rules... */
 
-  /* column widths when compact (cols present: 1=Date, 3=Home, 4=Score, 5=Away) */
-  thead th:nth-child(1),
-  tbody td:nth-child(1){ width:16%; }   /* Date */
+    /* narrow-only equal widths (cols present: 1=Date, 3=Home, 4=Score, 5=Away) */
+    thead th:nth-child(1),
+    tbody td:nth-child(1){ width:16%; }   /* Date */
 
-  thead th:nth-child(4),
-  tbody td:nth-child(4){ width:10%; }   /* Score (room for tiny badge/extras) */
+    thead th:nth-child(4),
+    tbody td:nth-child(4){ width:10%; }   /* Score */
 
-  thead th:nth-child(3),
-  tbody td:nth-child(3),
-  thead th:nth-child(5),
-  tbody td:nth-child(5){ width:37%; }   /* Home & Away — equal */
-}
-
+    thead th:nth-child(3),
+    tbody td:nth-child(3),
+    thead th:nth-child(5),
+    tbody td:nth-child(5){ width:37%; }   /* Home & Away */
   }
-
+  
   thead th{ background:var(--head); color:#fff; text-transform:uppercase; font-size:.76rem; letter-spacing:.3px; padding:7px 9px; text-align:left; white-space:nowrap; }
   tbody td{ padding:6px 8px; vertical-align:middle; font-size:.88em; line-height:1.24; word-break:break-word; }
   tbody tr:nth-child(odd){ background:var(--z2); } tbody tr:nth-child(even){ background:var(--z1); }
@@ -180,6 +174,10 @@
 }
 .score-extras .ex-badge{ grid-area:badge; display:flex; align-items:center; }
 
+  @media (max-width: 420px){
+  .score-extras .ex-line{ white-space:normal; }
+}
+  
 /* Flip: when selected club is the HOME side for this match */
 .score-extras.home-side{
   grid-template-columns: auto 1fr;        /* badge | lines */
