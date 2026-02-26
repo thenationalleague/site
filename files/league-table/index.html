@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.8)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.9)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -1150,8 +1150,12 @@ function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows){
   const poFmt = getPlayoffFormatForSeason(seasonKey, divisionName);
   const playoffFieldEnd = poFmt ? poFmt.fieldEnd : null;
 
-  const playoffWinner = findPlayoffWinnerFromResults(seasonKey, divisionName);
+  // Only treat a season as having play-offs if we can identify a play-off format
+  const hasPlayoffs = !!playoffFieldEnd;
 
+  // Only look for a play-off winner when play-offs exist
+  const playoffWinner = hasPlayoffs ? findPlayoffWinnerFromResults(seasonKey, divisionName) : '';
+  
   // Global toggles from notes (no_relegation affects entire division)
   const hasNoRelegation = notes.some(n => n.type === 'no_relegation');
 
@@ -1205,17 +1209,20 @@ function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows){
   const champNotes = notesByTeam.get(championKey) || [];
   const champNotPromoted = champNotes.some(n => n.type === 'not_promoted');
 
+  // IMPORTANT:
+  // Champions should stay GOLD (champion class) and only get an ↑ arrow.
+  // Do NOT add the 'promoted' class here (that styling is reserved for the play-off winner = silver).
   if (championTeam && !champNotPromoted){
     const r = rows.find(x => canon(x.team) === championKey);
     if (r){
-      if (!r.classes.includes('promoted')) r.classes.push('promoted');
       r.move = 'up';
     }
   }
-
+  
   // Play-off winner promoted (unless no_playoffs or missing)
+  // Only applicable when play-offs exist.
   const poWinnerKey = canon(playoffWinner);
-  if (playoffWinner){
+  if (hasPlayoffs && playoffWinner){
     const r = rows.find(x => canon(x.team) === poWinnerKey);
     if (r){
       if (!teamsNoPlayoffs.has(poWinnerKey)){
@@ -1224,7 +1231,7 @@ function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows){
       }
     }
   }
-
+  
   // Demotion (note) forces relegated+down
   for (const r of rows){
     const k = canon(r.team);
