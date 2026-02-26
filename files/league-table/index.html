@@ -268,7 +268,12 @@
         const startYear = s => { const m=/^(\d{4})/.exec(String(s)||''); return m?+m[1]:0; };
         const classForGD = gd => gd>0?'gd-pos': gd<0?'gd-neg':'gd-zero';
         const toISO = s => String(s||'').slice(0,10); // "YYYY-MM-DD"
-
+        const isoToNum = s => {
+          const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s||''));
+          if (!m) return 0;
+          return Number(m[1]) * 10000 + Number(m[2]) * 100 + Number(m[3]);
+        };
+      
         function formatISODateShort(iso){
           // iso: YYYY-MM-DD -> "Sat 18 Aug 1984"
           const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));
