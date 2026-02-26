@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en" data-h2h-version="v2.7.9">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Head to Head</title>
+
+<style>
+/*! H2H v2.7.8 — Stack multi-club toggles vertically in both bars (keeps 2.7.7 fixes) */
+  #h2h{ --ff: inherit; --fvs: normal; }
+  #h2h, #h2h *{ font-family: var(--ff) !important; font-variation-settings: var(--fvs, normal); }
+  #h2h select, #h2h button, #h2h input{ font: inherit; line-height: inherit; }
+
+  :root{
+    --ring:#d0d7de; --head:#000; --fg:#111;
+    --z1:#fff; --z2:#f7f7f7; --ok:#128a3a; --warn:#f1b300; --bad:#cc1e1e;
+    --blue-verylight:#eef6ff; --blue-verylight-strong:#e4f0ff; --blue-ring:#cfe1ff; --blue-ring-strong:#a9c6ff;
+    --active:#9e0000; --bar1:#9e0000; --bar2:#223b7c;
+
+    --red-verylight:#ffeff0;
+    --purple-verylight:#f2e9fb;
+  }
+  @supports (color: color-mix(in srgb, red, blue)) {
+    :root{ --purple-verylight: color-mix(in srgb, #ffeff0 50%, #eef6ff 50%); }
+  }
+
+  body{ color:var(--fg); background:#fff; }
+  .wrap{ max-width:1100px; margin:0 auto; padding:12px 10px; }
+
+  .controls{ display:flex; flex-wrap:wrap; gap:.75rem 1rem; align-items:flex-end; margin:.25rem 0 .6rem; }
+  .fld{ display:flex; flex-direction:column; gap:6px; }
+  .lbl{ font-weight:700; font-size:.9rem; }
+  select{ min-width:260px; padding:9px 12px; border:1px solid var(--ring); border-radius:10px; background:#fff; font-weight:700; }
+  .swap{ display:none; align-self:flex-end; padding:8px 12px; border:1px solid var(--ring); border-radius:10px; background:#fff; cursor:pointer; font-weight:800; }
+  .swap:hover{ border-color:#999; }
+
+  .clubbars{ margin:4px 0 10px; border-radius:10px; overflow:hidden; box-shadow: 0 1px 0 rgba(0,0,0,.06); }
+  .clubbar{ position:relative; padding:8px 12px; color:#fff; letter-spacing:.25px; display:flex; align-items:center; justify-content:center; }
+  .clubbar.primary{ background:var(--bar1); font-weight:900; font-size: clamp(1rem, 2.6vw, 1.32rem); }
+  .clubbar.opponent{ background:var(--bar2); font-weight:400; font-size: clamp(.95rem, 2.2vw, 1.18rem); }
+  #bar1text{ text-transform:uppercase; }
+
+  .baractions{ position:absolute; right:8px; top:0; bottom:0; display:flex; align-items:center; gap:10px; padding-right:2px; color:#fff; font-weight:700; font-size:.8rem; }
+  .baraction{ display:flex; align-items:center; gap:8px; white-space:nowrap; }
+  .switch{ --h:18px; --w:34px; --pad:2px; position:relative; display:inline-block; width:var(--w); height:var(--h); }
+  .switch input{ position:absolute; opacity:0; width:0; height:0; }
+  .slider{ position:absolute; inset:0; background:rgba(255,255,255,.35); border-radius:999px; transition:background .16s ease; }
+  .slider::before{ content:""; position:absolute; height:calc(var(--h) - var(--pad)*2); width:calc(var(--h) - var(--pad)*2); left:var(--pad); top:var(--pad); background:#fff; border-radius:50%; transition:transform .16s ease; box-shadow:0 1px 2px rgba(0,0,0,.25); }
+  .switch input:checked + .slider{ background:rgba(255,255,255,.6); }
+  .switch input:checked + .slider::before{ transform:translateX(calc(var(--w) - var(--h))); }
+
+  @media (max-width: 920px){
+    .clubbar{ padding-bottom: 6px; flex-direction:column; align-items:center; }
+    .baractions{ position: static; width:100%; margin:3px 0 2px; display:flex; justify-content:flex-end; gap:8px; font-size:.72rem; font-weight:600; color:#fff; }
+    .baractions .switch{ --h:16px; --w:30px; }
+  }
+
+  .legendbar{ display:flex; align-items:center; justify-content:space-between; gap:.75rem; flex-wrap:wrap; margin:.3rem 0 .6rem; }
+  .legend{ color:#666; font-size:.9rem; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .pill{ display:inline-grid; place-items:center; width:22px; height:22px; border-radius:999px; font-size:.72rem; font-weight:800; }
+  .w{ background:var(--ok); color:#fff; } .d{ background:var(--warn); color:#000; } .l{ background:var(--bad); color:#fff; }
+
+  .venue{ display:none; }
+/* Venue segmented control — compact (match other page sizing) */
+#h2h #venue .seg{
+  --seg-font: .90rem;      /* text size (≈ label size) */
+  --seg-pad-y: 5px;        /* reduce height */
+  --seg-pad-x: 12px;       /* comfy horizontal padding */
+  display:inline-flex;
+  overflow:hidden;
+  border:2px solid var(--ring);
+  border-radius:9999px;
+  background:#fff;
+}
+#h2h #venue .seg button{
+  padding: var(--seg-pad-y) var(--seg-pad-x);
+  font-weight:800;
+  font-size: var(--seg-font);
+  line-height:1.1;
+  background:#fff;
+  border:0;
+  cursor:pointer;
+}
+#h2h #venue .seg button + button{
+  border-left:2px solid var(--ring); /* divider between segments */
+}
+#h2h #venue .seg button[aria-pressed="true"]{
+  background: var(--active);
+  color:#fff;
+  border-left-color: var(--active);  /* keep divider tint when active */
+}
+
+  .err{ display:none; background:#ffe9ec; color:#b00020; border:1px solid #f0a9b2; border-radius:10px; padding:8px 10px; font-weight:700; white-space:pre-wrap; margin:.5rem 0; }
+
+  .tblwrap{ overflow-x:auto; border-radius:12px; box-shadow:0 1px 0 rgba(0,0,0,.06); border:1px solid var(--ring); }
+  table{ width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; table-layout: fixed; }
+
+  col.cg-date   { width: 14ch; }
+  col.cg-league { width: 24ch; }
+  col.cg-home   { width: 30%; }
+  col.cg-score  { width: 8ch; }
+  col.cg-away   { width: 30%; }
+  col.cg-result { width: 7ch; }
+
+  @media (max-width: 820px){
+    .col-league,.col-result{ display:none; }
+    colgroup{ display:none !important; }
+    table{ table-layout:auto; }
+    .tiny .badge{ display:inline-grid !important; }
+/* v2.7.12: narrow-only equal widths for Home & Away */
+@media (max-width: 820px){
+  /* keep League/Result hidden and colgroup off (you already have this) */
+  /* ...your existing rules... */
+
+  /* column widths when compact (cols present: 1=Date, 3=Home, 4=Score, 5=Away) */
+  thead th:nth-child(1),
+  tbody td:nth-child(1){ width:16%; }   /* Date */
+
+  thead th:nth-child(4),
+  tbody td:nth-child(4){ width:10%; }   /* Score (room for tiny badge/extras) */
+
+  thead th:nth-child(3),
+  tbody td:nth-child(3),
+  thead th:nth-child(5),
+  tbody td:nth-child(5){ width:37%; }   /* Home & Away — equal */
+}
+
+  }
+
+  thead th{ background:var(--head); color:#fff; text-transform:uppercase; font-size:.76rem; letter-spacing:.3px; padding:7px 9px; text-align:left; white-space:nowrap; }
+  tbody td{ padding:6px 8px; vertical-align:middle; font-size:.88em; line-height:1.24; word-break:break-word; }
+  tbody tr:nth-child(odd){ background:var(--z2); } tbody tr:nth-child(even){ background:var(--z1); }
+
+  td.home .cell, td.away .cell{ display:flex; align-items:center; height:100%; min-height:1.2em; }
+  td.home .cell{ justify-content:flex-end; text-align:right; }
+  td.away .cell{ justify-content:flex-start; text-align:left; }
+
+  td.score{ text-align:center; font-weight:900; }
+  td.result{ text-align:center; padding-left:6px; padding-right:6px; }
+
+  .tiny{ font-size:10px; color:#666; line-height:1.1; }
+  .tiny .badge{ display:none; }
+  .badge{ display:inline-grid; place-items:center; width:18px; height:18px; border-radius:999px; font-size:.78rem; font-weight:900; }
+  .badge.w{ background:var(--ok); color:#fff; } .badge.d{ background:var(--warn); color:#000; } .badge.l{ background:var(--bad); color:#fff; }
+
+  tr.reladd-club, tr.reladd-club td{ background:var(--red-verylight) !important; }
+  tr.reladd-opp,  tr.reladd-opp  td{ background:var(--blue-verylight) !important; }
+  tr.reladd-both, tr.reladd-both td{ background:var(--purple-verylight) !important; }
+
+  .date-full,.date-short,.date-slim{ white-space:nowrap; }
+  .date-short,.date-slim{ display:none; }
+  @media (max-width:760px){ .date-full{ display:none; } .date-short{ display:inline; } }
+  @media (max-width:500px){ .date-short{ display:none; } .date-slim{ display:inline; } }
+
+  .team-clip{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  @media (max-width:560px){ .team-clip{ -webkit-line-clamp:3; } }
+
+  @keyframes rowFadeIn{ from{opacity:0;} to{opacity:1;} }
+  @keyframes rowFadeOut{ from{opacity:1;} to{opacity:0;} }
+  tbody tr.anim-in{ opacity:0; animation:rowFadeIn 220ms ease-out forwards; animation-delay:calc(var(--i,0) * 24ms); }
+  tbody tr.anim-out{ animation:rowFadeOut 180ms ease-in forwards; }
+  @media (prefers-reduced-motion:reduce){ tbody tr.anim-in,tbody tr.anim-out{ animation:none; opacity:1; } }
+/* Score extras (AET / AGG / PENS) — smaller + flippable left/right */
+.score-extras{
+  display:grid;
+  grid-template-columns: 1fr auto;        /* lines | badge (default: badge on right) */
+  grid-template-areas: "lines badge";
+  align-items:center;
+  gap:1px 6px;
+  margin-top:2px;
+  font-weight:400;
+}
+.score-extras .ex-lines{ grid-area:lines; display:flex; flex-direction:column; gap:1px; }
+.score-extras .ex-line{
+  font-size:.70em;
+  color:#666;
+  line-height:1.05;
+  font-weight:400;
+  white-space:nowrap;
+}
+.score-extras .ex-badge{ grid-area:badge; display:flex; align-items:center; }
+
+/* Flip: when selected club is the HOME side for this match */
+.score-extras.home-side{
+  grid-template-columns: auto 1fr;        /* badge | lines */
+  grid-template-areas: "badge lines";
+}
+
+/* Tiny W/D/L */
+.badge.xs{
+  width:14px; height:14px;
+  font-size:.62rem;
+  line-height:14px;
+  border-radius:999px;
+}
+
+/* v2.7.8 — stack multi "Include …" toggles in the bar actions */
+.baractions.stacked{
+  /* desktop: absolute container already right-aligned, so stack + center vertically */
+  display:flex;                 /* (base already flex; repeat to be explicit) */
+  flex-direction:column;
+  justify-content:center;       /* vertical center of the stack */
+  align-items:flex-end;         /* right align each toggle */
+  gap:6px;
+}
+
+@media (max-width: 920px){
+  /* mobile: bar actions become static; keep a right-aligned vertical stack */
+  .baractions.stacked{
+    position:static;
+    width:100%;
+    margin:3px 0 2px;           /* match existing mobile spacing */
+    flex-direction:column;
+    justify-content:flex-end;
+    align-items:flex-end;
+    gap:6px;
+  }
+}
+
+
+</style>
+</head>
+<body>
+<div id="h2h" class="wrap">
+
+  <div class="controls">
+    <div class="fld">
+      <label class="lbl" for="club">Club</label>
+      <select id="club">
+        <option disabled selected>Loading…</option>
+      </select>
+    </div>
+    <div class="fld">
+      <label class="lbl" for="opponent">Opponent</label>
+      <select id="opponent" disabled>
+        <option disabled selected>Select a club first…</option>
+      </select>
+    </div>
+    <button id="swap" class="swap" type="button" title="Swap clubs" aria-label="Swap clubs">⇄</button>
+  </div>
+
+  <div class="clubbars" aria-live="polite">
+    <div id="bar1" class="clubbar primary">
+      <span id="bar1text">HEAD TO HEAD</span>
+      <span id="bar1actions" class="baractions"></span>
+    </div>
+    <div id="bar2" class="clubbar opponent">
+      <span id="bar2text">Select two clubs</span>
+      <span id="bar2actions" class="baractions"></span>
+    </div>
+  </div>
+
+  <div id="error" class="err"></div>
+
+  <div class="legendbar">
+    <div class="legend">
+      <span><span class="pill w">W</span> Win</span>
+      <span><span class="pill d">D</span> Draw</span>
+      <span><span class="pill l">L</span> Loss</span>
+    </div>
+
+    <div class="legend-right">
+      <div id="venue" class="venue">
+        <div class="seg" role="group" aria-label="Venue">
+          <button type="button" data-val="all"  aria-pressed="true">All</button>
+          <button type="button" data-val="home" aria-pressed="false">Home</button>
+          <button type="button" data-val="away" aria-pressed="false">Away</button>
+          <button type="button" data-val="neutral" aria-pressed="false">Neutral</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tblwrap">
+    <table>
+      <colgroup>
+        <col class="cg-date">
+        <col class="cg-league">
+        <col class="cg-home">
+        <col class="cg-score">
+        <col class="cg-away">
+        <col class="cg-result">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th class="col-league">League</th>
+          <th style="text-align:right">Home</th>
+          <th class="col-score" style="text-align:center">Score</th>
+          <th>Away</th>
+          <th class="col-result" style="text-align:center">Result</th>
+        </tr>
+      </thead>
+      <tbody id="rows">
+        <tr><td colspan="6" style="color:#666; font-size:.92rem;">Pick an Opponent.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+/*! H2H v2.7.7 — Fix opponent-change handler (remove CLUb typo), keep 12s timeout + UX from 2.7.6 */
+(function(){
+  var JSON_SRC = window.H2H_JSON_URL || "https://raw.githubusercontent.com/rckd-nl/website/main/results.json";
+  function dirOf(u){ try{ var url=new URL(u,location.href); url.pathname=url.pathname.replace(/[^/]+$/,''); return url.toString(); }catch(_){ var i=String(u).lastIndexOf('/'); return i>-1 ? u.slice(0,i+1) : ''; } }
+  var META_SRC = window.H2H_CLUBS_META_URL || (dirOf(JSON_SRC) + "clubs-meta.json");
+
+  /* Typography */
+  function applySiteTypography(){
+    var root = document.getElementById('h2h');
+    if(!root) return;
+    var cs = getComputedStyle(document.body || document.documentElement);
+    root.style.setProperty('--ff', cs.fontFamily || 'inherit');
+    root.style.setProperty('--fvs', cs.fontVariationSettings || 'normal');
+  }
+  if (document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', applySiteTypography, { once:true }); } else { applySiteTypography(); }
+  if (document.fonts && document.fonts.ready){ document.fonts.ready.then(applySiteTypography).catch(function(){}); }
+
+  /* DOM */
+  function $(s){ return document.querySelector(s); }
+  var CLUB=$('#club'), OPP=$('#opponent'), TB=$('#rows'), ERR=$('#error'), VENUEBOX=$('#venue');
+  var BAR1TEXT=$('#bar1text'), BAR2TEXT=$('#bar2text'), BAR1A=$('#bar1actions'), BAR2A=$('#bar2actions');
+  var SWAP=$('#swap');
+
+  /* State */
+  var allMatches=[]; var allEntities=[]; var entityLabel={}; var relatedOffers={};
+  var venueFilter='all'; var includedRelatedClub=new Set(); var includedRelatedOpp=new Set();
+  var currentRowKeys=new Set(); var hasRendered=false;
+
+  /* Utils */
+  function showErr(m,d){ ERR.style.display='block'; ERR.textContent=d?(m+"\n\n"+d):m; }
+  function clearErr(){ ERR.style.display='none'; ERR.textContent=''; }
+
+  function dateKey(m){ return m.date ? Date.parse(m.date+"T00:00:00Z") : null; }
+  function startYear(s){ var m=/^(\d{4})/.exec(String(s)||''); return m?+m[1]:0; }
+  function seasonKey(m){ return startYear(m.season||0); }
+  function fmtDateFull(d){ if(!d) return '—'; var dt=new Date(d+"T12:00:00Z"); return dt.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric', timeZone:'Europe/London'}); }
+  function fmtDateShort(d){ if(!d) return '—'; var dt=new Date(d+"T12:00:00Z"); var dd=String(dt.getUTCDate()).padStart(2,'0'), mm=String(dt.getUTCMonth()+1).toString().padStart(2,'0'), yy=String(dt.getUTCFullYear()).slice(-2); return dd+'/'+mm+'/'+yy; }
+  function fmtDateSlim(d){ if(!d) return '—'; var dt=new Date(d+"T12:00:00Z"); var d1=dt.getUTCDate(), m1=dt.getUTCMonth()+1, yy=String(dt.getUTCFullYear()).slice(-2); return d1+'/'+m1+'/'+yy; }
+  function isNeutral(m){ return !!m.neutral || (m.venue && String(m.venue).toLowerCase()==='neutral'); }
+  function stripSeasonFromTitle(t){ return String(t||'').replace(/\s+\d{4}[\u2013-]\d{2}.*$/,''); }
+  function esc(s){ var map={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}; return String(s==null?'':s).replace(/[&<>"']/g,c=>map[c]||c); }
+  function escAttr(s){ var map={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}; return String(s==null?'':s).replace(/[&<>"]/g,c=>map[c]||c); }
+  function normEntity(s){ return String(s||'').replace(/[\u200B-\u200D\uFEFF]/g,'').replace(/[﹙（]/g,'(').replace(/[﹚）]/g,')').replace(/[\u2018\u2019]/g,"'").trim().replace(/\s+/g,' '); }
+  function labelFor(k){ return entityLabel[k] || k; }
+  function keyFor(m){ return [(m.date||m.season),m.home,m.away,m.home_goals,m.away_goals,(m.score||''),(m.home_entity_norm||''),(m.away_entity_norm||''),(m.playoffs?'P':''),(m.playoff_round||''),(m.neutral?'N':''),(m.cross_division?'X':''),(m.result||'')].join('|'); }
+  function updateSwapVisibility(){ SWAP.style.display=(CLUB.value && OPP.value)?'inline-block':'none'; }
+
+  function setVenue(val){
+    venueFilter=val;
+    var btns=VENUEBOX.querySelectorAll('button[data-val]');
+    for(var i=0;i<btns.length;i++){
+      var b=btns[i],on=b.getAttribute('data-val')===val;
+      b.setAttribute('aria-pressed',on?'true':'false');
+      if(on){ b.style.background='var(--active)'; b.style.borderColor='var(--active)'; b.style.color='#fff'; }
+      else { b.style.background='#fff'; b.style.borderColor='var(--ring)'; b.style.color='#111'; }
+    }
+  }
+  VENUEBOX.addEventListener('click',function(e){
+    var btn=e.target && e.target.closest && e.target.closest('button[data-val]'); if(!btn) return;
+    setVenue(btn.getAttribute('data-val')); render();
+  });
+
+  function validOpponentsForEntity(entityKey){
+    var opps=new Set();
+    for(var i=0;i<allMatches.length;i++){
+      var m=allMatches[i];
+      if(m.home_entity_norm===entityKey) opps.add(m.away_entity_norm);
+      if(m.away_entity_norm===entityKey) opps.add(m.home_entity_norm);
+    }
+    return Array.from(opps).sort(function(a,b){ return labelFor(a).localeCompare(labelFor(b),'en'); });
+  }
+
+  function buildRelatedOffersMap(meta){
+    var offers={};
+    function addOffer(fromRaw,toRaw){
+      var from=normEntity(fromRaw), to=normEntity(toRaw);
+      if(!from||!to||from===to) return;
+      (offers[from]=offers[from]||[]);
+      if(offers[from].indexOf(to)===-1) offers[from].push(to);
+      if(!entityLabel[from]&&fromRaw) entityLabel[from]=fromRaw;
+      if(!entityLabel[to]&&toRaw) entityLabel[to]=toRaw;
+    }
+    var phoenix=((meta&&meta.relationships&&meta.relationships.phoenix)||[]);
+    phoenix.forEach(function(p){ addOffer(p.new,p.old); addOffer(p.old,p.new); });
+    var mergers=((meta&&meta.relationships&&meta.relationships.merger)||[]);
+    mergers.forEach(function(mg){ var n=mg.new, parents=(mg.parents||[]); parents.forEach(function(p){ addOffer(n,p); addOffer(p,n); }); });
+    Object.keys(offers).forEach(function(k){ offers[k]=offers[k].slice().sort(function(a,b){ return labelFor(a).localeCompare(labelFor(b),'en'); }); });
+    return offers;
+  }
+
+  function relatedWouldAddMatches(relKey,opponentKey){
+    for(var i=0;i<allMatches.length;i++){
+      var m=allMatches[i];
+      if((m.home_entity_norm===relKey && m.away_entity_norm===opponentKey) || (m.away_entity_norm===relKey && m.home_entity_norm===opponentKey)) return true;
+    }
+    return false;
+  }
+  function relatedCrossWouldAdd(relKey,oppRelatedList){
+    if(!relKey||!Array.isArray(oppRelatedList)||!oppRelatedList.length) return false;
+    var oppSet=new Set(oppRelatedList);
+    for(var i=0;i<allMatches.length;i++){
+      var m=allMatches[i];
+      if((m.home_entity_norm===relKey && oppSet.has(m.away_entity_norm)) || (m.away_entity_norm===relKey && oppSet.has(m.home_entity_norm))) return true;
+    }
+    return false;
+  }
+
+  function buildHeaderToggles(side,primaryKey,otherKey,otherRelatedCandidates){
+    var container=(side==='club'?BAR1A:BAR2A);
+    var includeSet=(side==='club'?includedRelatedClub:includedRelatedOpp);
+    includeSet.clear(); container.innerHTML='';
+    var base=(relatedOffers[primaryKey]||[]);
+    var candidates=base.filter(function(rel){ return relatedWouldAddMatches(rel,otherKey) || relatedCrossWouldAdd(rel,(otherRelatedCandidates||[])); });
+    if(!candidates.length){ container.classList.remove('stacked'); return; } // v2.7.8
+    var html=candidates.map(function(rel){
+      var id='sw-'+side+'-'+Math.random().toString(36).slice(2,8);
+      return '<label class="baraction" for="'+escAttr(id)+'"><span>Include '+esc(labelFor(rel))+'</span><span class="switch"><input id="'+escAttr(id)+'" type="checkbox" data-rel="'+escAttr(rel)+'"><span class="slider"></span></span></label>';
+    }).join('');
+    container.innerHTML=html;
+    container.classList.toggle('stacked', candidates.length > 1); // v2.7.8
+    container.addEventListener('change',function(e){
+      var t=e.target; if(!t||t.type!=='checkbox'||!t.hasAttribute('data-rel')) return;
+      var key=t.getAttribute('data-rel'); if(t.checked) includeSet.add(key); else includeSet.delete(key);
+      updateVenueButtons(CLUB.value,OPP.value); render();
+    });
+  }
+
+  function updateVenueButtons(primaryKey,opponentKey){
+    var clubSet=new Set([primaryKey].concat(Array.from(includedRelatedClub)));
+    var oppSet =new Set([opponentKey].concat(Array.from(includedRelatedOpp)));
+    var subset=allMatches.filter(function(m){
+      return (clubSet.has(m.home_entity_norm)&&oppSet.has(m.away_entity_norm)) || (clubSet.has(m.away_entity_norm)&&oppSet.has(m.home_entity_norm));
+    });
+    var hasN=subset.some(function(m){ return isNeutral(m); });
+    var hasH=subset.some(function(m){ return !isNeutral(m)&&clubSet.has(m.home_entity_norm); });
+    var hasA=subset.some(function(m){ return !isNeutral(m)&&clubSet.has(m.away_entity_norm); });
+    var btnH=VENUEBOX.querySelector('button[data-val="home"]');
+    var btnA=VENUEBOX.querySelector('button[data-val="away"]');
+    var btnN=VENUEBOX.querySelector('button[data-val="neutral"]');
+    btnH.style.display=hasH?'inline-block':'none';
+    btnA.style.display=hasA?'inline-block':'none';
+    btnN.style.display=hasN?'inline-block':'none';
+    if((venueFilter==='home'&&!hasH)||(venueFilter==='away'&&!hasA)||(venueFilter==='neutral'&&!hasN)) setVenue('all');
+  }
+
+  function normResultVal(val){ if(!val) return ''; var v=String(val).trim().toUpperCase(); if(v==='HOME') v='H'; if(v==='AWAY') v='A'; if(v==='DRAW') v='D'; if(v==='WIN'||v==='LOSS'||v==='W'||v==='L') return v; if(v==='H'||v==='A'||v==='D') return v; return ''; }
+  function resultFromJSON(m,clubSet){
+    var r=normResultVal(m.result);
+    if(r==='W'||r==='L'||r==='D') return r;
+    if(r==='D') return 'D';
+    if(r==='H') return clubSet.has(m.home_entity_norm)?'W':'L';
+    if(r==='A') return clubSet.has(m.away_entity_norm)?'W':'L';
+    if(m.home_goals===m.away_goals) return 'D';
+    var homeWin=m.home_goals>m.away_goals, isHome=clubSet.has(m.home_entity_norm);
+    return (homeWin&&isHome)||(!homeWin&&!isHome)?'W':'L';
+  }
+
+  function onClubChange(){
+    try{
+      includedRelatedClub.clear(); includedRelatedOpp.clear();
+      var entKey=CLUB.value; BAR1TEXT.textContent=entKey?labelFor(entKey):'HEAD TO HEAD';
+      var previousOpp=OPP.value||''; var opps=validOpponentsForEntity(entKey);
+      OPP.disabled=opps.length===0;
+      var html='<option value="" '+(previousOpp&&opps.indexOf(previousOpp)>-1?'':'selected')+' disabled>'+(opps.length?'Select opponent…':'No opponents found')+'</option>';
+      for(var i=0;i<opps.length;i++){ var oKey=opps[i]; html+='<option value="'+escAttr(oKey)+'" '+(oKey===previousOpp?'selected':'')+'>'+esc(labelFor(oKey))+'</option>'; }
+      OPP.innerHTML=html;
+
+      if(previousOpp && opps.indexOf(previousOpp)>-1){
+        BAR2TEXT.textContent='vs '+labelFor(previousOpp);
+        BAR1A.innerHTML=''; BAR2A.innerHTML='';
+        var clubRelatedPool=(relatedOffers[entKey]||[]);
+        var oppRelatedPool=(relatedOffers[previousOpp]||[]);
+        buildHeaderToggles('club',entKey,previousOpp,oppRelatedPool);
+        buildHeaderToggles('opp',previousOpp,entKey,clubRelatedPool);
+        updateVenueButtons(entKey,previousOpp);
+        VENUEBOX.style.display='block';
+        render();
+}else{
+  BAR2TEXT.textContent='Select two clubs';
+  BAR1A.innerHTML=''; BAR2A.innerHTML='';
+  BAR1A.classList.remove('stacked'); BAR2A.classList.remove('stacked'); // v2.7.8
+  VENUEBOX.style.display='none';
+  TB.innerHTML='<tr><td colspan="6" style="color:#666; font-size:.92rem;">Pick an Opponent.</td></tr>';
+  hasRendered=false; currentRowKeys.clear();
+}
+
+      updateSwapVisibility();
+    }catch(e){ console.error('[H2H v2.7.7] onClubChange error', e); }
+  }
+
+  function onOppChange(){
+    try{
+      includedRelatedClub.clear(); includedRelatedOpp.clear();
+
+      if (CLUB.value && OPP.value){
+        BAR1TEXT.textContent=labelFor(CLUB.value);
+        BAR2TEXT.textContent='vs '+labelFor(OPP.value);
+        BAR1A.innerHTML=''; BAR2A.innerHTML='';
+        var clubRelatedPool=(relatedOffers[CLUB.value]||[]);
+        var oppRelatedPool=(relatedOffers[OPP.value]||[]);
+        buildHeaderToggles('club',CLUB.value,OPP.value,oppRelatedPool);
+        buildHeaderToggles('opp',OPP.value,CLUB.value,clubRelatedPool);
+        updateVenueButtons(CLUB.value,OPP.value);
+        VENUEBOX.style.display='block';
+        render();
+}else{
+  BAR1A.innerHTML=''; BAR2A.innerHTML='';
+  BAR1A.classList.remove('stacked'); BAR2A.classList.remove('stacked'); // v2.7.8
+  VENUEBOX.style.display='none';
+}
+
+      updateSwapVisibility();
+    }catch(e){ console.error('[H2H v2.7.7] onOppChange error', e); }
+  }
+
+  SWAP.addEventListener('click',function(){
+    if(!(CLUB.value&&OPP.value)) return;
+    includedRelatedClub.clear(); includedRelatedOpp.clear();
+    var oldVenue=venueFilter; var oldClub=CLUB.value, oldOpp=OPP.value;
+    CLUB.value=oldOpp; onClubChange();
+    var opts=Array.from(OPP.options).map(function(o){return o.value;});
+    if(opts.indexOf(oldClub)>-1){ OPP.value=oldClub; onOppChange(); } else { OPP.value=''; onOppChange(); }
+    if(oldVenue==='home'){ setVenue('away'); render(); } else if(oldVenue==='away'){ setVenue('home'); render(); }
+  });
+
+  function playoffTinyLine(m){
+    if(!m.playoffs) return '';
+    var round=String(m.playoff_round||'').trim();
+    var label='Play-off'+(round?' '+round.toLowerCase():'');
+    return '<div class="tiny" style="margin-top:2px; letter-spacing:.2px;">'+esc(label)+'</div>';
+  }
+function hasNums(a,b){
+  return a!=null && b!=null && String(a)!=='' && String(b)!=='';
+}
+function extraBlockHTML(m, clubSet){
+  var lines=[];
+  if (hasNums(m.home_aet,  m.away_aet))  lines.push('<div class="ex-line">'+esc(m.home_aet)+'\u2013'+esc(m.away_aet)+' a.e.t.</div>');
+  if (hasNums(m.home_agg,  m.away_agg))  lines.push('<div class="ex-line">'+esc(m.home_agg)+'\u2013'+esc(m.away_agg)+' agg.</div>');
+  if (hasNums(m.home_pens, m.away_pens)) lines.push('<div class="ex-line">'+esc(m.home_pens)+'\u2013'+esc(m.away_pens)+' pens</div>');
+  if (!lines.length) return '';
+
+  function decider(h,a){
+    var hn=Number(h), an=Number(a);
+    if(!Number.isFinite(hn)||!Number.isFinite(an)) return null;
+    if(hn===an) return 'D';
+    var homeWins = hn>an;
+    var clubIsHome = clubSet.has(m.home_entity_norm);
+    return (homeWins===clubIsHome) ? 'W' : 'L';
+  }
+  // precedence: pens > agg > aet
+  var decR = null;
+  if (hasNums(m.home_pens, m.away_pens))      decR = decider(m.home_pens, m.away_pens);
+  else if (hasNums(m.home_agg, m.away_agg))   decR = decider(m.home_agg, m.away_agg);
+  else if (hasNums(m.home_aet, m.away_aet))   decR = decider(m.home_aet, m.away_aet);
+
+  var badge = decR ? '<span class="badge xs '+(decR==='W'?'w':decR==='D'?'d':'l')+'">'+decR+'</span>' : '';
+  var homeCls = clubSet.has(m.home_entity_norm) ? ' home-side' : '';
+  return '<div class="score-extras'+homeCls+'"><div class="ex-lines">'+lines.join('')+'</div>'+(badge?'<div class="ex-badge">'+badge+'</div>':'')+'</div>';
+}
+
+  function render(){
+  var entKey=CLUB.value, oppKey=OPP.value;
+  if(!entKey||!oppKey){
+    TB.innerHTML='<tr><td colspan="6" style="color:#666; font-size:.92rem;">Pick a Club and Opponent.</td></tr>';
+    hasRendered=false; currentRowKeys.clear(); return;
+  }
+
+  var clubSet=new Set([entKey].concat(Array.from(includedRelatedClub)));
+  var oppSet =new Set([oppKey].concat(Array.from(includedRelatedOpp)));
+
+  var mm=allMatches.filter(function(m){
+    return (clubSet.has(m.home_entity_norm)&&oppSet.has(m.away_entity_norm)) ||
+           (clubSet.has(m.away_entity_norm)&&oppSet.has(m.home_entity_norm));
+  });
+
+  if(venueFilter==='home')      mm=mm.filter(function(m){ return !isNeutral(m)&&clubSet.has(m.home_entity_norm); });
+  else if(venueFilter==='away') mm=mm.filter(function(m){ return !isNeutral(m)&&clubSet.has(m.away_entity_norm); });
+  else if(venueFilter==='neutral') mm=mm.filter(function(m){ return isNeutral(m); });
+
+  mm.sort(function(a,b){
+    var kb=(dateKey(b)!=null?dateKey(b):seasonKey(b));
+    var ka=(dateKey(a)!=null?dateKey(a):seasonKey(a));
+    return kb-ka;
+  });
+
+  var newKeys=new Set(mm.map(keyFor));
+  if(hasRendered){
+    var toRemove=[];
+    currentRowKeys.forEach(function(k){ if(!newKeys.has(k)) toRemove.push(k); });
+    if(toRemove.length){
+      var rows=TB.querySelectorAll('tr[data-key]');
+      rows.forEach(function(r){
+        var k=r.getAttribute('data-key');
+        if(toRemove.indexOf(k)>-1){ r.classList.remove('anim-in'); r.classList.add('anim-out'); }
+      });
+      setTimeout(commitRender,190);
+      return;
+    }
+  }
+  commitRender();
+
+  function commitRender(){
+    if(!mm.length){
+      TB.innerHTML='<tr><td colspan="6" style="color:#666; font-size:.92rem;">No matches found for this pairing.</td></tr>';
+      hasRendered=true; currentRowKeys=new Set(); return;
+    }
+
+    var rows=[];
+    for(var i=0;i<mm.length;i++){
+      var m=mm[i];
+      var dateFull=fmtDateFull(m.date), dateShort=fmtDateShort(m.date), dateSlim=fmtDateSlim(m.date);
+      var seasonText=(m.season||'') + (m.cross_division ? ' Play-offs' : '');
+      var scoreTxt = m.score ? String(m.score) : (String(m.home_goals)+'\u2013'+String(m.away_goals));
+
+      var res=resultFromJSON(m,clubSet);
+      var resBadge='<span class="pill '+(res==='W'?'w':res==='D'?'d':'l')+'">'+res+'</span>';
+      var tinyBadge='<div class="tiny"><span class="badge '+(res==='W'?'w':res==='D'?'d':'l')+'">'+res+'</span></div>';
+
+      // compact extras (AET/AGG/PENS + mini badge; auto-flips to left if selected club is home)
+      var extraHTML = extraBlockHTML(m, clubSet);
+
+      var viaRelatedClub=includedRelatedClub.has(m.home_entity_norm)||includedRelatedClub.has(m.away_entity_norm);
+      var viaRelatedOpp =includedRelatedOpp.has(m.home_entity_norm)||includedRelatedOpp.has(m.away_entity_norm);
+      var relCls=(viaRelatedClub&&viaRelatedOpp)?'reladd-both ':(viaRelatedClub?'reladd-club ':(viaRelatedOpp?'reladd-opp ':'')); 
+      var rowKey=keyFor(m);
+
+      rows.push(
+        '<tr class="'+relCls+'anim-in" style="--i:'+i+'" data-key="'+escAttr(rowKey)+'">'+
+          '<td>'+
+            '<span class="date-full">'+dateFull+'</span>'+
+            '<span class="date-short">'+dateShort+'</span>'+
+            '<span class="date-slim">'+dateSlim+'</span>'+
+            '<div class="tiny">'+esc(seasonText)+'</div>'+
+          '</td>'+
+          '<td class="col-league">'+esc(stripSeasonFromTitle(m.leagueName||m.league||''))+playoffTinyLine(m)+'</td>'+
+          '<td class="home"><div class="cell"><span class="team-clip">'+esc(m.home)+'</span></div></td>'+
+          '<td class="score"><div>'+esc(scoreTxt)+'</div>'+tinyBadge+extraHTML+'</td>'+
+          '<td class="away"><div class="cell"><span class="team-clip">'+esc(m.away)+'</span></div></td>'+
+          '<td class="result col-result">'+resBadge+'</td>'+
+        '</tr>'
+      );
+    }
+
+    TB.innerHTML=rows.join('');
+    hasRendered=true;
+    currentRowKeys=new Set(Array.from(newKeys));
+  }
+}
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
+
+  async function fetchWithTimeout(url, opts, ms){
+    var c=new AbortController(); var id=setTimeout(function(){ c.abort(); }, ms);
+    try{ return await fetch(url, Object.assign({},opts,{signal:c.signal})); }
+    finally{ clearTimeout(id); }
+  }
+
+  async function init(){
+    try{
+      var res = await fetchWithTimeout(JSON_SRC + (JSON_SRC.indexOf('?')>-1?'&':'?') + 'v=' + Date.now(), { cache:'no-store', credentials:'omit' }, 12000);
+      if(!res.ok) throw new Error(res.status+' '+res.statusText);
+      var raw = await res.json();
+
+      var meta=null;
+      try{
+        var mres = await fetchWithTimeout(META_SRC + (META_SRC.indexOf('?')>-1?'&':'?') + 'v=' + Date.now(), { cache:'no-store', credentials:'omit' }, 12000);
+        if(mres.ok) meta = await mres.json();
+      }catch(_){}
+
+      var seasons = Array.isArray(raw.seasons)?raw.seasons:[];
+      if(!seasons.length) throw new Error('No "seasons" array in results.json');
+
+      for(var s=0;s<seasons.length;s++){
+        var season=seasons[s]; var divs=season.divisions||{};
+        for(var key in divs){
+          var div=divs[key]||{}; var leagueName=stripSeasonFromTitle(div.title||''); var matches=div.matches||[];
+          for(var j=0;j<matches.length;j++){
+            var m=matches[j]||{}; var heRaw=m.home_entity||m.home||''; var aeRaw=m.away_entity||m.away||'';
+            var he=normEntity(heRaw), ae=normEntity(aeRaw);
+            if(he&&!entityLabel[he]) entityLabel[he]=heRaw;
+            if(ae&&!entityLabel[ae]) entityLabel[ae]=aeRaw;
+            allMatches.push(Object.assign({}, m, { season:season.season, leagueName:leagueName, home_entity_norm:he, away_entity_norm:ae }));
+          }
+        }
+      }
+      if(!allMatches.length) throw new Error('No matches flattened');
+
+      var entSet=new Set();
+      allMatches.forEach(function(m){ if(m.home_entity_norm) entSet.add(m.home_entity_norm); if(m.away_entity_norm) entSet.add(m.away_entity_norm); });
+
+      relatedOffers = meta ? buildRelatedOffersMap(meta) : {};
+// v2.7.9 — do NOT inject meta-only entities into the Club list
+if(meta && meta.relationships){
+  var rels=[].concat((meta.relationships.phoenix)||[], (meta.relationships.merger)||[]);
+  rels.forEach(function(r){
+    var names=[]; 
+    if(r && typeof r==='object'){ 
+      if('new' in r) names.push(r.new); 
+      if('old' in r) names.push(r.old); 
+      if(Array.isArray(r.parents)) names = names.concat(r.parents); 
+    }
+    names.forEach(function(nRaw){
+      var n = normEntity(nRaw); 
+      if(!n) return;
+      // keep label if this entity already appears in results; don't add to entSet
+      if(entSet.has(n) && !entityLabel[n]) entityLabel[n] = nRaw;
+    });
+  });
+}
+
+
+      allEntities = Array.from(entSet).sort(function(a,b){ return labelFor(a).localeCompare(labelFor(b),'en'); });
+
+      var opts=['<option value="" selected disabled>Select club…</option>'];
+      for(var i=0;i<allEntities.length;i++){ var k=allEntities[i]; opts.push('<option value="'+escAttr(k)+'">'+esc(labelFor(k))+'</option>'); }
+      CLUB.innerHTML=opts.join('');
+
+      CLUB.addEventListener('change', onClubChange, { passive:true });
+      OPP.addEventListener('change', onOppChange, { passive:true });
+
+      VENUEBOX.style.display='none'; SWAP.style.display='none'; clearErr();
+    }catch(err){
+      showErr('Could not load data for Head to Head.', (err && err.message) ? err.message : String(err));
+      try{
+        CLUB.innerHTML='<option disabled selected>Failed to load data</option>';
+        OPP.innerHTML ='<option disabled selected>Failed to load data</option>';
+        TB.innerHTML  ='<tr><td colspan="6" style="color:#666; font-size:.92rem;">Failed to load data.</td></tr>';
+      }catch(_){}
+      console.error('[H2H v2.7.7] init failed:', err, {JSON_SRC, META_SRC});
+    }
+  }
+})();
+</script>
+</body>
+</html>
