@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.12)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.13)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -610,39 +610,31 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
 
   const expSet = expungedTeamsFor(seasonKey, divisionName, asOfISO, false);
   
-  // Remaining league matches per team (future-dated OR not yet played), excluding expunged fixtures
-  const remaining = new Map();
-  const ensure = (t)=> { if (!remaining.has(t)) remaining.set(t, 0); };
+  // Clinching MUST be based on the regular-season schedule size, not "remaining fixtures found",
+  // because expulsions can remove fixtures and create false early clinches.
+  // Use: max scheduled league matches (excluding play-offs) as the season "game ceiling".
+  const scheduled = new Map(); // team -> scheduled regular-season matches
+  const bump = (t)=> { if (!scheduled.has(t)) scheduled.set(t, 0); scheduled.set(t, scheduled.get(t) + 1); };
 
   for (const m of (matches || [])){
     if (m?.playoffs || m?.playoff_round) continue;
-
-    const dateISO = toISO(m.date);
-    if (!dateISO) continue;
 
     const h = String(m.home || '').trim();
     const a = String(m.away || '').trim();
     if (!h || !a) continue;
 
-    if (expSet.has(canon(h)) || expSet.has(canon(a))) continue;
-
-    const hg = Number(m.home_goals);
-    const ag = Number(m.away_goals);
-    const played = (Number.isFinite(hg) && Number.isFinite(ag));
-
-    const isFuture = isoToNum(dateISO) > asNum;
-    if (isFuture || !played){
-      ensure(h); ensure(a);
-      remaining.set(h, remaining.get(h) + 1);
-      remaining.set(a, remaining.get(a) + 1);
-    }
+    bump(h);
+    bump(a);
   }
 
-  // Max possible points per team
+  const maxGames = Math.max(0, ...Array.from(scheduled.values()));
+
+  // Max possible points per team (using the shared maxGames ceiling)
   const maxPts = new Map();
   for (const r of rows){
     const team = String(r.team || '').trim();
-    const rem = remaining.get(team) || 0;
+    const playedNow = Number(r.P || 0);
+    const rem = Math.max(0, maxGames - (Number.isFinite(playedNow) ? playedNow : 0));
     maxPts.set(team, Number(r.Pts || 0) + ptsWin * rem);
   }
 
@@ -1088,7 +1080,30 @@ function findPlayoffWinnerFromResults(seasonKey, divisionName){
   // Accepts: m.playoffs===true OR m.playoff_round present
   const finals = matches.filter(m => {
     const pr = String(m.playoff_round || '').toLowerCase();
-    return !!(m?.playoffs || m?.playoff_round) && (pr.includes('final') || pr === 'f' || pr === 'final');
+
+    const hay = [
+      m.playoff_round,
+      m.round,
+      m.stage,
+      m.competition,
+      m.match_type,
+      m.type,
+      m.note,
+      m.notes
+    ].map(x => String(x || '').toLowerCase()).join(' | ');
+
+    const isPlayoffish =
+      !!m?.playoffs ||
+      !!m?.playoff_round ||
+      /play[\s-]?off/.test(hay);
+
+    const isFinalish =
+      pr === 'f' ||
+      pr === 'final' ||
+      pr.includes('final') ||
+      /final/.test(hay);
+
+    return isPlayoffish && isFinalish;
   });
 
   // Pick the latest-dated "final" if multiple
@@ -1123,6 +1138,22 @@ function findPlayoffWinnerFromResults(seasonKey, divisionName){
   }
 
   return '';
+}
+
+function getPlayoffWinnerFromFinalTables(seasonKey, divisionName){
+  const season = state.finalByKey?.[seasonKey];
+  const div = season?.divisions?.[divisionName];
+  const rows = Array.isArray(div?.rows) ? div.rows : [];
+
+  // In league-tables.json your convention is: play-off winner has class 'promoted' (silver)
+  // Exclude champions at pos 1.
+  const hit = rows.find(r => {
+    const cls = r.classes || [];
+    const pos = Number(r.pos);
+    return Number.isFinite(pos) && pos >= 2 && cls.includes('promoted');
+  });
+
+  return hit ? String(hit.team || '').trim() : '';
 }
 
 function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows){
@@ -1160,8 +1191,10 @@ function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows){
   const hasPlayoffs = !!playoffFieldEnd;
 
   // Only look for a play-off winner when play-offs exist
-  const playoffWinner = hasPlayoffs ? findPlayoffWinnerFromResults(seasonKey, divisionName) : '';
-  
+  const playoffWinner = hasPlayoffs
+    ? (findPlayoffWinnerFromResults(seasonKey, divisionName) || getPlayoffWinnerFromFinalTables(seasonKey, divisionName))
+    : '';
+
   // Global toggles from notes (no_relegation affects entire division)
   const hasNoRelegation = notes.some(n => n.type === 'no_relegation');
 
@@ -1429,6 +1462,22 @@ function inferPlayoffLinesFromFinalClasses(seasonKey, divisionName){
   const div = season?.divisions?.[divisionName];
   const rows = Array.isArray(div?.rows) ? div.rows : [];
 
+function inferPlayoffLinesFromNotes(seasonKey, divisionName){
+  // Prefer explicit seasonFormat rules (season-notes.json -> seasonFormat array)
+  const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
+  if (!fmt) return null;
+
+  const poSemi = Number(fmt.playoffsSemi || 0);
+  const poElim = Number(fmt.playoffsElim || 0);
+
+  // 4-team playoffs: positions 2–5
+  if (poSemi === 0 && poElim === 4) return { playoffCut: 5, byeCut: null };
+
+  // 6-team playoffs: positions 2–3 byes; 4–7 eliminators
+  if (poSemi === 2 && poElim === 4) return { playoffCut: 7, byeCut: 3 };
+
+  return null;
+}
   // IMPORTANT:
   // Only infer play-offs from explicit 'playoff' classes.
   // Do NOT use 'promoted' for inference because some seasons/tables may use it for automatic promotion,
@@ -1454,33 +1503,6 @@ function inferPlayoffLinesFromFinalClasses(seasonKey, divisionName){
   return null;
 }
       
-function inferPlayoffLinesFromFinalClasses(seasonKey, divisionName){
-  const season = state.finalByKey[seasonKey];
-  const div = season?.divisions?.[divisionName];
-  const rows = Array.isArray(div?.rows) ? div.rows : [];
-
-  // Consider both 'playoff' and 'promoted' as "in the playoff cohort" (final winner is also from that group)
-  const cohortPos = rows
-    .filter(r => {
-      const cls = r.classes || [];
-      return cls.includes('playoff') || cls.includes('promoted');
-    })
-    .map(r => Number(r.pos))
-    .filter(n => Number.isFinite(n) && n >= 2); // exclude champion
-
-  if (!cohortPos.length) return null;
-
-  const maxPos = Math.max(...cohortPos);
-
-  // If final table shows positions through 7 => six-team format (2-3 byes, 4-7 eliminators)
-  if (maxPos >= 7) return { playoffCut: 7, byeCut: 3 };
-
-  // If final table shows positions through 5 => four-team format (2-5)
-  if (maxPos >= 5) return { playoffCut: 5, byeCut: null };
-
-  return null;
-}
-
 function inferCutsFromFinal(seasonKey, divisionName){
   if (!state.cutsBySeason.has(seasonKey)) state.cutsBySeason.set(seasonKey, new Map());
   const seasonMap = state.cutsBySeason.get(seasonKey);
