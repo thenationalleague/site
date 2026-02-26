@@ -72,13 +72,14 @@
       "entity": "Nuneaton Borough",
       "type": "demotion",
       "note": "Demoted to the Southern League Premier Division due to financial irregularities."
-    },    {
+    },
+    {
       "season": "1986-87",
       "division": "National",
       "team": "Welling United",
       "entity": "Welling United",
       "type": "reprieve",
-      "note": "Reprieved from relegation due to Nuneaton Borough's demotion."
+      "note": "Reprieved from relegation due to demotion of Nuneaton Borough."
     },
     {
       "season": "1988-89",
@@ -107,6 +108,14 @@
       "note": "Deducted 1 point."
     },
     {
+      "season": "1992-93",
+      "division": "National",
+      "team": "Welling United",
+      "entity": "Welling United",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to Chesham United being denied promotion as a result of failing to meet Conference ground requirements."
+    },
+    {
       "season": "1993-94",
       "division": "National",
       "team": "Kidderminster Harriers",
@@ -122,6 +131,14 @@
       "type": "points_deduction",
       "pointsValue": -2,
       "note": "Deducted 2 points."
+    },
+    {
+      "season": "1993-94",
+      "division": "National",
+      "team": "Merthyr Tydfil",
+      "entity": "Merthyr Tydfil",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to Marine being denied promotion as a result of failing to meet Conference ground requirements."
     },
     {
       "season": "1994-95",
@@ -149,6 +166,14 @@
       "note": "Denied promotion to the Football League despite being crowned Champions due to failure to meet ground requirements."
     },
     {
+      "season": "1995-96",
+      "division": "National",
+      "team": "Dover Athletic",
+      "entity": "Dover Athletic",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to Bamber Bridge being denied promotion as a result of failing to meet Conference ground requirements."
+    },
+    {
       "season": "1997-98",
       "division": "National",
       "team": "Slough Town",
@@ -157,12 +182,28 @@
       "note": "Demoted to the Isthmian League Premier Division due to failure to meet Football Conference ground requirements."
     },
     {
+      "season": "1997-98",
+      "division": "National",
+      "team": "Telford United",
+      "entity": "Telford United",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to demotion of Slough Town."
+    },
+    {
       "season": "1998-99",
       "division": "National",
       "team": "Barrow",
       "entity": "Barrow",
       "type": "demotion",
       "note": "Demoted to the Northern Premier League Premier Division due to entering administration."
+    },
+    {
+      "season": "1998-99",
+      "division": "National",
+      "team": "Welling United",
+      "entity": "Welling United",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to demotion of Barrow."
     },
     {
       "season": "2001-02",
@@ -199,6 +240,30 @@
       "note": "Deducted 1 point."
     },
     {
+      "season": "2003-04",
+      "division": "National",
+      "team": "Farnborough Town",
+      "entity": "Farnborough Town",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to folding of Telford United, demotion of Margate, and Hucknall Town being denied promotion as a result of failing to meet Conference standards."
+    },
+    {
+      "season": "2003-04",
+      "division": "National",
+      "team": "Leigh RMI",
+      "entity": "Leigh RMI",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to folding of Telford United, demotion of Margate, and Hucknall Town being denied promotion as a result of failing to meet Conference standards."
+    },
+    {
+      "season": "2003-04",
+      "division": "National",
+      "team": "Northwich Victoria",
+      "entity": "Northwich Victoria",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to folding of Telford United, demotion of Margate, and Hucknall Town being denied promotion as a result of failing to meet Conference standards."
+    },
+    {
       "season": "2004-05",
       "division": "National",
       "team": "Northwich Victoria",
@@ -223,6 +288,14 @@
       "type": "points_deduction",
       "pointsValue": -3,
       "note": "Deducted 3 points."
+    },
+    {
+      "season": "2004-05",
+      "division": "National",
+      "team": "Forest Green Rovers",
+      "entity": "Forest Green Rovers",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to demotion of Northwich Victoria."
     },
     {
       "season": "2004-05",
@@ -270,6 +343,22 @@
       "note": "Deducted 3 points."
     },
     {
+      "season": "2004-05",
+      "division": "South",
+      "team": "Maidenhead United",
+      "entity": "Maidenhead United",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to folding of Hornchurch."
+    },
+    {
+      "season": "2004-05",
+      "division": "South",
+      "team": "Lewes",
+      "entity": "Lewes",
+      "type": "no_playoffs",
+      "note": "Unable to compete in play-offs due to ground issues."
+    },
+    {
       "season": "2005-06",
       "division": "National",
       "team": "Canvey Island",
@@ -296,12 +385,28 @@
     },
     {
       "season": "2005-06",
+      "division": "National",
+      "team": "Altrincham",
+      "entity": "Altrincham",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to demotion of Scarborough, resignation of Canvey Island, and expansion of the Conference to 24 teams."
+    },
+    {
+      "season": "2005-06",
       "division": "North",
       "team": "Leigh RMI",
       "entity": "Leigh RMI",
       "type": "points_deduction",
       "pointsValue": -1,
       "note": "Deducted 1 point."
+    },
+    {
+      "season": "2005-06",
+      "division": "North",
+      "team": "Leigh RMI",
+      "entity": "Leigh RMI",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to Canvey Island's three-level demotion from the National division."
     },
     {
       "season": "2005-06",
@@ -350,6 +455,14 @@
     },
     {
       "season": "2006-07",
+      "division": "National",
+      "team": "Altrincham",
+      "entity": "Altrincham",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to Boston United's two-level demotion from League Two."
+    },
+    {
+      "season": "2006-07",
       "division": "North",
       "team": "Moor Green",
       "entity": "Moor Green",
@@ -383,6 +496,14 @@
       "note": "Folded upon the conclusion of the season."
     },
     {
+      "season": "2006-07",
+      "division": "North",
+      "team": "Weston-super-Mare",
+      "entity": "Weston-super-Mare",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to folding of Farnborough Town and merger of Hayes and Yeading."
+    },
+    {
       "season": "2007-08",
       "division": "National",
       "team": "Crawley Town",
@@ -410,6 +531,14 @@
     },
     {
       "season": "2007-08",
+      "division": "National",
+      "team": "Altrincham",
+      "entity": "Altrincham",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to folding of Halifax Town."
+    },
+    {
+      "season": "2007-08",
       "division": "North",
       "team": "Nuneaton Borough",
       "entity": "Nuneaton Borough",
@@ -426,11 +555,43 @@
     },
     {
       "season": "2007-08",
+      "division": "North",
+      "team": "Hucknall Town",
+      "entity": "Hucknall Town",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to demotions of Nuneaton Borough and Boston United."
+    },
+    {
+      "season": "2007-08",
+      "division": "North",
+      "team": "Vauxhall Motors",
+      "entity": "Vauxhall Motors",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to demotions of Nuneaton Borough and Boston United."
+    },
+    {
+      "season": "2007-08",
       "division": "South",
       "team": "Cambridge City",
       "entity": "Cambridge City",
       "type": "demotion",
       "note": "Demoted to Southern League Premier Division due to failure to meet Football Conference South ground requirements."
+    },
+    {
+      "season": "2007-08",
+      "division": "South",
+      "team": "Weston-super-Mare",
+      "entity": "Weston-super-Mare",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to demotion of Cambridge City and folding of Halifax Town in the National division."
+    },
+    {
+      "season": "2007-08",
+      "division": "South",
+      "team": "Dorchester Town",
+      "entity": "Dorchester Town",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to demotion of Cambridge City and folding of Halifax Town in the National division."
     },
     {
       "season": "2008-09",
@@ -550,7 +711,7 @@
       "division": "National",
       "team": "Grays Athletic",
       "entity": "Grays Athletic",
-      "type": "reprieve",
+      "type": "general",
       "note": "Declined to join Football Conference South upon relegation and instead joined Isthmian League Division One North."
     },
     {
@@ -959,7 +1120,7 @@
       "division": "North",
       "team": "Gloucester City",
       "entity": "Gloucester City",
-      "type": "reprieve",
+      "type": "not_promoted",
       "note": "Crowned champions, but due to the curtailment of the National League North season, there was no promotion to the National League."
     },
     {
@@ -967,7 +1128,7 @@
       "division": "South",
       "team": "Dorking Wanderers",
       "entity": "Dorking Wanderers",
-      "type": "reprieve",
+      "type": "not_promoted",
       "note": "Crowned champions, but due to the curtailment of the National League North season, there was no promotion to the National League."
     },
     {
@@ -1017,621 +1178,93 @@
     }
   ],
   "seasonFormat": [
-    {
-      "season": "1979-80",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 1
-    },
-    {
-      "season": "1980-81",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "1981-82",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "1982-83",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 2
-    },
-    {
-      "season": "1983-84",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 2
-    },
-    {
-      "season": "1984-85",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "1985-86",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "1986-87",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "1987-88",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "1988-89",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "1989-90",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "1990-91",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 2
-    },
-    {
-      "season": "1991-92",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 2
-    },
-    {
-      "season": "1992-93",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "1993-94",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "1994-95",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "1995-96",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "1996-97",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "1997-98",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "1998-99",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "1999-00",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "2000-01",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "2001-02",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 3
-    },
-    {
-      "season": "2002-03",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2003-04",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2004-05",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2004-05",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2004-05",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2005-06",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2005-06",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 2
-    },
-    {
-      "season": "2005-06",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 2
-    },
-    {
-      "season": "2006-07",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2006-07",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2006-07",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2007-08",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2007-08",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2007-08",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2008-09",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2008-09",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2008-09",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2009-10",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2009-10",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 2
-    },
-    {
-      "season": "2009-10",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 2
-    },
-    {
-      "season": "2010-11",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2010-11",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2010-11",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2011-12",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2011-12",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 2
-    },
-    {
-      "season": "2011-12",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 2
-    },
-    {
-      "season": "2012-13",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2012-13",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2012-13",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2013-14",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2013-14",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2013-14",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2014-15",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2014-15",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2014-15",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 2
-    },
-    {
-      "season": "2015-16",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2015-16",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2015-16",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2016-17",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2016-17",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2016-17",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2017-18",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2017-18",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2017-18",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2018-19",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2018-19",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2018-19",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2019-20",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2019-20",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 2
-    },
-    {
-      "season": "2019-20",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 2
-    },
-    {
-      "season": "2020-21",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2020-21",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 0
-    },
-    {
-      "season": "2020-21",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 0, "eliminator": 0 },
-      "relegation": 0
-    },
-    {
-      "season": "2021-22",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 3
-    },
-    {
-      "season": "2021-22",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 1
-    },
-    {
-      "season": "2021-22",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 1
-    },
-    {
-      "season": "2022-23",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2022-23",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2022-23",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2023-24",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2023-24",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2023-24",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2024-25",
-      "division": "National",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2024-25",
-      "division": "North",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 4
-    },
-    {
-      "season": "2024-25",
-      "division": "South",
-      "champions": 1,
-      "playoffs": { "semi": 2, "eliminator": 4 },
-      "relegation": 4
-    }
+    { "season": "1979-80", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 1 },
+    { "season": "1980-81", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "1981-82", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "1982-83", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 2 },
+    { "season": "1983-84", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 2 },
+    { "season": "1984-85", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "1985-86", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "1986-87", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "1987-88", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "1988-89", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "1989-90", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "1990-91", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 2 },
+    { "season": "1991-92", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 2 },
+    { "season": "1992-93", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "1993-94", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "1994-95", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "1995-96", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "1996-97", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "1997-98", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "1998-99", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "1999-00", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "2000-01", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "2001-02", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
+    { "season": "2002-03", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2003-04", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2004-05", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2004-05", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2004-05", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2005-06", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2005-06", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2 },
+    { "season": "2005-06", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2 },
+    { "season": "2006-07", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2006-07", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2006-07", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2007-08", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2007-08", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2007-08", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2008-09", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2008-09", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2008-09", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2009-10", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2009-10", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2 },
+    { "season": "2009-10", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2 },
+    { "season": "2010-11", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2010-11", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2010-11", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2011-12", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2011-12", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2 },
+    { "season": "2011-12", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2 },
+    { "season": "2012-13", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2012-13", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2012-13", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2013-14", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2013-14", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2013-14", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2014-15", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2014-15", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2014-15", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2 },
+    { "season": "2015-16", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2015-16", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2015-16", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2016-17", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2016-17", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2016-17", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2017-18", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2017-18", "division": "North", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2017-18", "division": "South", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2018-19", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2018-19", "division": "North", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2018-19", "division": "South", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2019-20", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2019-20", "division": "North", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 2 },
+    { "season": "2019-20", "division": "South", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 2 },
+    { "season": "2020-21", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2020-21", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 0 },
+    { "season": "2020-21", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 0 },
+    { "season": "2021-22", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 3 },
+    { "season": "2021-22", "division": "North", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 1 },
+    { "season": "2021-22", "division": "South", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 1 },
+    { "season": "2022-23", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2022-23", "division": "North", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2022-23", "division": "South", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2023-24", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2023-24", "division": "North", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2023-24", "division": "South", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2024-25", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2024-25", "division": "North", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
+    { "season": "2024-25", "division": "South", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 }
   ]
 }
