@@ -426,6 +426,29 @@
     });
   }
 
+  function updateVenueButtons(primaryKey,opponentKey){
+    var clubSet=new Set([primaryKey].concat(Array.from(includedRelatedClub)));
+    var oppSet =new Set([opponentKey].concat(Array.from(includedRelatedOpp)));
+    var subset=allMatches.filter(function(m){
+      return (clubSet.has(m.home_entity_norm)&&oppSet.has(m.away_entity_norm)) ||
+             (clubSet.has(m.away_entity_norm)&&oppSet.has(m.home_entity_norm));
+    });
+
+    var hasN=subset.some(function(m){ return isNeutral(m); });
+    var hasH=subset.some(function(m){ return !isNeutral(m)&&clubSet.has(m.home_entity_norm); });
+    var hasA=subset.some(function(m){ return !isNeutral(m)&&clubSet.has(m.away_entity_norm); });
+
+    var btnH=VENUEBOX.querySelector('button[data-val="home"]');
+    var btnA=VENUEBOX.querySelector('button[data-val="away"]');
+    var btnN=VENUEBOX.querySelector('button[data-val="neutral"]');
+
+    btnH.style.display=hasH?'inline-block':'none';
+    btnA.style.display=hasA?'inline-block':'none';
+    btnN.style.display=hasN?'inline-block':'none';
+
+    if((venueFilter==='home'&&!hasH)||(venueFilter==='away'&&!hasA)||(venueFilter==='neutral'&&!hasN)) setVenue('all');
+  }
+    
   function isAbandonedAwarded(m){
     if(!m) return false;
     if(String(m.status||'').toLowerCase()!=='abandoned') return false;
