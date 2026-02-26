@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.13)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.14)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -417,8 +417,8 @@
             if (!state.seasonNotes.has(s)) state.seasonNotes.set(s, new Map());
             const dm = state.seasonNotes.get(s);
             if (!dm.has(d)) dm.set(d, []);
-            dm.get(d).push({ team:String(it.team), note:String(it.note) });
-
+            dm.get(d).push({ team:String(it.team), entity:String(it.entity || it.team || ''), note:String(it.note) });
+            
             // 2) full store for rules
             if (!state.seasonNotesFull.has(s)) state.seasonNotesFull.set(s, new Map());
             const fm = state.seasonNotesFull.get(s);
@@ -1457,11 +1457,6 @@ function collectDivisionNotesText(seasonKey, divisionName){
   return raw.map(x => String(x.note || '')).join(' \n ');
 }
 
-function inferPlayoffLinesFromFinalClasses(seasonKey, divisionName){
-  const season = state.finalByKey[seasonKey];
-  const div = season?.divisions?.[divisionName];
-  const rows = Array.isArray(div?.rows) ? div.rows : [];
-
 function inferPlayoffLinesFromNotes(seasonKey, divisionName){
   // Prefer explicit seasonFormat rules (season-notes.json -> seasonFormat array)
   const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
@@ -1478,6 +1473,12 @@ function inferPlayoffLinesFromNotes(seasonKey, divisionName){
 
   return null;
 }
+
+function inferPlayoffLinesFromFinalClasses(seasonKey, divisionName){
+  const season = state.finalByKey[seasonKey];
+  const div = season?.divisions?.[divisionName];
+  const rows = Array.isArray(div?.rows) ? div.rows : [];
+
   // IMPORTANT:
   // Only infer play-offs from explicit 'playoff' classes.
   // Do NOT use 'promoted' for inference because some seasons/tables may use it for automatic promotion,
