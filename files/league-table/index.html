@@ -824,38 +824,47 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
           }
         }, true);
 
-        function renderSeasonDivisionNotesAndRefs(seasonKey, divisionName){
+        function renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, asOfISO, includeUndated){
+          // remove any previous superscripts in the Team column
           els.tbody.querySelectorAll('td:nth-child(3) .note-ref').forEach(el=> el.remove());
 
-          const raw = state.seasonNotes.get(String(seasonKey))?.get(String(divisionName)) || [];
-          els.note.replaceChildren();
-          if (!raw.length){ els.note.hidden = true; return; }
+          // IMPORTANT: footnotes must respect effectiveDate (and optionally include undated notes on finals)
+          const notes = activeNotesFor(seasonKey, divisionName, asOfISO, includeUndated);
 
-          const groups = new Map();
-          for (const x of raw){
-            // Display groups by canonical entity when possible (team label remains as provided)
-            const key = canon(x.entity || x.team || '');
+          els.note.replaceChildren();
+          if (!notes.length){ els.note.hidden = true; return; }
+
+          // Group by canonical entity (not display team label)
+          const groups = new Map(); // canon(entity) -> { teamLabel, entity, notes[] }
+          for (const n of notes){
+            const entity = String(n.entity || n.team || '').trim();
+            const key = canon(entity);
             if (!key) continue;
-            if (!groups.has(key)) groups.set(key, { team: x.team, notes: [] });
-            groups.get(key).notes.push(x.note);
+            if (!groups.has(key)) groups.set(key, { teamLabel: String(n.team || entity), entity, notes: [] });
+            groups.get(key).notes.push(String(n.note || ''));
           }
-          
+
           const rowsArr = Array.from(els.tbody.rows);
           const entries = [];
-          for (const {team, notes} of groups.values()){
+
+          for (const g of groups.values()){
+            const displayTeam = g.teamLabel;
+            const lookupName = g.entity || displayTeam;
+
             let rowId = '';
-            const slug = bestEffortSlugFromName(team, seasonKey);
+            const slug = bestEffortSlugFromName(lookupName, seasonKey) || bestEffortSlugFromName(displayTeam, seasonKey);
             if (slug) rowId = 'row-' + slug;
 
             let rowEl = rowId ? document.getElementById(rowId) : null;
             if (!rowEl){
-              const hit = rowsArr.find(r=> canon(r.cells[2]?.textContent||'') === canon(team));
+              const hit = rowsArr.find(r=> canon(r.cells[2]?.textContent||'') === canon(displayTeam) || canon(r.cells[2]?.textContent||'') === canon(lookupName));
               if (hit){ rowEl = hit; rowId = hit.id; }
             }
 
             const rowIndex = rowEl ? rowsArr.indexOf(rowEl) : Number.POSITIVE_INFINITY;
-            entries.push({ team, text: combineNotes(notes), rowId, rowIndex });
+            entries.push({ team: displayTeam, text: combineNotes(g.notes), rowId, rowIndex });
           }
+
           entries.sort((a,b)=> (a.rowIndex - b.rowIndex) || a.team.localeCompare(b.team));
 
           els.note.hidden = false;
@@ -873,7 +882,7 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
             }
           });
         }
-
+      
         // =========================
         // Expulsions
         // =========================
@@ -1067,7 +1076,8 @@ function renderFinalTable(seasonKey, divisionName){
   // IMPORTANT: never show dotted cut lines on Final standings (final table already has colour coding)
   applyCutLinesToRenderedTable(null);
   
-  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName);
+  const notesAsOf = state.current.lastLeagueDate || '9999-12-31';
+  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, notesAsOf, true);
   rebuildLegend();
 }
 
@@ -1448,7 +1458,7 @@ function renderDerivedFinalTable(seasonKey, divisionName){
   // No dotted cut lines on any final view
   applyCutLinesToRenderedTable(null);
 
-  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName);
+  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, lastLeagueDate, true);
   rebuildLegend();
 }
       
@@ -2067,7 +2077,7 @@ if (effectiveAsOf === '__FINAL_TABLES__'){
 
   applyCutLinesToRenderedTable(cutRules);
   
-  renderSeasonDivisionNotesAndRefs(seasonKey, chosenDiv);
+  renderSeasonDivisionNotesAndRefs(seasonKey, chosenDiv, asOfISO, false);
   rebuildLegend();
 }
             
