@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.14)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.16)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -1086,62 +1086,44 @@ function findPlayoffWinnerFromResults(seasonKey, divisionName){
   const divObj = seasonObj?.divisions?.[divisionName];
   const matches = Array.isArray(divObj?.matches) ? divObj.matches : [];
 
-  // Find a match that looks like the play-off final
-  // Accepts: m.playoffs===true OR m.playoff_round present
-  const finals = matches.filter(m => {
-    const pr = String(m.playoff_round || '').toLowerCase();
+  // Easiest/most reliable definition (your data):
+  // playoffs:true AND playoff_round:"Final"
+  const finals = matches
+    .filter(m => {
+      if (!m || !m.playoffs) return false;
+      const pr = String(m.playoff_round || '').trim().toLowerCase();
+      return pr === 'final';
+    })
+    .slice()
+    .sort((a,b)=> isoToNum(toISO(a.date)) - isoToNum(toISO(b.date)));
 
-    const hay = [
-      m.playoff_round,
-      m.round,
-      m.stage,
-      m.competition,
-      m.match_type,
-      m.type,
-      m.note,
-      m.notes
-    ].map(x => String(x || '').toLowerCase()).join(' | ');
-
-    const isPlayoffish =
-      !!m?.playoffs ||
-      !!m?.playoff_round ||
-      /play[\s-]?off/.test(hay);
-
-    const isFinalish =
-      pr === 'f' ||
-      pr === 'final' ||
-      pr.includes('final') ||
-      /final/.test(hay);
-
-    return isPlayoffish && isFinalish;
-  });
-
-  // Pick the latest-dated "final" if multiple
-  finals.sort((a,b)=> isoToNum(toISO(a.date)) - isoToNum(toISO(b.date)));
   const fin = finals.length ? finals[finals.length - 1] : null;
   if (!fin) return '';
 
   const h = String(fin.home || '').trim();
   const a = String(fin.away || '').trim();
+  if (!h || !a) return '';
+
   const hg = Number(fin.home_goals);
   const ag = Number(fin.away_goals);
 
-  if (!h || !a) return '';
-  if (!Number.isFinite(hg) || !Number.isFinite(ag)) return '';
+  // Winner in normal time
+  if (Number.isFinite(hg) && Number.isFinite(ag)){
+    if (hg > ag) return h;
+    if (ag > hg) return a;
+  }
 
-  if (hg > ag) return h;
-  if (ag > hg) return a;
-
-  // If level, attempt AET or pens fields if your results.json contains them
-  const hAet = Number(fin.home_goals_aet);
-  const aAet = Number(fin.away_goals_aet);
+  // If level (or missing), use AET fields in your schema: home_aet / away_aet
+  const hAet = Number(fin.home_aet);
+  const aAet = Number(fin.away_aet);
   if (Number.isFinite(hAet) && Number.isFinite(aAet)){
     if (hAet > aAet) return h;
     if (aAet > hAet) return a;
   }
 
-  const hPen = Number(fin.home_goals_pens);
-  const aPen = Number(fin.away_goals_pens);
+  // Optional: pens if ever added later (kept defensive)
+  const hPen = Number(fin.home_pens);
+  const aPen = Number(fin.away_pens);
   if (Number.isFinite(hPen) && Number.isFinite(aPen)){
     if (hPen > aPen) return h;
     if (aPen > hPen) return a;
@@ -1149,7 +1131,7 @@ function findPlayoffWinnerFromResults(seasonKey, divisionName){
 
   return '';
 }
-
+      
 function getPlayoffWinnerFromFinalTables(seasonKey, divisionName){
   const season = state.finalByKey?.[seasonKey];
   const div = season?.divisions?.[divisionName];
@@ -1280,6 +1262,9 @@ function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows){
     const r = rows.find(x => canon(x.team) === poWinnerKey);
     if (r){
       if (!teamsNoPlayoffs.has(poWinnerKey)){
+        // IMPORTANT: silver must win over blue, so remove playoff qualifier classes
+        r.classes = r.classes.filter(c => c !== 'playoff' && c !== 'playoff-semi' && c !== 'playoff-elim');
+
         if (!r.classes.includes('promoted')) r.classes.push('promoted');
         r.move = 'up';
       }
