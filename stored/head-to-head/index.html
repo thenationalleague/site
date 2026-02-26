@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" data-h2h-version="v2.7.13">
+<html lang="en" data-h2h-version="v2.7.18">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Head to Head</title>
 
 <style>
-/*! H2H v2.7.13 — Abandoned+awarded: show A-A with asterisk; derive W/D/L from awarded */
+/*! H2H v2.7.18 — Tidy responsive table: disable colgroup in 1125–821px band; remove patch stack */
   #h2h{ --ff: inherit; --fvs: normal; }
   #h2h, #h2h *{ font-family: var(--ff) !important; font-variation-settings: var(--fvs, normal); }
   #h2h select, #h2h button, #h2h input{ font: inherit; line-height: inherit; }
@@ -102,10 +102,16 @@
   col.cg-away   { width: 30%; }
   col.cg-result { width: 7ch; }
 
+  /* v2.7.18: mid screens (1125–821) — let browser size columns naturally (prevents tiny overflow scroll) */
+@media (max-width: 1125px) and (min-width: 821px){
+  colgroup{ display:none !important; }
+  table{ table-layout:auto; }
+}
+  
   @media (max-width: 820px){
     .col-league,.col-result{ display:none; }
     colgroup{ display:none !important; }
-    table{ table-layout:auto; }
+    table{ table-layout:fixed; }
     .tiny .badge{ display:inline-grid !important; }
 
     /* narrow-only equal widths (cols present: 1=Date, 3=Home, 4=Score, 5=Away) */
@@ -174,10 +180,6 @@
 }
 .score-extras .ex-badge{ grid-area:badge; display:flex; align-items:center; }
 
-  @media (max-width: 420px){
-  .score-extras .ex-line{ white-space:normal; }
-}
-  
 /* Flip: when selected club is the HOME side for this match */
 .score-extras.home-side{
   grid-template-columns: auto 1fr;        /* badge | lines */
