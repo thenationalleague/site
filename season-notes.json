@@ -22,7 +22,7 @@
       "team": "Telford United",
       "entity": "Telford United",
       "type": "not_promoted",
-      "note": "Applied for election to the Football League as third-place finishers, but failed to secure enough votes (Northamppton Town 53, Crewe Alexandra 50, Rochdale 48, Scunthorpe United 48, Telford United 13)."
+      "note": "Applied for election to the Football League as third-place finishers, but failed to secure enough votes (Northampton Town 53, Crewe Alexandra 50, Rochdale 48, Scunthorpe United 48, Telford United 13)."
     },
     {
       "season": "1982-83",
@@ -63,7 +63,7 @@
       "team": "Enfield",
       "entity": "Enfield",
       "type": "not_promoted",
-      "note": "Applied for election to the Football League as Champions, but failed to secure enough votes (Exeter City 64, Preston North End 62.5, Cambridge United 61, Torquay United 61, Enfield 7.5."
+      "note": "Applied for election to the Football League as Champions, but failed to secure enough votes (Exeter City 64, Preston North End 62.5, Cambridge United 61, Torquay United 61, Enfield 7.5)."
     },
     {
       "season": "1986-87",
@@ -631,6 +631,14 @@
     {
       "season": "2008-09",
       "division": "North",
+      "team": "Hyde United",
+      "entity": "Hyde United",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to demotion of King's Lynn."
+    },
+    {
+      "season": "2008-09",
+      "division": "North",
       "team": "Northwich Victoria",
       "entity": "Northwich Victoria",
       "type": "points_deduction",
@@ -653,6 +661,14 @@
       "entity": "Team Bath",
       "type": "folded",
       "note": "Folded upon the conclusion of the season."
+    },
+    {
+      "season": "2008-09",
+      "division": "South",
+      "team": "Thurrock",
+      "entity": "Thurrock",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to folding of Team Bath."
     },
     {
       "season": "2008-09",
@@ -687,6 +703,14 @@
       "entity": "Salisbury City",
       "type": "demotion",
       "note": "Demoted to Southern League Premier Division due to failure to exit administration."
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "team": "Forest Green Rovers",
+      "entity": "Forest Green Rovers",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to the demotion of Salisbury City."
     },
     {
       "season": "2009-10",
@@ -764,11 +788,43 @@
     {
       "season": "2009-10",
       "division": "North",
+      "team": "Vauxhall Motors",
+      "entity": "Vauxhall Motors",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to the folding of Chester City and demotion of Northwich Victoria."
+    },
+    {
+      "season": "2009-10",
+      "division": "North",
+      "team": "Harrogate Town",
+      "entity": "Harrogate Town",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to the folding of Chester City and demotion of Northwich Victoria."
+    },
+    {
+      "season": "2009-10",
+      "division": "North",
       "team": "Farsley Celtic",
       "entity": "Farsley Celtic",
       "type": "expulsion",
       "effectiveDate": "2010-03-08",
       "note": "Resigned and folded on 8 March 2010, and record expunged."
+    },
+    {
+      "season": "2009-10",
+      "division": "South",
+      "team": "Worcester City",
+      "entity": "Worcester City",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to demotions of Salisbury City and Grays Athletic from the National division."
+    },
+    {
+      "season": "2009-10",
+      "division": "South",
+      "team": "Weston-super-Mare",
+      "entity": "Weston-super-Mare",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to demotion of Salisbury City from the National division and three-level demotion of Grays Athletic from the National division."
     },
     {
       "season": "2010-11",
@@ -816,6 +872,14 @@
     },
     {
       "season": "2010-11",
+      "division": "National",
+      "team": "Southport",
+      "entity": "Southport",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to folding of Rushden & Diamonds."
+    },
+    {
+      "season": "2010-11",
       "division": "North",
       "team": "Redditch United",
       "entity": "Redditch United",
@@ -834,6 +898,14 @@
     },
     {
       "season": "2010-11",
+      "division": "North",
+      "team": "Eastwood Town",
+      "entity": "Eastwood Town",
+      "type": "no_playoffs",
+      "note": "Unable to compete in play-offs due to ground issues."
+    },
+    {
+      "season": "2010-11",
       "division": "South",
       "team": "Welling United",
       "entity": "Welling United",
@@ -849,6 +921,14 @@
       "type": "points_deduction",
       "pointsValue": -10,
       "note": "Deducted 10 points."
+    },
+    {
+      "season": "2010-11",
+      "division": "South",
+      "team": "Thurrock",
+      "entity": "Thurrock",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to folding of Rushden & Diamonds in the National division."
     },
     {
       "season": "2011-12",
@@ -959,6 +1039,14 @@
     {
       "season": "2013-14",
       "division": "National",
+      "team": "Dartford",
+      "entity": "Dartford",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to folding of Salisbury City."
+    },
+    {
+      "season": "2013-14",
+      "division": "National",
       "team": "Aldershot Town",
       "entity": "Aldershot Town",
       "type": "points_deduction",
@@ -1000,6 +1088,22 @@
       "note": "Deducted 3 points."
     },
     {
+      "season": "2013-14",
+      "division": "North",
+      "team": "Oxford City",
+      "entity": "Oxford City",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to resignation of Vauxhall Motors."
+    },
+    {
+      "season": "2013-14",
+      "division": "South",
+      "team": "Hayes & Yeading United",
+      "entity": "Hayes & Yeading United",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to Hereford United's two-level demotion from the National division."
+    },
+    {
       "season": "2014-15",
       "division": "National",
       "team": "Forest Green Rovers",
@@ -1036,6 +1140,38 @@
       "note": "Deducted 3 points."
     },
     {
+      "season": "2016-17",
+      "division": "North",
+      "team": "Darlington 1883",
+      "entity": "Darlington",
+      "type": "no_playoffs",
+      "note": "Unable to compete in play-offs due to ground issues."
+    },
+    {
+      "season": "2016-17",
+      "division": "South",
+      "team": "Hungerford Town",
+      "entity": "Hungerford Town",
+      "type": "no_playoffs",
+      "note": "Unable to compete in play-offs due to ground issues."
+    },
+    {
+      "season": "2016-17",
+      "division": "South",
+      "team": "Poole Town",
+      "entity": "Poole Town",
+      "type": "no_playoffs",
+      "note": "Unable to compete in play-offs due to ground issues."
+    },
+    {
+      "season": "2016-17",
+      "division": "South",
+      "team": "Hampton & Richmond Borough",
+      "entity": "Hampton & Richmond Borough",
+      "type": "playoffs",
+      "note": "Qualified for play-offs as next highest-ranking team."
+    },
+    {
       "season": "2017-18",
       "division": "South",
       "team": "Braintree Town",
@@ -1064,6 +1200,14 @@
     {
       "season": "2018-19",
       "division": "National",
+      "team": "Aldershot Town",
+      "entity": "Aldershot Town",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to demotion of Gateshead."
+    },
+    {
+      "season": "2018-19",
+      "division": "National",
       "team": "Braintree Town",
       "entity": "Braintree Town",
       "type": "points_deduction",
@@ -1080,21 +1224,52 @@
       "note": "Deducted 3 points."
     },
     {
-      "season": "2020-21",
-      "division": "National",
-      "team": "Dover Athletic",
-      "entity": "Dover Athletic",
-      "type": "expulsion",
-      "effectiveDate": "2021-03-26",
-      "note": "Expelled on 26 March 2021, and record expunged; due to the curtailment of both the National North and South seasons, there was no relegation from the National League."
+      "season": "2018-19",
+      "division": "South",
+      "team": "Concord Rangers",
+      "entity": "Concord Rangers",
+      "type": "no_playoffs",
+      "note": "Unable to compete in play-offs due to ground issues."
     },
     {
-      "season": "2020-21",
+      "season": "2019-20",
       "division": "National",
-      "team": "National League",
-      "entity": "National League",
-      "type": "no_relegation",
-      "note": "Due to the curtailment of both the National North and South seasons, there was no relegation from the National League."
+      "team": "Maidenhead United",
+      "entity": "Maidenhead United",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to Bury's expulsion from League One."
+    },
+    {
+      "season": "2019-20",
+      "division": "North",
+      "team": "Blyth Spartans",
+      "entity": "Blyth Spartans",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to early curtailment of the season as a result of the covid-19 pandemic."
+    },
+    {
+      "season": "2019-20",
+      "division": "North",
+      "team": "Bradford (Park Avenue)",
+      "entity": "Bradford (Park Avenue)",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to early curtailment of the season as a result of the covid-19 pandemic."
+    },
+    {
+      "season": "2019-20",
+      "division": "South",
+      "team": "Braintree Town",
+      "entity": "Braintree Town",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to early curtailment of the season as a result of the covid-19 pandemic."
+    },
+    {
+      "season": "2019-20",
+      "division": "South",
+      "team": "Hungerford Town",
+      "entity": "Hungerford Town",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to early curtailment of the season as a result of the covid-19 pandemic."
     },
     {
       "season": "2020-21",
@@ -1114,6 +1289,23 @@
       "type": "expulsion",
       "effectiveDate": "2020-09-29",
       "note": "Initially deducted 17 points, and then expelled on 29 September 2020, and record expunged."
+    },
+    {
+      "season": "2020-21",
+      "division": "National",
+      "team": "Dover Athletic",
+      "entity": "Dover Athletic",
+      "type": "expulsion",
+      "effectiveDate": "2021-03-26",
+      "note": "Expelled on 26 March 2021, and record expunged; due to the curtailment of both the National North and South seasons, there was no relegation from the National League."
+    },
+    {
+      "season": "2020-21",
+      "division": "National",
+      "team": "National League",
+      "entity": "National League",
+      "type": "no_relegation",
+      "note": "Due to the curtailment of both the National North and South seasons, there was no relegation from the National League."
     },
     {
       "season": "2020-21",
@@ -1166,6 +1358,14 @@
       "type": "points_deduction",
       "pointsValue": -10,
       "note": "Deducted 10 points."
+    },
+    {
+      "season": "2023-24",
+      "division": "National",
+      "team": "Gateshead",
+      "entity": "Gateshead",
+      "type": "no_playoffs",
+      "note": "Unable to compete in play-offs due to ground issues."
     },
     {
       "season": "2023-24",
