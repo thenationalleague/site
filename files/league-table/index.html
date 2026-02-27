@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.18)</title>
+<title>National League Archive — Standings (Dynamic from results.json) (v3.21)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -284,6 +284,38 @@
           if (!m) return 0;
           return Number(m[1]) * 10000 + Number(m[2]) * 100 + Number(m[3]);
         };
+      
+      // =========================
+// PPG finalisation support
+// =========================
+function seasonUsesPPG(seasonKey, divisionName, asOfISO, includeUndated){
+  const notes = activeNotesFor(seasonKey, divisionName, asOfISO, !!includeUndated);
+  return notes.some(n => String(n.type || '').toLowerCase() === 'ppg');
+}
+
+function applyPPGRankingIfNeeded(seasonKey, divisionName, asOfISO, rows, includeUndated){
+  if (!Array.isArray(rows) || !rows.length) return rows;
+  if (!seasonUsesPPG(seasonKey, divisionName, asOfISO, includeUndated)) return rows;
+
+  rows.forEach(r=>{
+    const p = Number(r.P || 0);
+    const pts = Number(r.Pts || 0);
+    r._ppg = (p > 0) ? (pts / p) : 0;
+  });
+
+  rows.sort((a,b)=>{
+    if (b._ppg !== a._ppg) return b._ppg - a._ppg;
+    if (b.Pts !== a.Pts) return b.Pts - a.Pts;
+    if (b.GD !== a.GD) return b.GD - a.GD;
+    if (b.GF !== a.GF) return b.GF - a.GF;
+    return String(a.team).localeCompare(String(b.team));
+  });
+
+  rows.forEach((r,i)=> r.pos = i + 1);
+  rows.forEach(r=> delete r._ppg);
+
+  return rows;
+}
       
         function formatISODateShort(iso){
           // iso: YYYY-MM-DD -> "Sat 18 Aug 1984"
@@ -835,65 +867,68 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
           }
         }, true);
 
-        function renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, asOfISO, includeUndated){
-          // remove any previous superscripts in the Team column
-          els.tbody.querySelectorAll('td:nth-child(3) .note-ref').forEach(el=> el.remove());
+    function renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, asOfISO, includeUndated){
+  // Remove existing superscripts from team cells
+  els.tbody.querySelectorAll('td:nth-child(3) .note-ref').forEach(el=> el.remove());
 
-          // IMPORTANT: footnotes must respect effectiveDate (and optionally include undated notes on finals)
-          const notes = activeNotesFor(seasonKey, divisionName, asOfISO, includeUndated);
+  // Build notes list using the FULL notes store + effectiveDate filtering
+  const notes = activeNotesFor(seasonKey, divisionName, asOfISO, !!includeUndated);
 
-          els.note.replaceChildren();
-          if (!notes.length){ els.note.hidden = true; return; }
+  els.note.replaceChildren();
+  if (!notes.length){ els.note.hidden = true; return; }
 
-          // Group by canonical entity (not display team label)
-          const groups = new Map(); // canon(entity) -> { teamLabel, entity, notes[] }
-          for (const n of notes){
-            const entity = String(n.entity || n.team || '').trim();
-            const key = canon(entity);
-            if (!key) continue;
-            if (!groups.has(key)) groups.set(key, { teamLabel: String(n.team || entity), entity, notes: [] });
-            groups.get(key).notes.push(String(n.note || ''));
-          }
+  // Group by canonical entity; display label uses `team` as written in the note data
+  const groups = new Map(); // canon(entity) -> { teamLabel, notes:[] }
+  for (const n of notes){
+    const key = canon(n.entity || '');
+    if (!key) continue;
 
-          const rowsArr = Array.from(els.tbody.rows);
-          const entries = [];
+    if (!groups.has(key)) groups.set(key, { team: String(n.team || n.entity || '').trim(), notes: [] });
+    groups.get(key).notes.push(String(n.note || ''));
+  }
 
-          for (const g of groups.values()){
-            const displayTeam = g.teamLabel;
-            const lookupName = g.entity || displayTeam;
+  const rowsArr = Array.from(els.tbody.rows);
+  const entries = [];
 
-            let rowId = '';
-            const slug = bestEffortSlugFromName(lookupName, seasonKey) || bestEffortSlugFromName(displayTeam, seasonKey);
-            if (slug) rowId = 'row-' + slug;
+  for (const { team, notes: texts } of groups.values()){
+    let rowId = '';
 
-            let rowEl = rowId ? document.getElementById(rowId) : null;
-            if (!rowEl){
-              const hit = rowsArr.find(r=> canon(r.cells[2]?.textContent||'') === canon(displayTeam) || canon(r.cells[2]?.textContent||'') === canon(lookupName));
-              if (hit){ rowEl = hit; rowId = hit.id; }
-            }
+    // Try map via slug (from team label)
+    const slug = bestEffortSlugFromName(team, seasonKey);
+    if (slug) rowId = 'row-' + slug;
 
-            const rowIndex = rowEl ? rowsArr.indexOf(rowEl) : Number.POSITIVE_INFINITY;
-            entries.push({ team: displayTeam, text: combineNotes(g.notes), rowId, rowIndex });
-          }
+    // Fallback: direct match against rendered table label
+    let rowEl = rowId ? document.getElementById(rowId) : null;
+    if (!rowEl){
+      const hit = rowsArr.find(r=> canon(r.cells[2]?.textContent||'') === canon(team));
+      if (hit){ rowEl = hit; rowId = hit.id; }
+    }
 
-          entries.sort((a,b)=> (a.rowIndex - b.rowIndex) || a.team.localeCompare(b.team));
+    const rowIndex = rowEl ? rowsArr.indexOf(rowEl) : Number.POSITIVE_INFINITY;
+    entries.push({ team, text: combineNotes(texts), rowId, rowIndex });
+  }
 
-          els.note.hidden = false;
-          entries.forEach((e, i)=>{
-            const n = i + 1;
-            const noteId = 'note-' + n;
-            const supNoteToRow = makeNoteSup(n, e.rowId, e.team);
-            const line = createEl('div', { class:'note-line', id: noteId }, [ supNoteToRow, ' ', `${e.team}: ${e.text}` ]);
-            els.note.appendChild(line);
+  // Keep notes ordered by table position where possible
+  entries.sort((a,b)=> (a.rowIndex - b.rowIndex) || a.team.localeCompare(b.team));
 
-            if (e.rowId){
-              const tr = document.getElementById(e.rowId);
-              const teamCell = tr && tr.cells ? tr.cells[2] : null;
-              if (teamCell) teamCell.appendChild(makeNoteSupToNote(n, noteId, e.team));
-            }
-          });
-        }
-      
+  els.note.hidden = false;
+  entries.forEach((e, i)=>{
+    const n = i + 1;
+    const noteId = 'note-' + n;
+
+    // Note line in the note panel (sup links to row)
+    const supNoteToRow = makeNoteSup(n, e.rowId, e.team);
+    const line = createEl('div', { class:'note-line', id: noteId }, [ supNoteToRow, ' ', `${e.team}: ${e.text}` ]);
+    els.note.appendChild(line);
+
+    // Sup appended to the team cell (sup links to note)
+    if (e.rowId){
+      const tr = document.getElementById(e.rowId);
+      const teamCell = tr && tr.cells ? tr.cells[2] : null;
+      if (teamCell) teamCell.appendChild(makeNoteSupToNote(n, noteId, e.team));
+    }
+  });
+}
         // =========================
         // Expulsions
         // =========================
@@ -1059,8 +1094,11 @@ function buildFinalRow(r, idx, seasonKey){
 function renderFinalTable(seasonKey, divisionName){
   const season = state.finalByKey[seasonKey];
   const div = season?.divisions?.[divisionName];
-  const rows = (div?.rows || []).slice().sort((a,b)=> (a.pos||0) - (b.pos||0));
+let rows = (div?.rows || []).slice().sort((a,b)=> (a.pos||0) - (b.pos||0));
 
+// Apply PPG ranking if season uses PPG finalisation
+rows = applyPPGRankingIfNeeded(seasonKey, divisionName, '9999-12-31', rows, true);
+  
   els.tbody.innerHTML = '';
   const format = getPlayoffFormatForSeason(seasonKey, divisionName);
 
@@ -1087,7 +1125,7 @@ function renderFinalTable(seasonKey, divisionName){
   // IMPORTANT: never show dotted cut lines on Final standings (final table already has colour coding)
   applyCutLinesToRenderedTable(null);
   
-  const notesAsOf = state.current.lastLeagueDate || '9999-12-31';
+  const notesAsOf = getLastLeagueDateForSeasonDivision(seasonKey, divisionName) || '9999-12-31';
   renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, notesAsOf, true);
   rebuildLegend();
 }
@@ -1443,6 +1481,9 @@ function renderDerivedFinalTable(seasonKey, divisionName){
   // Apply dated points deductions up to lastLeagueDate AND undated at derived-final
   rows = applyPointsAdjustments(seasonKey, divisionName, lastLeagueDate, rows, true);
 
+  // Apply PPG ranking if season uses PPG finalisation
+  rows = applyPPGRankingIfNeeded(seasonKey, divisionName, lastLeagueDate, rows, true);
+  
   // Apply final zones + overrides from notes + arrows
   rows = applyFinalRulesFromNotes(seasonKey, divisionName, lastLeagueDate, rows);
 
@@ -1458,7 +1499,10 @@ function renderDerivedFinalTable(seasonKey, divisionName){
 
   applyCutLinesToRenderedTable(cutRules);
 
-  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName);
+  // Final notes = dated up to end-of-season + undated included
+  const notesAsOf = getLastLeagueDateForSeasonDivision(seasonKey, divisionName) || lastLeagueDate || '9999-12-31';
+  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, notesAsOf, true);
+  
   rebuildLegend();
 }
       
@@ -1466,7 +1510,21 @@ function collectDivisionNotesText(seasonKey, divisionName){
   const raw = state.seasonNotes.get(String(seasonKey))?.get(String(divisionName)) || [];
   return raw.map(x => String(x.note || '')).join(' \n ');
 }
+      
+function getLastLeagueDateForSeasonDivision(seasonKey, divisionName){
+  const seasonObj = state.byKey?.[seasonKey];
+  const divObj = seasonObj?.divisions?.[divisionName];
+  const matches = Array.isArray(divObj?.matches) ? divObj.matches : [];
 
+  const leagueDates = matches
+    .filter(m => !m?.playoffs && !m?.playoff_round)
+    .map(m => toISO(m.date))
+    .filter(Boolean)
+    .sort((a,b)=> isoToNum(a) - isoToNum(b));
+
+  return leagueDates.length ? leagueDates[leagueDates.length - 1] : null;
+}
+      
 function inferPlayoffLinesFromNotes(seasonKey, divisionName){
   // Prefer explicit seasonFormat rules (season-notes.json -> seasonFormat array)
   const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
