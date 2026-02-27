@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>National League Archive — Standings (Dynamic from results.json) (v3.22)</title>
+<title>National League Archive — Standings (Dynamic from results.json) (v3.23)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -879,68 +879,116 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
           }
         }, true);
 
-    function renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, asOfISO, includeUndated){
+function renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, asOfISO, includeUndated){
+
   // Remove existing superscripts from team cells
   els.tbody.querySelectorAll('td:nth-child(3) .note-ref').forEach(el=> el.remove());
 
-  // Build notes list using the FULL notes store + effectiveDate filtering
   const notes = activeNotesFor(seasonKey, divisionName, asOfISO, !!includeUndated);
 
   els.note.replaceChildren();
-  if (!notes.length){ els.note.hidden = true; return; }
+  if (!notes.length){
+    els.note.hidden = true;
+    return;
+  }
 
-  // Group by canonical entity; display label uses `team` as written in the note data
-  const groups = new Map(); // canon(entity) -> { teamLabel, notes:[] }
+  // Split into:
+  // 1) team-linked notes
+  // 2) division-wide notes (no entity)
+  const teamGroups = new Map();   // canon(entity) -> { teamLabel, notes:[] }
+  const divisionWide = [];        // plain note strings
+
   for (const n of notes){
-    const key = canon(n.entity || '');
-    if (!key) continue;
+    const entityKey = canon(n.entity || '');
 
-    if (!groups.has(key)) groups.set(key, { team: String(n.team || n.entity || '').trim(), notes: [] });
-    groups.get(key).notes.push(String(n.note || ''));
+    if (!entityKey){
+      if (n.note) divisionWide.push(String(n.note));
+      continue;
+    }
+
+    if (!teamGroups.has(entityKey)){
+      teamGroups.set(entityKey, {
+        team: String(n.team || n.entity || '').trim(),
+        notes: []
+      });
+    }
+
+    if (n.note) teamGroups.get(entityKey).notes.push(String(n.note));
   }
 
   const rowsArr = Array.from(els.tbody.rows);
   const entries = [];
 
-  for (const { team, notes: texts } of groups.values()){
+  for (const { team, notes: texts } of teamGroups.values()){
     let rowId = '';
 
-    // Try map via slug (from team label)
     const slug = bestEffortSlugFromName(team, seasonKey);
     if (slug) rowId = 'row-' + slug;
 
-    // Fallback: direct match against rendered table label
     let rowEl = rowId ? document.getElementById(rowId) : null;
     if (!rowEl){
       const hit = rowsArr.find(r=> canon(r.cells[2]?.textContent||'') === canon(team));
-      if (hit){ rowEl = hit; rowId = hit.id; }
+      if (hit){
+        rowEl = hit;
+        rowId = hit.id;
+      }
     }
 
     const rowIndex = rowEl ? rowsArr.indexOf(rowEl) : Number.POSITIVE_INFINITY;
-    entries.push({ team, text: combineNotes(texts), rowId, rowIndex });
+
+    entries.push({
+      team,
+      text: combineNotes(texts),
+      rowId,
+      rowIndex
+    });
   }
 
-  // Keep notes ordered by table position where possible
+  // Keep team notes ordered by table position
   entries.sort((a,b)=> (a.rowIndex - b.rowIndex) || a.team.localeCompare(b.team));
 
   els.note.hidden = false;
-  entries.forEach((e, i)=>{
-    const n = i + 1;
-    const noteId = 'note-' + n;
 
-    // Note line in the note panel (sup links to row)
-    const supNoteToRow = makeNoteSup(n, e.rowId, e.team);
-    const line = createEl('div', { class:'note-line', id: noteId }, [ supNoteToRow, ' ', `${e.team}: ${e.text}` ]);
+  let counter = 1;
+
+  // ---- TEAM NOTES FIRST ----
+  for (const e of entries){
+
+    const noteId = 'note-' + counter;
+
+    const supNoteToRow = makeNoteSup(counter, e.rowId, e.team);
+
+    const line = createEl(
+      'div',
+      { class:'note-line', id: noteId },
+      [ supNoteToRow, ' ', `${e.team}: ${e.text}` ]
+    );
+
     els.note.appendChild(line);
 
-    // Sup appended to the team cell (sup links to note)
     if (e.rowId){
       const tr = document.getElementById(e.rowId);
       const teamCell = tr && tr.cells ? tr.cells[2] : null;
-      if (teamCell) teamCell.appendChild(makeNoteSupToNote(n, noteId, e.team));
+      if (teamCell){
+        teamCell.appendChild(makeNoteSupToNote(counter, noteId, e.team));
+      }
     }
-  });
+
+    counter++;
+  }
+
+// ---- DIVISION-WIDE NOTES AFTER (bullet style) ----
+for (const text of divisionWide){
+
+  const line = createEl(
+    'div',
+    { class:'note-line division-note' },
+    [ '• ', text ]
+  );
+
+  els.note.appendChild(line);
 }
+}  
         // =========================
         // Expulsions
         // =========================
