@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.16)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.18)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -11,9 +11,16 @@
         --cap-bg:#9e0000; --cap-fg:#fff;
         --head-bg:#000; --head-fg:#fff;
         --zebra-odd:#f6f6f6; --zebra-even:#fff;
-        --gold:gold; --silver:#cfead6; --blue:#e8f0ff; --pink:#ffe0e6;
-        --blue-elim:#e8f0ff;   /* lighter */
-        --blue-semi:#cddfff;   /* darker */
+
+        /* Outcomes */
+        --gold:gold;
+        --silver:#c0c0c0;      /* true silver for play-off winners */
+        --pink:#ffe0e6;
+
+        /* Play-offs (greens) */
+        --po-elim:#e7f7ea;     /* lighter green */
+        --po-semi:#bfe9c8;     /* darker green (SF/byes) */
+
         --gd-pos:#0a7d2a; --gd-zero:#555; --gd-neg:#b00020;
         --ring:#d0d7de;
       }
@@ -50,9 +57,9 @@
       tbody tr:hover{ background:var(--row-bg, transparent); }
       tbody tr.champion{ --row-bg:var(--gold); color:#000; }
       tbody tr.promoted{ --row-bg:var(--silver); color:#000; }
-      tbody tr.playoff{  --row-bg:var(--blue-elim); color:#000; }
-      tbody tr.playoff-semi{ --row-bg:var(--blue-semi); color:#000; }
-      tbody tr.playoff-elim{ --row-bg:var(--blue-elim); color:#000; }
+      tbody tr.playoff{  --row-bg:var(--po-elim); color:#000; }
+      tbody tr.playoff-semi{ --row-bg:var(--po-semi); color:#000; }
+      tbody tr.playoff-elim{ --row-bg:var(--po-elim); color:#000; }
       tbody tr.relegated{--row-bg:var(--pink); color:#000; }
       tbody tr.folded{ --row-bg:#000; color:#fff; }
 
@@ -96,18 +103,22 @@
 
       .legend{ font-size:.9rem; color:#555; margin-top:.5rem; }
       .legend .swatch{ display:inline-block; width:.9em; height:.9em; border-radius:3px; margin:0 .35rem -.12rem .35rem; }
-      .legend .gold{ background:var(--gold); } .legend .silver{ background:var(--silver); }
-      .legend .blue{ background:var(--blue); } .legend .pink{ background:var(--pink); } .legend .black{ background:#000; }
+      .legend .gold{ background:var(--gold); }
+      .legend .silver{ background:var(--silver); }
+      .legend .po-semi{ background:var(--po-semi); }
+      .legend .po-elim{ background:var(--po-elim); }
+      .legend .pink{ background:var(--pink); }
+      .legend .black{ background:#000; }
       .legend .grey{ background:#555; }
-
+      
       .error{ display:none; background:#ffe9ec; color:#b00020; border:1px solid #f0b9c2; padding:8px 10px; border-radius:8px; margin:.5rem 0; font-weight:600; white-space:pre-wrap; }
 
       .season-note{ margin-top:.5rem; padding:10px 12px; border-left:4px solid #9e0000; background:#f8f8f8; color:#222; }
       .season-note{ margin-top:.5rem; padding:10px 12px; border-left:4px solid #9e0000; background:#f8f8f8; color:#222; }
       /* Date-specific clinched statuses (ONLY when mathematically secured) */
       tbody tr.clinched-champion{ --row-bg:var(--gold); color:#000; }
-      tbody tr.clinched-po-semi{ --row-bg:var(--blue-semi); color:#000; }
-      tbody tr.clinched-po-elim{ --row-bg:var(--blue-elim); color:#000; }
+      tbody tr.clinched-po-semi{ --row-bg:var(--po-semi); color:#000; }
+      tbody tr.clinched-po-elim{ --row-bg:var(--po-elim); color:#000; }
       tbody tr.clinched-relegated{ --row-bg:var(--pink); color:#000; }
 
       /* Subtle semi vs eliminator marker (NOT a box outline) */
@@ -116,11 +127,11 @@
       .note-line{ white-space:normal; margin:2px 0; }
       /* Row-level semi vs eliminator marker (continuous, no cell seams) */
       tbody tr.clinched-po-semi{
-        background-image: linear-gradient(to right, rgba(10,125,42,.55) 0, rgba(10,125,42,.55) 4px, transparent 4px);
+        background-image: linear-gradient(to right, rgba(0,96,32,.60) 0, rgba(0,96,32,.60) 4px, transparent 4px);
         background-repeat: no-repeat;
       }
       tbody tr.clinched-po-elim{
-        background-image: linear-gradient(to right, rgba(107,76,194,.50) 0, rgba(107,76,194,.50) 4px, transparent 4px);
+        background-image: linear-gradient(to right, rgba(0,96,32,.28) 0, rgba(0,96,32,.28) 4px, transparent 4px);
         background-repeat: no-repeat;
       }
       .note-line.note-flash{ animation: noteGlow 1200ms ease-out; }
@@ -1440,10 +1451,14 @@ function renderDerivedFinalTable(seasonKey, divisionName){
   rows.forEach((r, idx)=> frag.appendChild(buildDerivedFinalRow(r, idx, seasonKey)));
   els.tbody.appendChild(frag);
 
-  // No dotted cut lines on any final view
-  applyCutLinesToRenderedTable(null);
+  // Keep dotted cut lines on derived finals (use seasonFormat first, else infer from final tables)
+  const cutRules =
+    cutsFromSeasonFormats(seasonKey, divisionName, rows.length) ||
+    inferCutsFromFinal(seasonKey, divisionName);
 
-  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, lastLeagueDate, true);
+  applyCutLinesToRenderedTable(cutRules);
+
+  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName);
   rebuildLegend();
 }
       
@@ -1930,6 +1945,8 @@ function rebuildLegend(){
     championFinal: rows.some(r=> r.classList.contains('champion')),
     promotedFinal: rows.some(r=> r.classList.contains('promoted')),
     playoffFinal: rows.some(r=> r.classList.contains('playoff')),
+    playoffSemiFinal: rows.some(r=> r.classList.contains('playoff-semi')),
+    playoffElimFinal: rows.some(r=> r.classList.contains('playoff-elim')),
     relegatedFinal: rows.some(r=> r.classList.contains('relegated')),
 
     clinchedChampion: rows.some(r=> r.classList.contains('clinched-champion')),
@@ -1949,15 +1966,24 @@ function rebuildLegend(){
   if (isFinalTable){
     if (has.championFinal) parts.push(['gold','Champions']);
     if (has.promotedFinal) parts.push(['silver','Play-off Winner']);
-    if (has.playoffFinal) parts.push(['blue','Qualified for Play-offs']);
+
+    // Distinguish byes/SF vs eliminator qualifiers when both exist
+    if (has.playoffSemiFinal) parts.push(['po-semi','Qualified for Play-off Semi-finals']);
+    if (has.playoffElimFinal) parts.push(['po-elim','Qualified for Play-off Eliminators']);
+
+    // Fallback: if somehow only generic playoff exists without tier classes
+    if (!has.playoffSemiFinal && !has.playoffElimFinal && has.playoffFinal){
+      parts.push(['po-elim','Qualified for Play-offs']);
+    }
+
     if (has.relegatedFinal) parts.push(['pink','Relegated']);
   } else {
     if (has.clinchedChampion) parts.push(['gold','Champions']);
-    if (has.clinchedPoSemi) parts.push(['blue','Qualified for Play-off Semi-finals']);
-    if (has.clinchedPoElim) parts.push(['blue','Qualified for Play-off Eliminators']);
+    if (has.clinchedPoSemi) parts.push(['po-semi','Qualified for Play-off Semi-finals']);
+    if (has.clinchedPoElim) parts.push(['po-elim','Qualified for Play-off Eliminators']);
     if (has.clinchedRelegated) parts.push(['pink','Relegation zone']);
   }
-
+  
   if (has.folded) parts.push(['black','Folded']);
   if (has.expunged) parts.push(['grey','Expunged']);
 
