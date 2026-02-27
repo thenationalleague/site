@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>National League Archive — Standings (Dynamic from results.json) (v3.21)</title>
+<title>National League Archive — Standings (Dynamic from results.json) (v3.22)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -338,9 +338,12 @@ function applyPPGRankingIfNeeded(seasonKey, divisionName, asOfISO, rows, include
           // Undated notes apply only when explicitly included (derived final)
           if (!ed) return !!includeUndated;
 
-          // Special marker supported in your JSON already
+          // Special markers
           if (ed === 'start_of_season') return true;
-
+        
+          // End-of-season notes should apply in final contexts where asOf is effectively "season end"
+          if (ed === 'end_of_season') return true;
+          
           // Date-based
           if (/^\d{4}-\d{2}-\d{2}$/.test(ed)){
             return isoToNum(ed) <= isoToNum(asOfISO);
@@ -444,41 +447,50 @@ function applyPPGRankingIfNeeded(seasonKey, divisionName, asOfISO, rows, include
         // =========================
         // Season Notes (unchanged)
         // =========================
-        function indexSeasonNotes(raw){
-          state.seasonNotes.clear();
-          state.seasonNotesFull.clear();
+function indexSeasonNotes(raw){
+  state.seasonNotes.clear();
+  state.seasonNotesFull.clear();
 
-          const list = Array.isArray(raw) ? raw : Array.isArray(raw?.notes) ? raw.notes : [];
+  const list = Array.isArray(raw) ? raw : Array.isArray(raw?.notes) ? raw.notes : [];
 
-          for (const it of list){
-            if (!it?.season || !it?.division || !it?.team || !it?.note) continue;
+  for (const it of list){
+    if (!it?.season || !it?.division) continue;
 
-            const s = String(it.season);
-            const d = String(it.division);
+    const s = String(it.season);
+    const d = String(it.division);
 
-            // 1) simple store for display (existing behaviour)
-            if (!state.seasonNotes.has(s)) state.seasonNotes.set(s, new Map());
-            const dm = state.seasonNotes.get(s);
-            if (!dm.has(d)) dm.set(d, []);
-            dm.get(d).push({ team:String(it.team), entity:String(it.entity || it.team || ''), note:String(it.note) });
-            
-            // 2) full store for rules
-            if (!state.seasonNotesFull.has(s)) state.seasonNotesFull.set(s, new Map());
-            const fm = state.seasonNotesFull.get(s);
-            if (!fm.has(d)) fm.set(d, []);
+    const team = (it.team != null && String(it.team).trim() !== '') ? String(it.team) : '';
+    const entity = (it.entity != null && String(it.entity).trim() !== '')
+      ? String(it.entity)
+      : (team ? team : ''); // division-wide notes may have neither
 
-            fm.get(d).push({
-              season: s,
-              division: d,
-              team: String(it.team),
-              entity: String(it.entity || it.team || ''),
-              type: String(it.type || 'general').toLowerCase(),
-              pointsValue: (it.pointsValue != null && it.pointsValue !== '') ? Number(it.pointsValue) : null,
-              effectiveDate: (it.effectiveDate != null && it.effectiveDate !== '') ? String(it.effectiveDate) : null,
-              note: String(it.note)
-            });
-          }
-        }
+    const noteText = (it.note != null && String(it.note).trim() !== '') ? String(it.note) : '';
+
+    // 1) simple store for display (EXISTING BEHAVIOUR: team-scoped notes only)
+    if (team && noteText){
+      if (!state.seasonNotes.has(s)) state.seasonNotes.set(s, new Map());
+      const dm = state.seasonNotes.get(s);
+      if (!dm.has(d)) dm.set(d, []);
+      dm.get(d).push({ team:String(team), entity:String(entity || team || ''), note:String(noteText) });
+    }
+
+    // 2) full store for rules (NEW: includes division-wide notes like type:"ppg")
+    if (!state.seasonNotesFull.has(s)) state.seasonNotesFull.set(s, new Map());
+    const fm = state.seasonNotesFull.get(s);
+    if (!fm.has(d)) fm.set(d, []);
+
+    fm.get(d).push({
+      season: s,
+      division: d,
+      team: String(team),                          // may be ""
+      entity: String(entity),                      // may be ""
+      type: String(it.type || 'general').toLowerCase(),
+      pointsValue: (it.pointsValue != null && it.pointsValue !== '') ? Number(it.pointsValue) : null,
+      effectiveDate: (it.effectiveDate != null && it.effectiveDate !== '') ? String(it.effectiveDate) : null,
+      note: String(noteText)                       // may be ""
+    });
+  }
+}
       
         function parsePlayoffsValue(v){
           // Returns { semi:number, elim:number }
