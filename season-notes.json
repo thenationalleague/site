@@ -1234,6 +1234,27 @@
     {
       "season": "2019-20",
       "division": "National",
+      "type": "ppg",
+      "effectiveDate": "end_of_season",
+      "note": "Final standings determined by points per game due to season curtailment."
+    },
+    {
+      "season": "2019-20",
+      "division": "North",
+      "type": "ppg",
+      "effectiveDate": "end_of_season",
+      "note": "Final standings determined by points per game due to season curtailment."
+    },
+    {
+      "season": "2019-20",
+      "division": "South",
+      "type": "ppg",
+      "effectiveDate": "end_of_season",
+      "note": "Final standings determined by points per game due to season curtailment."
+    },
+    {
+      "season": "2019-20",
+      "division": "National",
       "team": "Maidenhead United",
       "entity": "Maidenhead United",
       "type": "reprieve",
