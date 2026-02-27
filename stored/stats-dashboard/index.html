@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Club Records — v4.4 (abandoned logic update)</title>
+  <title>Club Records — v4.6 (scorelines mobile ordering fix)</title>
   <meta name="color-scheme" content="light" />
   <style>
     :root{
@@ -2613,24 +2613,42 @@ function renderGoalsCard(entity){
       if(!entity){ grid.innerHTML='<div class="muted">Select a club to see scorelines.</div>'; return; }
       const ents = entitySet();
       const mm = filteredMatchesKPI(ents);
-      const map=new Map();
-      for(const m of mm){
+      const map = new Map();
+
+      for (const m of mm){
         const pe = perspectiveEntityForMatch(m, ents);
-        const gf=gfByEntity(m,pe), ga=gaByEntity(m,pe);
-        const r= (gf>ga)?'W':(gf<ga)?'L':'D';
-        if(r!==wdlView) continue;
-        const key=`${gf}-${ga}`;
-        map.set(key, (map.get(key)||0)+1);
+        if (!pe) continue;
+
+        // Use awarded outcome when present (so abandoned can be W/L/D correctly)
+        const r = resByEntity(m, pe);
+        if (r !== wdlView) continue;
+
+        // Synthetic scoreline bucket for abandoned games where goals must not count
+        const key = isAbandonedNoGoals(m) ? 'A-A' : `${gfByEntity(m,pe)}-${gaByEntity(m,pe)}`;
+        map.set(key, (map.get(key) || 0) + 1);
       }
-      const items=[...map.entries()].map(([k,c])=>{const [a,b]=k.split('-').map(Number);return {gf:a,ga:b,score:`${a}\u2013${b}`,count:c};});
+
+      const items = [...map.entries()].map(([k,c])=>{
+        if (k === 'A-A'){
+          return { gf:NaN, ga:NaN, score:'A–A', count:c };
+        }
+        const [a,b] = k.split('-').map(Number);
+        return { gf:a, ga:b, score:`${a}\u2013${b}`, count:c };
+      });
+
       items.sort((a,b)=>{
         if (a.score === 'A–A') return 1;
         if (b.score === 'A–A') return -1;
         return b.count - a.count;
       });
+      
       if(!items.length){ grid.innerHTML='<div class="muted">No scorelines for this scope.</div>'; return; }
-      const size=Math.ceil(items.length/3);
-      const col1=items.slice(0,size), col2=items.slice(size,size*2), col3=items.slice(size*2);
+      const cols = window.matchMedia('(max-width:720px)').matches ? 2 : 3;
+      const size = Math.ceil(items.length / cols);
+
+      const col1 = items.slice(0, size);
+      const col2 = items.slice(size, size * 2);
+      const col3 = items.slice(size * 2);
       const max=items.reduce((m,i)=>Math.max(m,i.count),0)||1;
       const col = arr => `<div class="sf-list">${
         arr.map(x=>`
@@ -2640,8 +2658,9 @@ function renderGoalsCard(entity){
             <span class="sf-ct">${fmtNum(x.count)}</span>
           </div>`).join('')
       }</div>`;
-      grid.innerHTML = col(col1) + col(col2) + col(col3);
-
+      grid.innerHTML = (cols === 2)
+        ? (col(col1) + col(col2))
+        : (col(col1) + col(col2) + col(col3));
     }
 
 function renderKPIs(entity){
