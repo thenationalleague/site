@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Club Records — v4.2 (with League Positions Graph)</title>
+  <title>Club Records — v4.4 (abandoned logic update)</title>
   <meta name="color-scheme" content="light" />
   <style>
     :root{
@@ -1572,9 +1572,24 @@ function updateSubbarTitle(entity){
       if (hg===ag) return 'D';
       return ((hg>ag)===atHome) ? 'W' : 'L';
     }
-    const gfByEntity = (m, entity) => isHomeByEntity(m, entity) ? toInt(m.home_goals) : toInt(m.away_goals);
-    const gaByEntity = (m, entity) => isHomeByEntity(m, entity) ? toInt(m.away_goals) : toInt(m.home_goals);
+function isAbandonedNoGoals(m){
+  return m.status === 'abandoned' && m.count_goals === false;
+}
 
+function gfByEntity(m, entity){
+  if (isAbandonedNoGoals(m)) return 0;
+  return isHomeByEntity(m, entity)
+    ? toInt(m.home_goals)
+    : toInt(m.away_goals);
+}
+
+function gaByEntity(m, entity){
+  if (isAbandonedNoGoals(m)) return 0;
+  return isHomeByEntity(m, entity)
+    ? toInt(m.away_goals)
+    : toInt(m.home_goals);
+}
+    
     // --- Deduping ---
     const matchKey = (m) => `${m.date}|${m.home}|${m.away}|${toInt(m.home_goals)}-${toInt(m.away_goals)}|${pickOutcomeHA(m)??''}`;
     function dedupeMatches(arr){ const seen=new Set(), out=[]; for(const m of arr){ const k=matchKey(m); if(!seen.has(k)){ seen.add(k); out.push(m);} } return out; }
@@ -2608,7 +2623,11 @@ function renderGoalsCard(entity){
         map.set(key, (map.get(key)||0)+1);
       }
       const items=[...map.entries()].map(([k,c])=>{const [a,b]=k.split('-').map(Number);return {gf:a,ga:b,score:`${a}\u2013${b}`,count:c};});
-      items.sort((a,b)=> (a.gf-b.gf)||(a.ga-b.ga));
+      items.sort((a,b)=>{
+        if (a.score === 'A–A') return 1;
+        if (b.score === 'A–A') return -1;
+        return b.count - a.count;
+      });
       if(!items.length){ grid.innerHTML='<div class="muted">No scorelines for this scope.</div>'; return; }
       const size=Math.ceil(items.length/3);
       const col1=items.slice(0,size), col2=items.slice(size,size*2), col3=items.slice(size*2);
@@ -2695,7 +2714,7 @@ addAnim(el('card-seasons')); addAnim(el('card-goals')); addAnim(el('card-results
       const ents = entitySet();
 let base = allMatches.filter(m => {
   const pe = perspectiveEntityForMatch(m, ents);
-  return pe && hasResult(m) && venueOKByEntity(m, pe) && scopeOK(m, scope, pe);
+  return pe && (hasResult(m) || m.status === 'abandoned') && venueOKByEntity(m, pe) && scopeOK(m, scope, pe);
 });
 
       base = dedupeMatches(base).sort((a,b)=> dParse(a.date) - dParse(b.date));
@@ -2769,7 +2788,12 @@ if (scLine) scLine.textContent = buildHeaderSuffix() || '';
         const atHome = isHomeByEntity(m, pe);
         const opp = atHome ? m.away : m.home;
         const ven = isNeutral(m) ? 'N' : (atHome ? 'H' : 'A');
-        const score = `${toInt(m.home_goals)}–${toInt(m.away_goals)}`;
+        let score;
+        if (isAbandonedNoGoals(m)){
+          score = 'A–A*';
+        } else {
+          score = `${toInt(m.home_goals)}–${toInt(m.away_goals)}`;
+        }
         const r = resByEntity(m, pe);
         const vChip  = `<span class="vChip ${ven==='H'?'vH':ven==='A'?'vA':'vN'}">${ven}</span>`;
         const rBadge = `<span class="rBadge ${r}">${r}</span>`;
