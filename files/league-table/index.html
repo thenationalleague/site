@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>National League Archive — Standings (Dynamic from results.json) (v3.27)</title>
+<title>National League Archive — Standings (Dynamic from results.json) (v3.29)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -1247,11 +1247,9 @@ function getPlayoffWinnerFromFinalTables(seasonKey, divisionName){
   return hit ? String(hit.team || '').trim() : '';
 }
 
-function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows){
-  // Derived final includes undated notes
-  const includeUndated = true;
-  const notes = activeNotesFor(seasonKey, divisionName, asOfISO, includeUndated);
-
+function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows, includeUndated){
+  const notes = activeNotesFor(seasonKey, divisionName, asOfISO, !!includeUndated);
+  
   // Canonical match key is ALWAYS entity.
   // r.team (from results.json) is the canonical entity string.
   const notesByEntity = new Map(); // canon(entity) -> list
@@ -1512,47 +1510,54 @@ function buildDerivedFinalRow(r, idx, seasonKey){
   return tr;
 }
 
-function renderDerivedFinalTable(seasonKey, divisionName){
-  const seasonObj = state.byKey[seasonKey];
-  const divObj = seasonObj?.divisions?.[divisionName];
-  const matches = Array.isArray(divObj?.matches) ? divObj.matches : [];
-
-  // derived final uses last regular-season league date
+function renderDerivedTable(seasonKey, divisionName, mode){
+  // mode: 'regular' (end of regular season) OR 'final' (season end incl play-offs)
   const lastLeagueDate = state.current.lastLeagueDate;
   if (!lastLeagueDate){
-    // fallback: just render the league-tables final if we can't find it
+    // If we can't compute from results, fall back to reference table
     renderFinalTable(seasonKey, divisionName);
     return;
   }
 
-  // Compute as-of last league date (league-only) but include UNDATED notes now
+  const seasonEndDate = getSeasonEndDateForSeasonDivision(seasonKey, divisionName) || lastLeagueDate;
+
+  const isFinal = (mode === 'final');
+
+  // Standings are ALWAYS league-only as-of last LEAGUE match date
   let rows = computeStandings(seasonKey, divisionName, lastLeagueDate);
 
-  // Apply dated points deductions up to lastLeagueDate AND undated at derived-final
-  rows = applyPointsAdjustments(seasonKey, divisionName, lastLeagueDate, rows, true);
+  // Points deductions:
+  // - regular end: dated only (no undated)
+  // - season final: include undated
+  rows = applyPointsAdjustments(seasonKey, divisionName, lastLeagueDate, rows, isFinal);
 
-  // Apply PPG ranking if season uses PPG finalisation
-  rows = applyPPGRankingIfNeeded(seasonKey, divisionName, lastLeagueDate, rows, true);
-  
-  // Apply final zones + overrides from notes + arrows
-  rows = applyFinalRulesFromNotes(seasonKey, divisionName, lastLeagueDate, rows);
+  // PPG ranking:
+  rows = applyPPGRankingIfNeeded(seasonKey, divisionName, lastLeagueDate, rows, isFinal);
+
+  // Final rules from notes:
+  // - regular end: do NOT allow play-off winner promotion, and do NOT include undated
+  // - season final: allow play-off winner promotion, and include undated + end-of-season notes
+  const rulesAsOf = isFinal ? seasonEndDate : lastLeagueDate;
+  rows = applyFinalRulesFromNotes(seasonKey, divisionName, rulesAsOf, rows, isFinal);
 
   els.tbody.innerHTML = '';
   const frag = document.createDocumentFragment();
   rows.forEach((r, idx)=> frag.appendChild(buildDerivedFinalRow(r, idx, seasonKey)));
   els.tbody.appendChild(frag);
 
-  // Keep dotted cut lines on derived finals (use seasonFormat first, else infer from final tables)
+  // Dotted cut lines: keep on both derived views
   const cutRules =
     cutsFromSeasonFormats(seasonKey, divisionName, rows.length) ||
     inferCutsFromFinal(seasonKey, divisionName);
 
   applyCutLinesToRenderedTable(cutRules);
 
-  // Final notes = dated up to end-of-season + undated included
-  const notesAsOf = getLastLeagueDateForSeasonDivision(seasonKey, divisionName) || lastLeagueDate || '9999-12-31';
-  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, notesAsOf, true);
-  
+  // Notes display:
+  // - regular end: dated up to last league date (no undated)
+  // - season final: dated up to season end + undated included
+  const notesAsOf = isFinal ? seasonEndDate : lastLeagueDate;
+  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, notesAsOf, isFinal);
+
   rebuildLegend();
 }
       
@@ -1573,6 +1578,25 @@ function getLastLeagueDateForSeasonDivision(seasonKey, divisionName){
     .sort((a,b)=> isoToNum(a) - isoToNum(b));
 
   return leagueDates.length ? leagueDates[leagueDates.length - 1] : null;
+}
+
+function getSeasonEndDateForSeasonDivision(seasonKey, divisionName){
+  const seasonObj = state.byKey?.[seasonKey];
+  const divObj = seasonObj?.divisions?.[divisionName];
+  const matches = Array.isArray(divObj?.matches) ? divObj.matches : [];
+
+  const playoffDates = matches
+    .filter(m => (m?.playoffs || m?.playoff_round))
+    .map(m => toISO(m.date))
+    .filter(Boolean)
+    .sort((a,b)=> isoToNum(a) - isoToNum(b));
+
+  const lastPlayoff = playoffDates.length ? playoffDates[playoffDates.length - 1] : null;
+
+  const lastLeague = getLastLeagueDateForSeasonDivision(seasonKey, divisionName);
+
+  // If play-offs exist, season end is after play-offs; else it's just the last league match date
+  return lastPlayoff || lastLeague || null;
 }
       
 function inferPlayoffLinesFromNotes(seasonKey, divisionName){
@@ -1808,6 +1832,10 @@ function populateAsOf(seasonKey, divisionName){
     ? (playoffDates.length ? playoffDates[playoffDates.length - 1] : lastLeagueDate)
     : lastLeagueDate;
 
+  // Persist for caption/logic later
+  state.current.hasPlayoffs = hasPlayoffs;
+  state.current.seasonFinalDate = seasonFinalDate;
+  
   // Show all league dates except the last one (keeps selector usable)
   const visibleDates = (leagueDates.length > 1) ? leagueDates.slice(0, -1) : [];
   visibleDates.forEach(d=>{
@@ -1824,7 +1852,7 @@ function populateAsOf(seasonKey, divisionName){
     sel.appendChild(createEl('option', { value:'__DERIVED_REGULAR_END__', textContent:`${prettyRegularEnd} (end of regular season)` }));
   }
 
-  if (seasonFinalDate){
+  if (seasonFinalDate || lastLeagueDate){
     const prettySeasonFinal = formatISODateShort(seasonFinalDate);
     const suffix = hasPlayoffs ? 'season final' : 'final standings';
     sel.appendChild(createEl('option', { value:'__FINAL_DERIVED__', textContent:`${prettySeasonFinal} (${suffix})` }));
@@ -2170,16 +2198,16 @@ state.current.asof = effectiveAsOf;
 const leagueTitle = leagueTitleFromFinalTables(seasonKey, chosenDiv);
 
 if (effectiveAsOf === '__DERIVED_REGULAR_END__'){
-  // End of regular season (derived from last league date + notes)
+  // End of regular season (league table as-of last league date; no play-off winner)
   setText(els.caption, leagueTitle + ' (end of regular season)');
-  renderDerivedFinalTable(seasonKey, chosenDiv);
+  renderDerivedTable(seasonKey, chosenDiv, 'regular');
 
 } else if (effectiveAsOf === '__FINAL_DERIVED__'){
-  // Season end context (derived table; still computed from last league date + notes)
-  const label = (state.current.lastLeagueDate ? 'final standings' : 'season final');
-  setText(els.caption, leagueTitle + ` (${label})`);
-  renderDerivedFinalTable(seasonKey, chosenDiv);
-
+  // Season end (post play-offs where applicable)
+  const hasPO = !!state.current.hasPlayoffs;
+  setText(els.caption, leagueTitle + (hasPO ? ' (season final)' : ' (final standings)'));
+  renderDerivedTable(seasonKey, chosenDiv, 'final');
+  
 } else if (effectiveAsOf === '__FINAL_TABLES__'){
   // Reference – from league-tables.json
   setText(els.caption, leagueTitle + ' (reference)');
