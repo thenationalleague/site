@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>National League Archive — Standings (Dynamic from results.json) (v3.23)</title>
+<title>National League Archive — Standings (Dynamic from results.json) (v3.24)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -661,29 +661,19 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
   if (!fmt) return rows;
 
   const ptsWin = pointsForWin(seasonKey);
-  const asNum = isoToNum(asOfISO);
 
-  const expSet = expungedTeamsFor(seasonKey, divisionName, asOfISO, false);
+  // Clinching must be calculated against the INTENDED schedule, not whatever fixtures
+  // happen to exist in results.json (curtailments / missing data would otherwise
+  // create false early clinches).
+  //
+  // Assumption: double round-robin (home & away) within the division.
+  // Therefore: maxGames = (teamCount - 1) * 2
+  //
+  // IMPORTANT: use the division team-count (rows includes expunged placeholders too),
+  // so expulsions/expunged records do NOT shrink the theoretical schedule ceiling.
+  const teamCountForCeiling = Math.max(0, Number(rows?.length || 0));
+  const maxGames = (teamCountForCeiling >= 2) ? ((teamCountForCeiling - 1) * 2) : 0;
   
-  // Clinching MUST be based on the regular-season schedule size, not "remaining fixtures found",
-  // because expulsions can remove fixtures and create false early clinches.
-  // Use: max scheduled league matches (excluding play-offs) as the season "game ceiling".
-  const scheduled = new Map(); // team -> scheduled regular-season matches
-  const bump = (t)=> { if (!scheduled.has(t)) scheduled.set(t, 0); scheduled.set(t, scheduled.get(t) + 1); };
-
-  for (const m of (matches || [])){
-    if (m?.playoffs || m?.playoff_round) continue;
-
-    const h = String(m.home || '').trim();
-    const a = String(m.away || '').trim();
-    if (!h || !a) continue;
-
-    bump(h);
-    bump(a);
-  }
-
-  const maxGames = Math.max(0, ...Array.from(scheduled.values()));
-
   // Max possible points per team (using the shared maxGames ceiling)
   const maxPts = new Map();
   for (const r of rows){
