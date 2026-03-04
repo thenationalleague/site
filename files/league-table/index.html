@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>National League Archive — Standings (Dynamic from results.json) (v3.24)</title>
+<title>National League Archive — Standings (Dynamic from results.json) (v3.25)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -1768,7 +1768,7 @@ function applyCutLinesToRenderedTable(cuts){
           els.pills.appendChild(frag);
         }
 
-        // Build an "As of" selector from match dates in the chosen season+division
+// Build an "As of" selector from match dates in the chosen season+division
 function populateAsOf(seasonKey, divisionName){
   const season = state.byKey[seasonKey];
   if (!season) return;
@@ -1776,52 +1776,75 @@ function populateAsOf(seasonKey, divisionName){
   const div = season.divisions?.[divisionName];
   const matches = Array.isArray(div?.matches) ? div.matches : [];
 
-  // Exclude play-offs from date list
+  // League dates (exclude play-offs)
   const leagueMatches = matches.filter(m => !m?.playoffs && !m?.playoff_round);
 
-  const dates = Array.from(
+  const leagueDates = Array.from(
     new Set(leagueMatches.map(m => toISO(m.date)).filter(Boolean))
   ).sort((a,b)=> isoToNum(a) - isoToNum(b));
 
   const sel = els.asofSel;
   sel.innerHTML = '';
 
-  // Track last regular-season league date (for "__REGULAR_END__")
-  const lastLeagueDate = dates.length ? dates[dates.length - 1] : null;
+  // Track last regular-season league date
+  const lastLeagueDate = leagueDates.length ? leagueDates[leagueDates.length - 1] : null;
   state.current.lastLeagueDate = lastLeagueDate;
 
-  // Show all league dates except the last one (keeps the selector usable)
-  const visibleDates = (dates.length > 1) ? dates.slice(0, -1) : [];
+  // Detect whether play-offs exist (prefer seasonFormat, but also allow data-driven detection)
+  const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
+  const playoffsExistByFormat = !!(fmt && (Number(fmt.playoffsElim || 0) > 0 || Number(fmt.playoffsSemi || 0) > 0));
+
+  const playoffDates = matches
+    .filter(m => (m?.playoffs || m?.playoff_round))
+    .map(m => toISO(m.date))
+    .filter(Boolean)
+    .sort((a,b)=> isoToNum(a) - isoToNum(b));
+
+  const playoffsExistByData = playoffDates.length > 0;
+  const hasPlayoffs = playoffsExistByFormat || playoffsExistByData;
+
+  // Season-final date (if play-offs exist, use last play-off date; otherwise use last league date)
+  const seasonFinalDate = hasPlayoffs
+    ? (playoffDates.length ? playoffDates[playoffDates.length - 1] : lastLeagueDate)
+    : lastLeagueDate;
+
+  // Show all league dates except the last one (keeps selector usable)
+  const visibleDates = (leagueDates.length > 1) ? leagueDates.slice(0, -1) : [];
   visibleDates.forEach(d=>{
     sel.appendChild(createEl('option', { value:d, textContent: formatISODateShort(d) }));
   });
 
-  // If play-offs exist for this season/division, add an "End of regular season" option
-  const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
-  const hasPlayoffs = !!(fmt && (Number(fmt.playoffsElim || 0) > 0));
-
+  // Finals (date-led labels)
+  // 1) End of regular season (derived)
   if (hasPlayoffs && lastLeagueDate){
-    sel.appendChild(createEl('option', { value:'__REGULAR_END__', textContent:'End of regular season' }));
+    const pretty = formatISODateShort(lastLeagueDate);
+    sel.appendChild(createEl('option', { value:'__FINAL_DERIVED__', textContent:`${pretty} (end of regular season)` }));
+  } else if (!hasPlayoffs && lastLeagueDate){
+    // No play-offs: derived final is optional, but if present, keep it clearly labelled
+    const pretty = formatISODateShort(lastLeagueDate);
+    sel.appendChild(createEl('option', { value:'__FINAL_DERIVED__', textContent:`${pretty} (final standings – derived)` }));
   }
 
-  // Finals:
-  // 1) from league-tables.json (interim)
-  sel.appendChild(createEl('option', { value:'__FINAL_TABLES__', textContent:'Final – from league-tables' }));
-
-  // 2) derived from last regular-season date + notes (your long-term direction)
-  if (lastLeagueDate){
-    sel.appendChild(createEl('option', { value:'__FINAL_DERIVED__', textContent:'Final – from last date (derived)' }));
+  // 2) Season final / final standings (from league-tables)
+  if (seasonFinalDate){
+    const pretty = formatISODateShort(seasonFinalDate);
+    const suffix = hasPlayoffs ? 'season final' : 'final standings';
+    sel.appendChild(createEl('option', { value:'__FINAL_TABLES__', textContent:`${pretty} (${suffix})` }));
+  } else {
+    // Fallback label if we cannot determine any dates
+    sel.appendChild(createEl('option', { value:'__FINAL_TABLES__', textContent: hasPlayoffs ? 'Season final' : 'Final standings' }));
   }
-  
-  // Persist selection if possible; otherwise default to Final
+
+  // Persist selection if possible; otherwise default to league-tables final
   const allValues = Array.from(sel.options).map(o => o.value);
   const desired = (state.current.asof && allValues.includes(state.current.asof))
     ? state.current.asof
     : '__FINAL_TABLES__';
-  
+
   sel.value = desired;
   state.current.asof = desired;
 }
+      
       // =========================
         // Standings calculation
         // =========================
@@ -2153,19 +2176,15 @@ if (effectiveAsOf === '__FINAL_TABLES__'){
   renderFinalTable(seasonKey, chosenDiv);
 
 } else if (effectiveAsOf === '__FINAL_DERIVED__'){
-  // Final – derived from last regular-season date + notes
-  setText(els.caption, leagueTitle + ' (derived)');
+  // End of regular season (derived from last league date + notes)
+  setText(els.caption, leagueTitle + ' (end of regular season)');
   renderDerivedFinalTable(seasonKey, chosenDiv);
-
+  
 } else {
   
-  // Date-specific (and regular-end) standings: computed from results.json
+  // Date-specific standings: computed from results.json
   let asOfISO = effectiveAsOf;
-
-  if (effectiveAsOf === '__REGULAR_END__'){
-    asOfISO = state.current.lastLeagueDate || effectiveAsOf;
-  }
-
+  
   const prettyAsOf = formatISODateShort(asOfISO);
   setText(els.caption, `${leagueTitle} (as of ${prettyAsOf})`);
 
