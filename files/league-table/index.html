@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>National League Archive — Standings (Dynamic from results.json) (v3.29)</title>
+<title>National League Archive — Standings (Dynamic from results.json) (v3.30)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -1247,8 +1247,10 @@ function getPlayoffWinnerFromFinalTables(seasonKey, divisionName){
   return hit ? String(hit.team || '').trim() : '';
 }
 
-function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows, includeUndated){
+function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows, includeUndated, allowPlayoffWinnerPromotion){
   const notes = activeNotesFor(seasonKey, divisionName, asOfISO, !!includeUndated);
+
+  const allowPO = !!allowPlayoffWinnerPromotion;
   
   // Canonical match key is ALWAYS entity.
   // r.team (from results.json) is the canonical entity string.
@@ -1279,11 +1281,13 @@ function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows, includ
   // Only treat a season as having play-offs if we can identify a play-off format
   const hasPlayoffs = !!playoffFieldEnd;
 
-  // Only look for a play-off winner when play-offs exist
-  const playoffWinner = hasPlayoffs
+  // Only look for a play-off winner when:
+  // - play-offs exist AND
+  // - we are in a mode that allows applying the play-off winner promotion (season final only)
+  const playoffWinner = (allowPO && hasPlayoffs)
     ? (findPlayoffWinnerFromResults(seasonKey, divisionName) || getPlayoffWinnerFromFinalTables(seasonKey, divisionName))
     : '';
-
+  
   // Global toggles from notes (no_relegation affects entire division)
   const hasNoRelegation = notes.some(n => n.type === 'no_relegation');
 
@@ -1353,9 +1357,9 @@ function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows, includ
   }
   
   // Play-off winner promoted (unless no_playoffs or missing)
-  // Only applicable when play-offs exist.
+  // Only applicable when play-offs exist AND we explicitly allow PO promotion (season final only).
   const poWinnerKey = canon(playoffWinner);
-  if (hasPlayoffs && playoffWinner){
+  if (allowPO && hasPlayoffs && playoffWinner){
     const r = rows.find(x => canon(x.team) === poWinnerKey);
     if (r){
       if (!teamsNoPlayoffs.has(poWinnerKey)){
@@ -1538,8 +1542,12 @@ function renderDerivedTable(seasonKey, divisionName, mode){
   // - regular end: do NOT allow play-off winner promotion, and do NOT include undated
   // - season final: allow play-off winner promotion, and include undated + end-of-season notes
   const rulesAsOf = isFinal ? seasonEndDate : lastLeagueDate;
-  rows = applyFinalRulesFromNotes(seasonKey, divisionName, rulesAsOf, rows, isFinal);
 
+  // IMPORTANT:
+  // - regular end: DO NOT apply play-off winner promotion
+  // - season final: DO apply play-off winner promotion
+  rows = applyFinalRulesFromNotes(seasonKey, divisionName, rulesAsOf, rows, isFinal, isFinal);
+  
   els.tbody.innerHTML = '';
   const frag = document.createDocumentFragment();
   rows.forEach((r, idx)=> frag.appendChild(buildDerivedFinalRow(r, idx, seasonKey)));
