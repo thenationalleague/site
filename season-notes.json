@@ -1046,6 +1046,14 @@
     {
       "season": "2013-14",
       "division": "National",
+      "team": "Chester City",
+      "entity": "Chester City",
+      "type": "reprieve",
+      "note": "Reprieved from relegation due to folding of Salisbury City."
+    },
+    {
+      "season": "2013-14",
+      "division": "National",
       "team": "Aldershot Town",
       "entity": "Aldershot Town",
       "type": "points_deduction",
