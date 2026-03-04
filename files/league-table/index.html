@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>National League Archive — Standings (Dynamic from results.json) (v3.31)</title>
+<title>National League Archive — Standings (Dynamic from results.json) (v3.32)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -1529,66 +1529,77 @@ function renderDerivedTable(seasonKey, divisionName, mode){
     return;
   }
 
-  const seasonEndDate = getSeasonEndDateForSeasonDivision(seasonKey, divisionName) || lastLeagueDate;
+  const seasonEndDate =
+    getSeasonEndDateForSeasonDivision(seasonKey, divisionName) ||
+    lastLeagueDate;
+
+  const seasonObj = state.byKey?.[seasonKey];
+  const divObj = seasonObj?.divisions?.[divisionName];
+  const matches = Array.isArray(divObj?.matches) ? divObj.matches : [];
 
   const isFinal = (mode === 'final');
 
-  // Standings are ALWAYS league-only as-of last LEAGUE match date
+  // =========================
+  // REGULAR END = behave like an in-season "as of lastLeagueDate"
+  // =========================
+  if (!isFinal){
+    let rows = computeStandings(seasonKey, divisionName, lastLeagueDate);
+
+    // Dated-only points deductions (no undated)
+    rows = applyPointsAdjustments(seasonKey, divisionName, lastLeagueDate, rows, false);
+
+    // Clinched emphasis ONLY (in-season behaviour)
+    rows = applyClinchedEmphasis(seasonKey, divisionName, lastLeagueDate, rows, matches);
+
+    els.tbody.innerHTML = '';
+    const frag = document.createDocumentFragment();
+    rows.forEach((r, idx)=> frag.appendChild(buildRow(r, idx, seasonKey)));
+    els.tbody.appendChild(frag);
+
+    const cutRules =
+      cutsFromSeasonFormats(seasonKey, divisionName, rows.length) ||
+      inferCutsFromFinal(seasonKey, divisionName);
+
+    applyCutLinesToRenderedTable(cutRules);
+
+    renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, lastLeagueDate, false);
+    rebuildLegend();
+    return;
+  }
+
+  // =========================
+  // SEASON FINAL = derived final outcomes (reprieves etc) + arrows
+  // =========================
   let rows = computeStandings(seasonKey, divisionName, lastLeagueDate);
 
-  // Points deductions:
-  // - regular end: dated only (no undated)
-  // - season final: include undated
-  rows = applyPointsAdjustments(seasonKey, divisionName, lastLeagueDate, rows, isFinal);
+  // Include undated deductions at season end
+  rows = applyPointsAdjustments(seasonKey, divisionName, lastLeagueDate, rows, true);
 
-  // PPG ranking:
-  rows = applyPPGRankingIfNeeded(seasonKey, divisionName, lastLeagueDate, rows, isFinal);
-  if (isFinal){
-    // Season final:
-    // Apply the REAL outcomes (relegated + reprieves + demotions + playoff-winner promotion + arrows)
-    const rulesAsOf = seasonEndDate || lastLeagueDate;
+  // PPG ranking (if applicable) at season end
+  rows = applyPPGRankingIfNeeded(seasonKey, divisionName, lastLeagueDate, rows, true);
 
-    rows = applyFinalRulesFromNotes(
-      seasonKey,
-      divisionName,
-      rulesAsOf,
-      rows,
-      true,   // includeUndated
-      true    // allowPlayoffWinnerPromotion
-    );
+  // Apply final outcome rules (reprieves/demotions/no_playoffs/etc), using season end date
+  rows = applyFinalRulesFromNotes(
+    seasonKey,
+    divisionName,
+    seasonEndDate,
+    rows,
+    true,  // includeUndated
+    true   // allowPlayoffWinnerPromotion
+  );
 
-  } else {
-    // End of regular season:
-    // Show ZONES ONLY (no relegated outcome; no arrows; no reprieve/demotion reality)
-    rows.forEach(r=>{
-      r.classes = Array.isArray(r.classes) ? r.classes : [];
-      r.move = ''; // ensure no arrows
-      // defensive: never carry "relegated/promoted" into this view
-      r.classes = r.classes.filter(c => c !== 'relegated' && c !== 'promoted');
-    });
-
-    // Apply champion/playoff tiers + relegation-zone from the season format
-    rows = applyZonesFromSeasonFormat(seasonKey, divisionName, rows);
-  }
-  
   els.tbody.innerHTML = '';
   const frag = document.createDocumentFragment();
   rows.forEach((r, idx)=> frag.appendChild(buildDerivedFinalRow(r, idx, seasonKey)));
   els.tbody.appendChild(frag);
 
-  // Dotted cut lines: keep on both derived views
   const cutRules =
     cutsFromSeasonFormats(seasonKey, divisionName, rows.length) ||
     inferCutsFromFinal(seasonKey, divisionName);
 
   applyCutLinesToRenderedTable(cutRules);
 
-  // Notes display:
-  // - regular end: dated up to last league date (no undated)
-  // - season final: dated up to season end + undated included
-  const notesAsOf = isFinal ? seasonEndDate : lastLeagueDate;
-  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, notesAsOf, isFinal);
-
+  renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, seasonEndDate, true);
   rebuildLegend();
 }
       
