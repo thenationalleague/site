@@ -1405,93 +1405,138 @@
     }
   ],
   "seasonFormat": [
-    { "season": "1979-80", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 1 },
-    { "season": "1980-81", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "1981-82", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "1982-83", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 2 },
-    { "season": "1983-84", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 2 },
-    { "season": "1984-85", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "1985-86", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "1986-87", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "1987-88", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "1988-89", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "1989-90", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "1990-91", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 2 },
-    { "season": "1991-92", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 2 },
-    { "season": "1992-93", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "1993-94", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "1994-95", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "1995-96", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "1996-97", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "1997-98", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "1998-99", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "1999-00", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "2000-01", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "2001-02", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3 },
-    { "season": "2002-03", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2003-04", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2004-05", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2004-05", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2004-05", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2005-06", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2005-06", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2 },
-    { "season": "2005-06", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2 },
-    { "season": "2006-07", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2006-07", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2006-07", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2007-08", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2007-08", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2007-08", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2008-09", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2008-09", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2008-09", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2009-10", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2009-10", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2 },
-    { "season": "2009-10", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2 },
-    { "season": "2010-11", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2010-11", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2010-11", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2011-12", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2011-12", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2 },
-    { "season": "2011-12", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2 },
-    { "season": "2012-13", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2012-13", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2012-13", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2013-14", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2013-14", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2013-14", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2014-15", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2014-15", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2014-15", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2 },
-    { "season": "2015-16", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2015-16", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2015-16", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2016-17", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2016-17", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2016-17", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2017-18", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2017-18", "division": "North", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2017-18", "division": "South", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2018-19", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2018-19", "division": "North", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2018-19", "division": "South", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2019-20", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2019-20", "division": "North", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 2 },
-    { "season": "2019-20", "division": "South", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 2 },
-    { "season": "2020-21", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2020-21", "division": "North", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 0 },
-    { "season": "2020-21", "division": "South", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 0 },
-    { "season": "2021-22", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 3 },
-    { "season": "2021-22", "division": "North", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 1 },
-    { "season": "2021-22", "division": "South", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 1 },
-    { "season": "2022-23", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2022-23", "division": "North", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2022-23", "division": "South", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2023-24", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2023-24", "division": "North", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2023-24", "division": "South", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2024-25", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2024-25", "division": "North", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 },
-    { "season": "2024-25", "division": "South", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4 }
+    { "season": "1979-80", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 1, "points": { "winHome": 2, "winAway": 2, "draw": 1, "loss": 0 } },
+   
+    { "season": "1980-81", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 2, "winAway": 2, "draw": 1, "loss": 0 } },
+    
+    { "season": "1981-82", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 2, "winAway": 2, "draw": 1, "loss": 0 } },
+    
+    { "season": "1982-83", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 2, "points": { "winHome": 2, "winAway": 2, "draw": 1, "loss": 0 } },
+
+    { "season": "1983-84", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 2, "points": { "winHome": 2, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "1984-85", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 2, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "1985-86", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 2, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "1986-87", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "1987-88", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "1988-89", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "1989-90", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "1990-91", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 2, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "1991-92", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 2, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "1992-93", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "1993-94", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "1994-95", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "1995-96", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "1996-97", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "1997-98", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "1998-99", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "1999-00", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "2000-01", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "2001-02", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2002-03", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    
+    { "season": "2003-04", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2004-05", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2004-05", "division": "North",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2004-05", "division": "South",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2005-06", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2005-06", "division": "North",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2005-06", "division": "South",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2006-07", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2006-07", "division": "North",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2006-07", "division": "South",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2007-08", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2007-08", "division": "North",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2007-08", "division": "South",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2008-09", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2008-09", "division": "North",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2008-09", "division": "South",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2009-10", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2009-10", "division": "North",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2009-10", "division": "South",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2010-11", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2010-11", "division": "North",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2010-11", "division": "South",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2011-12", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2011-12", "division": "North",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2011-12", "division": "South",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2012-13", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2012-13", "division": "North",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2012-13", "division": "South",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2013-14", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2013-14", "division": "North",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2013-14", "division": "South",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2014-15", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2014-15", "division": "North",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2014-15", "division": "South",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 2, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2015-16", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2015-16", "division": "North",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2015-16", "division": "South",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2016-17", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2016-17", "division": "North",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2016-17", "division": "South",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2017-18", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2017-18", "division": "North",    "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2017-18", "division": "South",    "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2018-19", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2018-19", "division": "North",    "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2018-19", "division": "South",    "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2019-20", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2019-20", "division": "North",    "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 2, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2019-20", "division": "South",    "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 2, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2020-21", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2020-21", "division": "North",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 0, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2020-21", "division": "South",    "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 0, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2021-22", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2021-22", "division": "North",    "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 1, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2021-22", "division": "South",    "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 1, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2022-23", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2022-23", "division": "North",    "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2022-23", "division": "South",    "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2023-24", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2023-24", "division": "North",    "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2023-24", "division": "South",    "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+
+    { "season": "2024-25", "division": "National", "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2024-25", "division": "North",    "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+    { "season": "2024-25", "division": "South",    "champions": 1, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } }
   ]
 }
