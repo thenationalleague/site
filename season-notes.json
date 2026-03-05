@@ -1409,9 +1409,9 @@
    
     { "season": "1980-81", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 2, "winAway": 2, "draw": 1, "loss": 0 } },
     
-    { "season": "1981-82", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 2, "winAway": 2, "draw": 1, "loss": 0 } },
+    { "season": "1981-82", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 3, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
     
-    { "season": "1982-83", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 2, "points": { "winHome": 2, "winAway": 2, "draw": 1, "loss": 0 } },
+    { "season": "1982-83", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 2, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
 
     { "season": "1983-84", "division": "National", "champions": 1, "playoffs": { "semi": 0, "eliminator": 0 }, "relegation": 2, "points": { "winHome": 2, "winAway": 3, "draw": 1, "loss": 0 } },
     
