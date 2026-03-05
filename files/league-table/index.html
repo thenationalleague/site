@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>National League Archive — Standings (Dynamic from results.json) (v3.32)</title>
+<title>National League Archive — Standings (Dynamic from results.json) (v3.33)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -277,6 +277,9 @@
           // Season formats (champions / playoffs / relegation), keyed by season+division
           // Map<seasonKey, Map<divisionName, {champions:number, playoffsSemi:number, playoffsElim:number, relegation:number}>>
           state.seasonFormats = new Map();
+          // Raw points rules per season+division (from season-notes.json seasonFormat[].points)
+          // Map<seasonKey, Map<divisionName, {winHome:number, winAway:number, draw:number, loss:number}>>
+          state._seasonFormatRawPoints = new Map();
         // =========================
         // Utils
         // =========================
@@ -366,13 +369,47 @@ function applyPPGRankingIfNeeded(seasonKey, divisionName, asOfISO, rows, include
           return arr.filter(n => isNoteActiveAsOf(n, asOfISO, includeUndated));
         }
       
-        // Points rule (simple + historic default)
-        // 2 points for a win before 1981-82; otherwise 3 points.
-        function pointsForWin(seasonKey){
+        // Points rules:
+        // Prefer season-notes.json -> seasonFormat[].points (per season+division)
+        // Fallback: 2 points for a win before 1981-82; otherwise 3.
+        function defaultPointsRule(seasonKey){
           const y = startYear(seasonKey);
-          return (y && y < 1981) ? 2 : 3;
+          const win = (y && y < 1981) ? 2 : 3;
+          return { winHome: win, winAway: win, draw: 1, loss: 0 };
         }
 
+        function pointsRuleFor(seasonKey, divisionName){
+          const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
+
+          // NOTE: indexSeasonFormats() currently stores champions/playoffs/relegation.
+          // We also need it to read "points" if present on the seasonFormat item.
+          // To keep changes minimal, we read from the raw season-notes via a helper map:
+          const sr = state._seasonFormatRawPoints?.get(String(seasonKey))?.get(String(divisionName)) || null;
+
+          const base = defaultPointsRule(seasonKey);
+
+          if (!sr) return base;
+
+          const wh = Number(sr.winHome);
+          const wa = Number(sr.winAway);
+          const dr = Number(sr.draw);
+          const ls = Number(sr.loss);
+
+          return {
+            winHome: Number.isFinite(wh) ? wh : base.winHome,
+            winAway: Number.isFinite(wa) ? wa : base.winAway,
+            draw:    Number.isFinite(dr) ? dr : base.draw,
+            loss:    Number.isFinite(ls) ? ls : base.loss
+          };
+        }
+
+        // For clinching math we need a safe upper bound per remaining match.
+        // Use the maximum of home/away win points.
+        function maxWinPointsFor(seasonKey, divisionName){
+          const r = pointsRuleFor(seasonKey, divisionName);
+          return Math.max(Number(r.winHome || 0), Number(r.winAway || 0));
+        }
+      
         // Ensure a title includes the season key once
         const withYear = (title, seasonKey) => {
           const t = String(title || '').trim();
@@ -562,6 +599,23 @@ function indexSeasonNotes(raw){
               playoffsElim: po.elim,
               relegation: Number.isFinite(rel) ? rel : 0
             });
+
+            // Capture points rules (if provided)
+            if (!state._seasonFormatRawPoints.has(s)) state._seasonFormatRawPoints.set(s, new Map());
+            const pm = state._seasonFormatRawPoints.get(s);
+
+            const p = it.points && typeof it.points === 'object' ? it.points : null;
+            if (p){
+              pm.set(d, {
+                winHome: Number(p.winHome),
+                winAway: Number(p.winAway),
+                draw: Number(p.draw),
+                loss: Number(p.loss)
+              });
+            } else {
+              // If not present, leave unset (fallback logic will apply)
+              if (pm.has(d)) pm.delete(d);
+            }
           }
         }
 
@@ -666,8 +720,8 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
   const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
   if (!fmt) return rows;
 
-  const ptsWin = pointsForWin(seasonKey);
-
+  const ptsWinMax = maxWinPointsFor(seasonKey, divisionName);
+  
   // Clinching must be calculated against the INTENDED schedule, not whatever fixtures
   // happen to exist in results.json (curtailments / missing data would otherwise
   // create false early clinches).
@@ -686,7 +740,7 @@ function applyClinchedEmphasis(seasonKey, divisionName, asOfISO, rows, matches){
     const team = String(r.team || '').trim();
     const playedNow = Number(r.P || 0);
     const rem = Math.max(0, maxGames - (Number.isFinite(playedNow) ? playedNow : 0));
-    maxPts.set(team, Number(r.Pts || 0) + ptsWin * rem);
+    maxPts.set(team, Number(r.Pts || 0) + ptsWinMax * rem);
   }
 
   const teamCount = rows.length;
@@ -1921,7 +1975,7 @@ function populateAsOf(seasonKey, divisionName){
           return { P:0, W:0, D:0, L:0, GF:0, GA:0, GD:0, Pts:0 };
         }
 
-        function addMatch(statsByTeam, home, away, hg, ag, ptsWin){
+        function addMatch(statsByTeam, home, away, hg, ag, ptsRule){
           if (!statsByTeam.has(home)) statsByTeam.set(home, initTeamStats());
           if (!statsByTeam.has(away)) statsByTeam.set(away, initTeamStats());
 
@@ -1932,25 +1986,29 @@ function populateAsOf(seasonKey, divisionName){
           H.GF += hg; H.GA += ag;
           A.GF += ag; A.GA += hg;
 
+          const wh = Number(ptsRule?.winHome ?? 3);
+          const wa = Number(ptsRule?.winAway ?? 3);
+          const dr = Number(ptsRule?.draw ?? 1);
+
           if (hg > ag){
             H.W += 1; A.L += 1;
-            H.Pts += ptsWin;
+            H.Pts += wh;
           } else if (hg < ag){
             A.W += 1; H.L += 1;
-            A.Pts += ptsWin;
+            A.Pts += wa;
           } else {
             H.D += 1; A.D += 1;
-            H.Pts += 1;
-            A.Pts += 1;
+            H.Pts += dr;
+            A.Pts += dr;
           }
         }
-
+      
         function computeStandings(seasonKey, divisionName, asOfISO){
           const season = state.byKey[seasonKey];
           const div = season?.divisions?.[divisionName];
           const matches = Array.isArray(div?.matches) ? div.matches : [];
 
-          const ptsWin = pointsForWin(seasonKey);
+          const ptsRule = pointsRuleFor(seasonKey, divisionName);
           const asNum = isoToNum(asOfISO);
 
           // Expunged teams *as of* this date
@@ -1989,7 +2047,7 @@ for (const m of matches){
   // Only count played games (both numeric)
   if (!Number.isFinite(hg) || !Number.isFinite(ag)) continue;
 
-  addMatch(stats, h, a, hg, ag, ptsWin);
+  addMatch(stats, h, a, hg, ag, ptsRule);
 }
           
           // Build rows
