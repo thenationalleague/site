@@ -238,8 +238,19 @@
       "team": "Scarborough",
       "entity": "Scarborough",
       "type": "points_deduction",
-      "pointsValue": -1,
-      "note": "Deducted 1 point."
+      "pointsValue": -3,
+      "effectiveDate": "2001-12-13",
+      "note": "Deducted 3 points."
+    },
+    {
+      "season": "2001-02",
+      "division": "National",
+      "team": "Scarborough",
+      "entity": "Scarborough",
+      "type": "points_deduction",
+      "pointsValue": 2,
+      "effectiveDate": "2002-01-22",
+      "note": "Initial deduction reduced to 1 point."
     },
     {
       "season": "2003-04",
@@ -264,6 +275,7 @@
       "entity": "Burton Albion",
       "type": "points_deduction",
       "pointsValue": -1,
+      "effectiveDate": "2003-11-26",
       "note": "Deducted 1 point."
     },
     {
