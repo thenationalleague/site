@@ -129,6 +129,7 @@
       "entity": "Dagenham & Redbridge",
       "type": "points_deduction",
       "pointsValue": -1,
+      "effectiveDate": "1993-03-23",
       "note": "Deducted 1 point."
     },
     {
