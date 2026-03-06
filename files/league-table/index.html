@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>National League Archive — Standings (Dynamic from results.json) (v3.33)</title>
+<title>National League Archive — Standings (Dynamic from results.json) (v3.34)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -326,33 +326,34 @@ function applyPPGRankingIfNeeded(seasonKey, divisionName, asOfISO, rows, include
   return rows;
 }
       
-        function formatISODateShort(iso){
-          // iso: YYYY-MM-DD -> "Sat 18 Aug 1984"
-          const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));
-          function formatNoteDateSuffix(effectiveDate){
-          if (!effectiveDate) return '';
-        
-          // Only append real ISO dates
-          if (!/^\d{4}-\d{2}-\d{2}$/.test(effectiveDate)) return '';
-        
-          const pretty = formatISODateShort(effectiveDate)
-            .replace(/^(Sun|Mon|Tue|Wed|Thu|Fri|Sat)\s+/, ''); // remove weekday
-        
-          return ' on ' + pretty;
+function formatISODateShort(iso){
+  // iso: YYYY-MM-DD -> "Sat 18 Aug 1984"
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));
+  if (!m) return String(iso||'');
+
+  const y = +m[1], mo = +m[2], d = +m[3];
+
+  // Use UTC to avoid local TZ shifting the day
+  const dt = new Date(Date.UTC(y, mo - 1, d));
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  const dow = days[dt.getUTCDay()];
+  return `${dow} ${String(d)} ${months[mo - 1]} ${y}`;
 }
-          
-          if (!m) return String(iso||'');
-          const y = +m[1], mo = +m[2], d = +m[3];
 
-          // Use UTC to avoid local TZ shifting the day
-          const dt = new Date(Date.UTC(y, mo - 1, d));
-          const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-          const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function formatNoteDateSuffix(effectiveDate){
+  if (!effectiveDate) return '';
 
-          const dow = days[dt.getUTCDay()];
-          return `${dow} ${String(d)} ${months[mo - 1]} ${y}`;
-        }
+  // Only append real ISO dates
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(effectiveDate)) return '';
 
+  const pretty = formatISODateShort(effectiveDate)
+    .replace(/^(Sun|Mon|Tue|Wed|Thu|Fri|Sat)\s+/, '');
+
+  return ' on ' + pretty;
+}
+      
         function isNoteActiveAsOf(noteObj, asOfISO, includeUndated){
           const ed = noteObj?.effectiveDate;
 
