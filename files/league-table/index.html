@@ -329,6 +329,18 @@ function applyPPGRankingIfNeeded(seasonKey, divisionName, asOfISO, rows, include
         function formatISODateShort(iso){
           // iso: YYYY-MM-DD -> "Sat 18 Aug 1984"
           const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));
+          function formatNoteDateSuffix(effectiveDate){
+          if (!effectiveDate) return '';
+        
+          // Only append real ISO dates
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(effectiveDate)) return '';
+        
+          const pretty = formatISODateShort(effectiveDate)
+            .replace(/^(Sun|Mon|Tue|Wed|Thu|Fri|Sat)\s+/, ''); // remove weekday
+        
+          return ' on ' + pretty;
+}
+          
           if (!m) return String(iso||'');
           const y = +m[1], mo = +m[2], d = +m[3];
 
@@ -952,7 +964,10 @@ function renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, asOfISO, incl
     const entityKey = canon(n.entity || '');
 
     if (!entityKey){
-      if (n.note) divisionWide.push(String(n.note));
+    if (n.note){
+      const suffix = formatNoteDateSuffix(n.effectiveDate);
+      divisionWide.push(String(n.note) + suffix);
+    }
       continue;
     }
 
@@ -963,7 +978,10 @@ function renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, asOfISO, incl
       });
     }
 
-    if (n.note) teamGroups.get(entityKey).notes.push(String(n.note));
+if (n.note){
+  const suffix = formatNoteDateSuffix(n.effectiveDate);
+  teamGroups.get(entityKey).notes.push(String(n.note) + suffix);
+}
   }
 
   const rowsArr = Array.from(els.tbody.rows);
