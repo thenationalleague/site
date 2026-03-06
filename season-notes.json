@@ -19,10 +19,26 @@
     {
       "season": "1981-82",
       "division": "National",
+      "team": "Runcorn",
+      "entity": "Runcorn",
+      "type": "not_promoted",
+      "note": "Ineligible to apply for election due to not meeting Football League requirements."
+    },    
+    {
+      "season": "1981-82",
+      "division": "National",
       "team": "Telford United",
       "entity": "Telford United",
       "type": "not_promoted",
-      "note": "Applied for election to the Football League as third-place finishers, but failed to secure enough votes (Northampton Town 53, Crewe Alexandra 50, Rochdale 48, Scunthorpe United 48, Telford United 13)."
+      "note": "Applied for election to the Football League as highest-placed eligible finishers, but failed to secure enough votes (Northampton Town 53, Crewe Alexandra 50, Rochdale 48, Scunthorpe United 48, Telford United 13)."
+    },
+    {
+      "season": "1982-83",
+      "division": "National",
+      "team": "Enfield",
+      "entity": "Enfield",
+      "type": "not_promoted",
+      "note": "Ineligible to apply for election due to not meeting Football League requirements."
     },
     {
       "season": "1982-83",
@@ -30,7 +46,7 @@
       "team": "Maidstone United",
       "entity": "Maidstone United (original)",
       "type": "not_promoted",
-      "note": "Applied for election to the Football League as runners-up, but failed to secure enough votes (Blackpool 52, Crewe Alexandra 49, Hereford United 49, Hartlepool United 36, Maidstone United 26)."
+      "note": "Applied for election to the Football League as highest-placed eligible finishers, but failed to secure enough votes (Blackpool 52, Crewe Alexandra 49, Hereford United 49, Hartlepool United 36, Maidstone United 26)."
     },
     {
       "season": "1983-84",
@@ -43,10 +59,18 @@
     {
       "season": "1984-85",
       "division": "National",
+      "team": "Wealdstone",
+      "entity": "Wealdstone",
+      "type": "not_promoted",
+      "note": "Ineligible to apply for election due to not meeting Football League requirements."
+    },
+    {
+      "season": "1984-85",
+      "division": "National",
       "team": "Bath City",
       "entity": "Bath City",
       "type": "not_promoted",
-      "note": "Applied for election to the Football League as fourth-placed, but failed to secure enough votes (Northampton Town 52, Stockport County 50, Torquay United 50, Halifax Town 48, Bath City 8)."
+      "note": "Applied for election to the Football League as highest-placed eligible finishers, but failed to secure enough votes (Northampton Town 52, Stockport County 50, Torquay United 50, Halifax Town 48, Bath City 8)."
     },
     {
       "season": "1984-85",
