@@ -155,6 +155,7 @@
       "entity": "Merthyr Tydfil",
       "type": "points_deduction",
       "pointsValue": -2,
+      "effectiveDate": "1993-11-29",
       "note": "Deducted 2 points."
     },
     {
@@ -180,6 +181,7 @@
       "entity": "Yeovil Town",
       "type": "points_deduction",
       "pointsValue": -1,
+      "effectiveDate": "1994-10-14",
       "note": "Deducted 1 point."
     },
     {
