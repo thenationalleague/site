@@ -342,16 +342,23 @@ function formatISODateShort(iso){
   return `${dow} ${String(d)} ${months[mo - 1]} ${y}`;
 }
 
-function formatNoteDateSuffix(effectiveDate){
-  if (!effectiveDate) return '';
+function formatNoteDateSuffix(noteText, effectiveDate){
+  const text = String(noteText || '');
+
+  if (!effectiveDate) return text;
 
   // Only append real ISO dates
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(effectiveDate)) return '';
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(effectiveDate)) return text;
 
   const pretty = formatISODateShort(effectiveDate)
     .replace(/^(Sun|Mon|Tue|Wed|Thu|Fri|Sat)\s+/, '');
 
-  return ' on ' + pretty;
+  // Insert date before trailing punctuation if present
+  if (/[.!?]$/.test(text)){
+    return text.replace(/([.!?])$/, ` on ${pretty}$1`);
+  }
+
+  return `${text} on ${pretty}`;
 }
       
         function isNoteActiveAsOf(noteObj, asOfISO, includeUndated){
@@ -965,13 +972,12 @@ function renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, asOfISO, incl
     const entityKey = canon(n.entity || '');
 
     if (!entityKey){
-    if (n.note){
-      const suffix = formatNoteDateSuffix(n.effectiveDate);
-      divisionWide.push(String(n.note) + suffix);
-    }
+      if (n.note){
+        divisionWide.push(formatNoteDateSuffix(n.note, n.effectiveDate));
+      }
       continue;
     }
-
+    
     if (!teamGroups.has(entityKey)){
       teamGroups.set(entityKey, {
         team: String(n.team || n.entity || '').trim(),
@@ -979,10 +985,11 @@ function renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, asOfISO, incl
       });
     }
 
-if (n.note){
-  const suffix = formatNoteDateSuffix(n.effectiveDate);
-  teamGroups.get(entityKey).notes.push(String(n.note) + suffix);
-}
+    if (n.note){
+      teamGroups.get(entityKey).notes.push(
+        formatNoteDateSuffix(n.note, n.effectiveDate)
+      );
+    }
   }
 
   const rowsArr = Array.from(els.tbody.rows);
