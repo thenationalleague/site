@@ -536,11 +536,51 @@
     },
     {
       "season": "2006-07",
-      "division": "North",
+      "division": "South",
       "team": "Weston-super-Mare",
       "entity": "Weston-super-Mare",
       "type": "reprieve",
       "note": "Reprieved from relegation due to folding of Farnborough Town and merger of Hayes and Yeading."
+    },
+    {
+      "season": "2006-07",
+      "division": "South",
+      "team": "Hayes",
+      "entity": "Hayes",
+      "type": "merger",
+      "note": "Merged with Yeading at the conclusion of the season and competed from 2007-08 as Hayes & Yeading United."
+    },    
+    {
+      "season": "2006-07",
+      "division": "South",
+      "team": "Hayes",
+      "entity": "Hayes",
+      "type": "reprieve",
+    },      
+    {
+      "season": "2006-07",
+      "division": "South",
+      "team": "Yeading",
+      "entity": "Yeading",
+      "type": "merger",
+      "note": "Merged with Yeading at the conclusion of the season and competed from 2007-08 as Hayes & Yeading United."
+    },
+     {
+      "season": "2006-07",
+      "division": "South",
+      "team": "Farnborough Town",
+      "entity": "Farnborugh Town",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "note": "Deducted 10 points."
+    },     
+    {
+      "season": "2006-07",
+      "division": "South",
+      "team": "Farnborough Town",
+      "entity": "Farnborugh Town",
+      "type": "folded",
+      "note": "Folded upon the conclusion of the season."
     },
     {
       "season": "2007-08",
