@@ -555,7 +555,7 @@
       "division": "South",
       "team": "Hayes",
       "entity": "Hayes",
-      "type": "reprieve",
+      "type": "reprieve"
     },      
     {
       "season": "2006-07",
@@ -569,7 +569,7 @@
       "season": "2006-07",
       "division": "South",
       "team": "Farnborough Town",
-      "entity": "Farnborugh Town",
+      "entity": "Farnborough Town",
       "type": "points_deduction",
       "pointsValue": -10,
       "note": "Deducted 10 points."
@@ -760,8 +760,8 @@
     {
       "season": "2008-09",
       "division": "South",
-      "team": "Bognor Regis Towm",
-      "entity": "Bognor Regis Towm",
+      "team": "Bognor Regis Town",
+      "entity": "Bognor Regis Town",
       "type": "points_deduction",
       "pointsValue": -7,
       "note": "Deducted 7 points."
