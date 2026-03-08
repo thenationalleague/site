@@ -733,15 +733,6 @@
     },
     {
       "season": "2008-09",
-      "division": "North",
-      "team": "Tamworth",
-      "entity": "Tamworth",
-      "type": "points_deduction",
-      "pointsValue": -3,
-      "note": "Deducted 3 points."
-    },
-    {
-      "season": "2008-09",
       "division": "South",
       "team": "Team Bath",
       "entity": "Team Bath",
