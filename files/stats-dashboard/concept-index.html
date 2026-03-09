@@ -3610,7 +3610,7 @@ if (i===10) td.classList.add('td-pts');  // Pts = cells[10]
       (function notes(){
         const entsForNotes = entitySet().map(norm);
         const list = (seasonNotes || []).filter(n => entsForNotes.includes(norm(n.entity || n.team)));
-        
+
         Array.from(tbody.rows).forEach(tr => {
           const seasonCell = tr.cells && tr.cells[1];
           if (seasonCell) seasonCell.querySelectorAll('.note-ref').forEach(x => x.remove());
@@ -3624,40 +3624,57 @@ if (i===10) td.classList.add('td-pts');  // Pts = cells[10]
           return;
         }
 
-        list.sort((a,b) => startYear(b.season) - startYear(a.season));
+        list.sort((a,b) => {
+          const ys = startYear(b.season) - startYear(a.season);
+          if (ys) return ys;
+          return String(a.note || '').localeCompare(String(b.note || ''));
+        });
+
+        const grouped = [];
+        const bySeason = new Map();
+
+        const lowerCaseFirst = (txt) => {
+          const s = String(txt || '').trim();
+          if (!s) return '';
+          return s.charAt(0).toLowerCase() + s.slice(1);
+        };
+
+        list.forEach(n => {
+          const key = String(n.season || '');
+          if (!bySeason.has(key)) {
+            bySeason.set(key, {
+              season: key,
+              notes: []
+            });
+            grouped.push(bySeason.get(key));
+          }
+          bySeason.get(key).notes.push(String(n.note || '').trim());
+        });
+
         notesEl.hidden = false;
 
-        list.forEach((n, idx) => {
-          const num   = idx + 1;
-          const rowId = idForSeasonRow(n.season);
+        grouped.forEach((grp, idx) => {
+          const num = idx + 1;
+          const rowId = idForSeasonRow(grp.season);
           const noteId = idForNote(num);
+
+          const mergedText = grp.notes
+            .map((txt, i) => i === 0 ? txt : lowerCaseFirst(txt))
+            .join('; ');
 
           const line = document.createElement('div');
           line.className = 'note-line';
           line.id = noteId;
-          line.appendChild( makeSupToRow(num, rowId, n.season) );
-          line.appendChild( document.createTextNode(' ' + enDash(n.season) + ': ' + String(n.note)) );
+          line.appendChild(makeSupToRow(num, rowId, grp.season));
+          line.appendChild(document.createTextNode(' ' + enDash(grp.season) + ': ' + mergedText));
           notesEl.appendChild(line);
 
-          // Attach markers to *all* season rows for this season (handles combined/affiliated rows).
           const rowsForSeason = Array.from(document.querySelectorAll(`#season-body tr#${rowId}`));
           rowsForSeason.forEach(tr => {
             const seasonCell = tr && tr.cells ? tr.cells[1] : null;
             if (!seasonCell) return;
-
-            // v4.2.6 — if a footnote already exists in this Season cell,
-            // insert a superscript comma (no space) before adding the next marker.
-            if (seasonCell.querySelector('.note-ref')) {
-              const commaSup = document.createElement('sup');
-              commaSup.className = 'note-ref note-comma';
-              const s = document.createElement('span');
-              s.textContent = ',';
-              commaSup.appendChild(s);
-              seasonCell.appendChild(commaSup);
-            }
-            seasonCell.appendChild( makeSupToNote(num, noteId) );
+            seasonCell.appendChild(makeSupToNote(num, noteId));
           });
-
         });
 
         rebuildSeasonLegend();
