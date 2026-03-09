@@ -26,7 +26,12 @@
       --cap-bg:#9e0000; --cap-fg:#fff;
       --head-bg:#000; --head-fg:#fff;
       --zebra-odd:#f6f6f6; --zebra-even:#fff;
-      --gold:gold; --silver:#cfead6; --blue2:#e8f0ff; --pink:#ffe0e6; --gap:#f3e8ff;
+      --gold:gold;
+      --silver:#c0c0c0;
+      --po-elim:#e7f7ea;
+      --po-semi:#bfe9c8;
+      --pink:#ffe0e6;
+      --gap:#f3e8ff;
       --gd-pos:#0a7d2a; --gd-zero:#555; --gd-neg:#b00020;
 
       /* New KPI palette */
@@ -552,7 +557,7 @@
     .move-up{ color:var(--gd-pos); } .move-down{ color:var(--gd-neg); } .move-none{ opacity:.35; }
     .row-gold{ background:var(--gold); color:#000; }
     .row-silver{ background:var(--silver); color:#000; }
-    .row-blue{ background:var(--blue2); color:#000; }
+    .row-blue{ background:var(--po-semi); color:#000; }
     .row-pink{ background:var(--pink); color:#000; }
     .row-folded{ background:#000; color:#fff; }
     .zebra-odd{ background:var(--z1); } .zebra-even{ background:#fff; }
@@ -931,7 +936,7 @@
 /* Colours (shared) */
 .legend .gold{  background:var(--gold); }
 .legend .silver{background:var(--silver); }
-.legend .blue{  background:var(--blue2); }
+.legend .blue{  background:var(--po-semi); }
 .legend .pink{  background:var(--pink); }
 .legend .black{ background:#000; }
 .legend .expelled{ background:#9ca3af; }
@@ -2694,7 +2699,11 @@ function getMergerChildren(parentNorm){
     }
 
     // --- Notes navigation ---
-    function idForSeasonRow(season){ return 'row-' + String(season||'').toLowerCase().replace(/[^a-z0-9]+/g,'-'); }
+    function idForSeasonRow(season, entity){
+      const s = String(season || '').toLowerCase().replace(/[^a-z0-9]+/g,'-');
+      const e = String(entity || '').toLowerCase().replace(/[^a-z0-9]+/g,'-');
+      return e ? `row-${s}-${e}` : `row-${s}`;
+    }
     function idForNote(n){ return 'note-' + n; }
     function makeSupToRow(n, rowId, label){
       const sup = document.createElement('sup'); sup.className='note-ref';
@@ -3522,7 +3531,7 @@ if (scLine) scLine.textContent = buildHeaderSuffix() || '';
         rowNames.push(dispName);
 
         const tr = document.createElement('tr');
-        tr.id = idForSeasonRow(r.season);
+        tr.id = idForSeasonRow(r.season, r.entityName);
         const classes = Array.isArray(r.classes)? r.classes : [];
         if (classes.includes('champion')) tr.classList.add('row-gold');
         else if (classes.includes('promoted')) tr.classList.add('row-silver');
@@ -3533,7 +3542,9 @@ if (scLine) scLine.textContent = buildHeaderSuffix() || '';
         else tr.classList.add(((idx%2)===0)?'zebra-odd':'zebra-even');
 
         tr.classList.add('anim-in');
-
+        tr.setAttribute('data-season', String(r.season || ''));
+        tr.setAttribute('data-entity', norm(r.entityName || ''));
+        
         const cells = [
           { dot:true, name:dispName },     // 1: namekey dot
           currLabel,                       // 2: Season
@@ -3660,7 +3671,7 @@ if (i===10) td.classList.add('td-pts');  // Pts = cells[10]
 
         grouped.forEach((grp, idx) => {
           const num = idx + 1;
-          const rowId = idForSeasonRow(grp.season);
+          const rowId = idForSeasonRow(grp.season, grp.entity);
           const noteId = idForNote(num);
 
           const mergedText = grp.notes
@@ -3674,8 +3685,13 @@ if (i===10) td.classList.add('td-pts');  // Pts = cells[10]
           line.appendChild(document.createTextNode(' ' + enDash(grp.season) + ': ' + mergedText));
           notesEl.appendChild(line);
 
-          const rowsForSeason = Array.from(document.querySelectorAll(`#season-body tr#${rowId}`));
-          rowsForSeason.forEach(tr => {
+          const rowsForSeasonEntity = Array.from(tbody.querySelectorAll('tr'))
+            .filter(tr =>
+              tr.getAttribute('data-season') === grp.season &&
+              tr.getAttribute('data-entity') === grp.entity
+            );
+
+          rowsForSeasonEntity.forEach(tr => {
             const seasonCell = tr && tr.cells ? tr.cells[1] : null;
             if (!seasonCell) return;
             seasonCell.appendChild(makeSupToNote(num, noteId));
@@ -3798,8 +3814,8 @@ function lpStatusFill(classes){
   const k = lpStatusKey(classes);
   if(k==='folded')   return { fill:'#000',    text:'#fff' };
   if(k==='champion') return { fill:'gold',    text:'#000' };
-  if(k==='promoted') return { fill:'#cfead6', text:'#000' };
-  if(k==='playoff')  return { fill:'#e8f0ff', text:'#000' };
+  if(k==='promoted') return { fill:getComputedStyle(document.documentElement).getPropertyValue('--silver').trim() || '#c0c0c0', text:'#000' };
+  if(k==='playoff')  return { fill:getComputedStyle(document.documentElement).getPropertyValue('--po-semi').trim() || '#bfe9c8', text:'#000' };
   if(k==='relegated')return { fill:'#ffe0e6', text:'#000' };
   if(k==='expelled') return { fill:'#9ca3af', text:'#fff' };
   return { fill:'#fff', text:'#111' };
