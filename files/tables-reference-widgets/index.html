@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Reference Audit (v1.9)</title>
+    <title>National League Archive — Reference Audit (v1.10)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -419,11 +419,10 @@
 
     <script>
       (function(){
-        const VERSION = 'v1.9';
+        const VERSION = 'v1.10';
 
         const RESULTS_SRC = "https://raw.githubusercontent.com/rckd-nl/website/main/results.json";
         const TABLES_SRC  = "https://raw.githubusercontent.com/rckd-nl/website/main/league-tables.json";
-        const EXPULSIONS_SRC = "./expulsions.json";
         const CLUBS_META_SRC = "https://raw.githubusercontent.com/rckd-nl/website/main/clubs-meta.json";
         const SEASON_NOTES_SRC = "https://raw.githubusercontent.com/rckd-nl/website/main/season-notes.json";
 
@@ -457,7 +456,6 @@
           metaBySlug: new Map(),
           aliasMap: new Map(),
           seasonNotesFull: new Map(),
-          expulsions: new Map(),
           seasonFormats: new Map(),
           seasonPoints: new Map(),
           auditSummary: null,
@@ -665,32 +663,6 @@
           }
         }
 
-        function indexExpulsions(raw){
-          state.expulsions.clear();
-
-          const list = Array.isArray(raw) ? raw : Array.isArray(raw?.expulsions) ? raw.expulsions : [];
-          for (const it of list){
-            if (!it?.season || !it?.team || !it?.date || !it?.division) continue;
-
-            const s = String(it.season);
-            const d = String(it.division);
-            const team = String(it.team);
-            const date = toISO(it.date);
-
-            if (!state.expulsions.has(s)) state.expulsions.set(s, new Map());
-            const dm = state.expulsions.get(s);
-            if (!dm.has(d)) dm.set(d, []);
-            dm.get(d).push({ team, date });
-          }
-
-          for (const dm of state.expulsions.values()){
-            for (const [div, arr] of dm.entries()){
-              arr.sort((a,b)=> isoToNum(a.date) - isoToNum(b.date));
-              dm.set(div, arr);
-            }
-          }
-        }
-
         function getSeasonFormat(seasonKey, divisionName){
           const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
           if (!fmt) throw new Error(`Missing season format for ${seasonKey} / ${divisionName}`);
@@ -776,20 +748,11 @@
           });
         }
 
-        function expungedTeamsFor(seasonKey, divisionName, asOfISO, includeUndated){
+        function expelledTeamsFor(seasonKey, divisionName, asOfISO, includeUndated){
           const out = new Set();
 
-          const dm = state.expulsions.get(String(seasonKey));
-          if (dm){
-            const arr = dm.get(String(divisionName)) || [];
-            const asNum = isoToNum(asOfISO);
-            for (const e of arr){
-              if (isoToNum(e.date) <= asNum) out.add(canon(e.team));
-            }
-          }
-
           const notes = activeNotesFor(seasonKey, divisionName, asOfISO, includeUndated);
-          notes.filter(n => n.type === 'expulsion').forEach(n => {
+          notes.filter(n => n.type === 'expelled').forEach(n => {
             if (n.entity) out.add(canon(n.entity));
           });
 
@@ -891,8 +854,8 @@
           const matches = Array.isArray(div?.matches) ? div.matches : [];
           const ptsRule = pointsRuleFor(seasonKey, divisionName);
           const asNum = isoToNum(asOfISO);
-          const expSet = expungedTeamsFor(seasonKey, divisionName, asOfISO, false);
-
+          const expSet = expelledTeamsFor(seasonKey, divisionName, asOfISO, false);
+          
           const allTeams = new Set();
           for (const m of matches){
             const h = String(m.home_entity || m.home || '').trim();
@@ -939,13 +902,18 @@
 
             const isExp = expSet.has(canon(entity));
             if (isExp){
-              rows.push({ entity, team: teamLabel, P:0,W:0,D:0,L:0,GF:0,GA:0,GD:0,Pts:0, classes:['expunged'], move:'down' });
-            } else {
+              rows.push({ entity, team: teamLabel, P:0,W:0,D:0,L:0,GF:0,GA:0,GD:0,Pts:0, classes:['expelled'], move:'down' });            } else {
               rows.push({ entity, team: teamLabel, P:s.P,W:s.W,D:s.D,L:s.L,GF:s.GF,GA:s.GA,GD:s.GD,Pts:s.Pts, classes:[], move:'' });
             }
           }
 
           rows.sort((a,b)=>{
+            const aExpelled = Array.isArray(a.classes) && a.classes.includes('expelled');
+            const bExpelled = Array.isArray(b.classes) && b.classes.includes('expelled');
+
+            if (aExpelled && !bExpelled) return 1;
+            if (!aExpelled && bExpelled) return -1;
+
             if (b.Pts !== a.Pts) return b.Pts - a.Pts;
             if (b.GD !== a.GD) return b.GD - a.GD;
             if (b.GF !== a.GF) return b.GF - a.GF;
@@ -970,8 +938,8 @@
           }
 
           rows.forEach(r => {
-            const isExpunged = Array.isArray(r.classes) && r.classes.includes('expunged');
-            if (isExpunged){
+            const isExpelled = Array.isArray(r.classes) && r.classes.includes('expelled');
+            if (isExpelled){
               r.P = 0;
               r.W = 0;
               r.D = 0;
@@ -988,6 +956,12 @@
           });
 
           rows.sort((a,b)=>{
+            const aExpelled = Array.isArray(a.classes) && a.classes.includes('expelled');
+            const bExpelled = Array.isArray(b.classes) && b.classes.includes('expelled');
+
+            if (aExpelled && !bExpelled) return 1;
+            if (!aExpelled && bExpelled) return -1;
+
             if (b.Pts !== a.Pts) return b.Pts - a.Pts;
             if (b.GD !== a.GD) return b.GD - a.GD;
             if (b.GF !== a.GF) return b.GF - a.GF;
@@ -1108,7 +1082,7 @@
             r.classes = Array.isArray(r.classes) ? r.classes : [];
             r.move = '';
 
-            if (r.classes.includes('expunged')){
+            if (r.classes.includes('expelled')){
               r.move = 'down';
               continue;
             }
@@ -1153,7 +1127,7 @@
             const k = canon(r.entity || r.team);
             const tnotes = notesByEntity.get(k) || [];
 
-            if (tnotes.some(n => n.type === 'demotion')){
+            if (tnotes.some(n => n.type === 'demoted')){
               if (!r.classes.includes('relegated')) r.classes.push('relegated');
               r.move = 'down';
             }
@@ -1174,9 +1148,9 @@
               r.move = 'down';
             }
 
-            if (tnotes.some(n => n.type === 'expulsion')){
+            if (tnotes.some(n => n.type === 'expelled')){
               r.classes = r.classes.filter(c => c !== 'relegated');
-              if (!r.classes.includes('expunged')) r.classes.push('expunged');
+              if (!r.classes.includes('expelled')) r.classes.push('expelled');
               r.move = 'down';
             }
 
@@ -1211,7 +1185,7 @@
               'playoff-elim',
               'relegated',
               'folded',
-              'expunged'
+              'expelled'
             ].includes(c))
             .slice()
             .sort();
@@ -1770,12 +1744,11 @@
         }
 
         async function loadData(){
-          const [resultsRes, tablesRes, metaRaw, notesRaw, expulsionsRaw] = await Promise.all([
+          const [resultsRes, tablesRes, metaRaw, notesRaw] = await Promise.all([
             fetch(RESULTS_SRC + (RESULTS_SRC.includes('?') ? '&' : '?') + 'v=' + Date.now(), { cache:'no-store', credentials:'omit' }),
             fetch(TABLES_SRC  + (TABLES_SRC.includes('?')  ? '&' : '?') + 'v=' + Date.now(), { cache:'no-store', credentials:'omit' }),
             fetchOptionalJson(CLUBS_META_SRC),
-            fetchOptionalJson(SEASON_NOTES_SRC),
-            fetchOptionalJson(EXPULSIONS_SRC)
+            fetchOptionalJson(SEASON_NOTES_SRC)
           ]);
 
           if (!resultsRes.ok) throw new Error('Results: ' + resultsRes.status + ' ' + resultsRes.statusText);
@@ -1797,7 +1770,6 @@
           if (metaRaw) indexMeta(metaRaw);
           indexSeasonNotes(notesRaw);
           indexSeasonFormats(notesRaw);
-          if (expulsionsRaw) indexExpulsions(expulsionsRaw);
         }
 
         async function boot(){
