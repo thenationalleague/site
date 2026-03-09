@@ -1,0 +1,1851 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>National League Archive — Reference Audit (v1.9)</title>
+    <meta name="color-scheme" content="light" />
+    <style>
+      :root{
+        --brand:#9e0000;
+        --ink:#111;
+        --muted:#666;
+        --line:#d9d9d9;
+        --bg:#ffffff;
+        --bg-soft:#f7f7f7;
+        --ok:#e8f6ec;
+        --bad:#fdeaea;
+        --bad-ink:#8a1111;
+      }
+
+      *{ box-sizing:border-box; }
+
+      body{
+        margin:0;
+        background:#fff;
+        color:var(--ink);
+        font-family:inherit;
+      }
+
+      .audit-wrap{
+        max-width:1360px;
+        margin:0 auto;
+        padding:16px 12px 28px;
+      }
+
+      .audit-head{ margin-bottom:14px; }
+
+      .audit-title{
+        margin:0 0 6px;
+        font-size:1.45rem;
+        line-height:1.2;
+        font-weight:800;
+      }
+
+      .audit-sub{
+        margin:0;
+        color:var(--muted);
+      }
+
+      .audit-error{
+        display:none;
+        margin:12px 0;
+        padding:10px 12px;
+        border:1px solid #efc0c0;
+        background:var(--bad);
+        color:var(--bad-ink);
+        border-radius:10px;
+        white-space:pre-wrap;
+        font-weight:700;
+      }
+
+      .audit-controls{
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px 14px;
+        align-items:end;
+        margin:14px 0 16px;
+        padding:12px;
+        border:1px solid var(--line);
+        border-radius:12px;
+        background:var(--bg-soft);
+      }
+
+      .audit-control{
+        display:flex;
+        flex-direction:column;
+        gap:6px;
+        min-width:180px;
+      }
+
+      .audit-control label{
+        font-size:.92rem;
+        font-weight:700;
+      }
+
+      .audit-control select,
+      .audit-control input{
+        width:100%;
+        min-height:38px;
+        border:1px solid var(--line);
+        border-radius:10px;
+        background:#fff;
+        padding:8px 10px;
+        font:inherit;
+      }
+
+      .audit-check{
+        display:flex;
+        align-items:center;
+        gap:8px;
+        min-height:38px;
+        font-weight:700;
+      }
+
+      .audit-check input{
+        width:18px;
+        height:18px;
+      }
+
+      .audit-actions{
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+      }
+
+      .audit-btn{
+        min-height:38px;
+        border:1px solid var(--line);
+        border-radius:10px;
+        background:#fff;
+        padding:8px 12px;
+        font:inherit;
+        font-weight:700;
+        cursor:pointer;
+      }
+
+      .audit-btn--brand{
+        background:var(--brand);
+        color:#fff;
+        border-color:var(--brand);
+      }
+
+      .audit-summary{
+        display:grid;
+        grid-template-columns:repeat(4, minmax(0,1fr));
+        gap:10px;
+        margin:0 0 16px;
+      }
+
+      .audit-stat{
+        border:1px solid var(--line);
+        border-radius:12px;
+        background:#fff;
+        padding:12px;
+      }
+
+      .audit-stat__k{
+        color:var(--muted);
+        font-size:.85rem;
+        margin-bottom:5px;
+        font-weight:700;
+      }
+
+      .audit-stat__v{
+        font-size:1.4rem;
+        line-height:1.1;
+        font-weight:800;
+      }
+
+      .audit-results{
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+      }
+
+      .audit-card{
+        border:1px solid var(--line);
+        border-radius:14px;
+        background:#fff;
+        overflow:hidden;
+      }
+
+      .audit-card--clean{ border-color:#dfe8e1; }
+      .audit-card--dirty{ border-color:#f0cfcf; }
+
+      .audit-card__head{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:10px;
+        padding:12px 14px;
+        border-bottom:1px solid var(--line);
+      }
+
+      .audit-card__title{
+        margin:0;
+        font-size:1.03rem;
+        font-weight:800;
+      }
+
+      .audit-pill{
+        display:inline-flex;
+        align-items:center;
+        min-height:28px;
+        padding:0 10px;
+        border-radius:999px;
+        font-size:.84rem;
+        font-weight:800;
+        white-space:nowrap;
+      }
+
+      .audit-pill--ok{
+        background:var(--ok);
+      }
+
+      .audit-pill--bad{
+        background:var(--bad);
+        color:var(--bad-ink);
+      }
+
+      .audit-card__meta{
+        padding:10px 14px 0;
+        color:var(--muted);
+        font-size:.92rem;
+      }
+
+      .audit-empty{
+        padding:14px;
+        color:var(--muted);
+      }
+
+      .audit-blocks{
+        padding:12px 14px 14px;
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+      }
+
+      .audit-club{
+        border:1px solid var(--line);
+        border-radius:12px;
+        background:#fff;
+        padding:10px 12px;
+      }
+
+      .audit-club__head{
+        display:flex;
+        justify-content:space-between;
+        gap:10px;
+        align-items:flex-start;
+        margin-bottom:8px;
+      }
+
+      .audit-club__title{
+        margin:0;
+        font-size:.98rem;
+        font-weight:800;
+      }
+
+      .audit-club__sub{
+        color:var(--muted);
+        font-size:.88rem;
+      }
+
+      .audit-club__count{
+        font-size:.84rem;
+        font-weight:800;
+        color:var(--bad-ink);
+        background:var(--bad);
+        border-radius:999px;
+        padding:4px 9px;
+        white-space:nowrap;
+      }
+
+      .audit-compact{
+        display:flex;
+        flex-direction:column;
+        gap:6px;
+      }
+
+      .audit-row{
+        display:block;
+        font-size:.96rem;
+        line-height:1.55;
+        white-space:normal;
+      }
+
+      .audit-row-label{
+        display:inline;
+        font-weight:800;
+        color:var(--muted);
+        margin-right:8px;
+      }
+
+      .audit-token{
+        display:inline;
+        white-space:nowrap;
+        margin-right:10px;
+      }
+
+      .audit-token--derived-mismatch{
+        color:var(--bad-ink);
+        font-weight:800;
+      }
+
+      .audit-order{
+        border:1px solid var(--line);
+        border-radius:12px;
+        overflow:hidden;
+        background:#fff;
+      }
+
+      .audit-order__head{
+        padding:10px 12px;
+        font-weight:800;
+        background:#fafafa;
+        border-bottom:1px solid var(--line);
+      }
+
+      .audit-order__body{
+        padding:10px 12px;
+        color:var(--ink);
+        font-size:.92rem;
+      }
+
+      .audit-order__body div + div{
+        margin-top:6px;
+      }
+
+      @media (max-width: 980px){
+        .audit-summary{
+          grid-template-columns:repeat(2, minmax(0,1fr));
+        }
+      }
+
+      @media (max-width: 680px){
+        .audit-summary{
+          grid-template-columns:1fr;
+        }
+
+        .audit-card__head,
+        .audit-club__head{
+          align-items:flex-start;
+          flex-direction:column;
+        }
+
+        .audit-row-label{
+          display:inline;
+          margin-right:8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="audit-wrap">
+      <div class="audit-head">
+        <h1 class="audit-title">National League Archive — Reference Audit</h1>
+        <p class="audit-sub">Derived final standings from results.json + season-notes.json compared against league-tables.json, matched by entity.</p>
+      </div>
+
+      <div id="audit-error" class="audit-error" role="alert" aria-live="assertive"></div>
+
+      <div class="audit-controls">
+        <div class="audit-control">
+          <label for="season-filter">Season</label>
+          <select id="season-filter">
+            <option value="">All seasons</option>
+          </select>
+        </div>
+
+        <div class="audit-control">
+          <label for="division-filter">Division</label>
+          <select id="division-filter">
+            <option value="">All divisions</option>
+          </select>
+        </div>
+
+        <div class="audit-control">
+          <label for="text-filter">Find entity / team / field</label>
+          <input id="text-filter" type="text" placeholder="Type to filter…" />
+        </div>
+
+        <label class="audit-check">
+          <input id="mismatches-only" type="checkbox" checked />
+          Mismatches only
+        </label>
+
+               <label class="audit-check">
+          <input id="points-only" type="checkbox" />
+          Points only
+        </label>
+
+        <label class="audit-check">
+          <input id="classes-on" type="checkbox" />
+          Include class flags
+        </label>
+
+        <label class="audit-check">
+          <input id="move-on" type="checkbox" />
+          Include move flags
+        </label>
+
+        <div class="audit-actions">
+          <button id="run-audit" class="audit-btn audit-btn--brand" type="button">Run audit</button>
+          <button id="download-json" class="audit-btn" type="button">Download JSON</button>
+        </div>
+
+      <div class="audit-summary">
+        <div class="audit-stat">
+          <div class="audit-stat__k">Divisions checked</div>
+          <div id="stat-divisions" class="audit-stat__v">0</div>
+        </div>
+        <div class="audit-stat">
+          <div class="audit-stat__k">Mismatching divisions</div>
+          <div id="stat-dirty" class="audit-stat__v">0</div>
+        </div>
+        <div class="audit-stat">
+          <div class="audit-stat__k">Points mismatches</div>
+          <div id="stat-points" class="audit-stat__v">0</div>
+        </div>
+        <div class="audit-stat">
+          <div class="audit-stat__k">Total mismatches</div>
+          <div id="stat-mismatches" class="audit-stat__v">0</div>
+        </div>
+      </div>
+
+      <div id="audit-results" class="audit-results"></div>
+    </div>
+
+    <script>
+      (function(){
+        const VERSION = 'v1.9';
+
+        const RESULTS_SRC = "https://raw.githubusercontent.com/rckd-nl/website/main/results.json";
+        const TABLES_SRC  = "https://raw.githubusercontent.com/rckd-nl/website/main/league-tables.json";
+        const EXPULSIONS_SRC = "./expulsions.json";
+        const CLUBS_META_SRC = "https://raw.githubusercontent.com/rckd-nl/website/main/clubs-meta.json";
+        const SEASON_NOTES_SRC = "https://raw.githubusercontent.com/rckd-nl/website/main/season-notes.json";
+
+        const HIDDEN_DIVISIONS = new Set(['North/South']);
+        const BASE_COMPARE_COLS = ['pos','P','W','D','L','GF','GA','GD','Pts'];
+        const OPTIONAL_COMPARE_COLS = ['classes','move'];
+
+        const $ = s => document.querySelector(s);
+        const els = {
+          error: $('#audit-error'),
+          seasonFilter: $('#season-filter'),
+          divisionFilter: $('#division-filter'),
+          textFilter: $('#text-filter'),
+          mismatchesOnly: $('#mismatches-only'),
+          pointsOnly: $('#points-only'),
+          classesOn: $('#classes-on'),
+          moveOn: $('#move-on'),
+          runAudit: $('#run-audit'),
+          downloadJson: $('#download-json'),
+          statDivisions: $('#stat-divisions'),
+          statDirty: $('#stat-dirty'),
+          statPoints: $('#stat-points'),
+          statMismatches: $('#stat-mismatches'),
+          results: $('#audit-results')
+        };
+
+        const state = {
+          seasons: [],
+          byKey: {},
+          finalByKey: {},
+          metaBySlug: new Map(),
+          aliasMap: new Map(),
+          seasonNotesFull: new Map(),
+          expulsions: new Map(),
+          seasonFormats: new Map(),
+          seasonPoints: new Map(),
+          auditSummary: null,
+          auditReports: []
+        };
+
+        const canon = s => String(s || '').toLowerCase().replace(/\s+/g, ' ').trim();
+        const startYear = s => {
+          const m = /^(\d{4})/.exec(String(s) || '');
+          return m ? +m[1] : 0;
+        };
+
+        function activeCompareCols(){
+          const cols = BASE_COMPARE_COLS.slice();
+          if (els.classesOn && els.classesOn.checked) cols.push('classes');
+          if (els.moveOn && els.moveOn.checked) cols.push('move');
+          return cols;
+        }
+
+        const toISO = s => String(s || '').slice(0, 10);
+        const isoToNum = s => {
+          const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || ''));
+          if (!m) return 0;
+          return Number(m[1]) * 10000 + Number(m[2]) * 100 + Number(m[3]);
+        };
+
+        function showErr(m, d){
+          els.error.style.display = 'block';
+          els.error.textContent = d ? (m + "\n\n" + d) : m;
+          console.error(m, d || '');
+        }
+
+        function clearErr(){
+          els.error.style.display = 'none';
+          els.error.textContent = '';
+        }
+
+        function visibleDivisionNames(divisionsObj){
+          return Object.keys(divisionsObj || {}).filter(name => !HIDDEN_DIVISIONS.has(String(name)));
+        }
+
+        function normalizeResults(raw){
+          if (!raw || !Array.isArray(raw.seasons)) return [];
+          return raw.seasons.filter(s => s && s.season && s.divisions);
+        }
+
+        function normalizeTables(raw){
+          if (!raw) return [];
+          if (Array.isArray(raw?.seasons)) return raw.seasons.filter(s => s && s.season && s.divisions);
+          if (Array.isArray(raw)) return raw.filter(s => s && s.season && s.divisions);
+          return [];
+        }
+
+        function buildIndex(items){
+          const seasons = items.slice().sort((a,b)=> startYear(a.season) - startYear(b.season));
+          state.seasons = seasons;
+          state.byKey = {};
+          seasons.forEach(s => state.byKey[s.season] = s);
+        }
+
+        function buildFinalIndex(items){
+          const seasons = items.slice().sort((a,b)=> startYear(a.season) - startYear(b.season));
+          state.finalByKey = {};
+          seasons.forEach(s => state.finalByKey[s.season] = s);
+        }
+
+        function indexMeta(meta){
+          state.metaBySlug.clear();
+          state.aliasMap.clear();
+
+          const list = Array.isArray(meta?.clubs) ? meta.clubs : [];
+          for (const c of list){
+            if (!c?.slug || !c?.primaryName) continue;
+
+            state.metaBySlug.set(c.slug, c);
+
+            const pk = canon(c.primaryName);
+            if (!state.aliasMap.has(pk)) state.aliasMap.set(pk, new Set());
+            state.aliasMap.get(pk).add(c.slug);
+
+            const rules = Array.isArray(c.displayRules) ? c.displayRules : [];
+            for (const r of rules){
+              if (!r?.as) continue;
+              const k = canon(r.as);
+              if (!state.aliasMap.has(k)) state.aliasMap.set(k, new Set());
+              state.aliasMap.get(k).add(c.slug);
+            }
+          }
+        }
+
+        function ruleMatchesSeason(rule, seasonKey){
+          const y = startYear(seasonKey);
+          if (rule.season) return rule.season === seasonKey;
+          const fromY = rule.from ? startYear(rule.from) : -Infinity;
+          const toY = rule.to ? startYear(rule.to) : Infinity;
+          return y >= fromY && y <= toY;
+        }
+
+        function resolveTeamSlug(name, seasonKey){
+          const k = canon(name);
+          const candidates = state.aliasMap.get(k);
+
+          if (!candidates || !candidates.size) return '';
+          if (candidates.size === 1) return Array.from(candidates)[0];
+
+          const matched = [];
+          for (const slug of candidates){
+            const meta = state.metaBySlug.get(slug);
+            const rules = Array.isArray(meta?.displayRules) ? meta.displayRules : [];
+            if (rules.some(r => r.as && canon(r.as) === k && ruleMatchesSeason(r, seasonKey))){
+              matched.push(slug);
+            }
+          }
+
+          if (matched.length === 1) return matched[0];
+          return '';
+        }
+
+        function indexSeasonNotes(raw){
+          state.seasonNotesFull.clear();
+
+          const list = Array.isArray(raw?.notes) ? raw.notes : Array.isArray(raw) ? raw : [];
+
+          for (const it of list){
+            if (!it?.season || !it?.division) continue;
+
+            const s = String(it.season);
+            const d = String(it.division);
+
+            if (!state.seasonNotesFull.has(s)) state.seasonNotesFull.set(s, new Map());
+            const fm = state.seasonNotesFull.get(s);
+            if (!fm.has(d)) fm.set(d, []);
+
+            fm.get(d).push({
+              season: s,
+              division: d,
+              team: String(it.team || ''),
+              entity: String(it.entity || ''),
+              type: String(it.type || 'general').toLowerCase(),
+              pointsValue: (it.pointsValue != null && it.pointsValue !== '') ? Number(it.pointsValue) : null,
+              effectiveDate: (it.effectiveDate != null && it.effectiveDate !== '') ? String(it.effectiveDate) : null,
+              note: String(it.note || '')
+            });
+          }
+        }
+
+        function parsePlayoffsValue(v){
+          if (!v || typeof v !== 'object' || Array.isArray(v)){
+            throw new Error('seasonFormat.playoffs must be an object with semi and eliminator');
+          }
+          const semi = Number(v.semi ?? 0);
+          const elim = Number(v.eliminator ?? 0);
+          if (!Number.isFinite(semi) || !Number.isFinite(elim)){
+            throw new Error('seasonFormat.playoffs contains invalid values');
+          }
+          return { semi, elim };
+        }
+
+        function indexSeasonFormats(raw){
+          state.seasonFormats.clear();
+          state.seasonPoints.clear();
+
+          const list = Array.isArray(raw?.seasonFormat)
+            ? raw.seasonFormat
+            : Array.isArray(raw?.formats)
+              ? raw.formats
+              : [];
+
+          for (const it of list){
+            if (!it?.season || !it?.division) continue;
+
+            const s = String(it.season);
+            const d = String(it.division);
+            const champions = Number(it.champions ?? 1);
+            const automatic = Number(it.automatic ?? 0);
+            const relegation = Number(it.relegation ?? 0);
+            const po = parsePlayoffsValue(it.playoffs || { semi:0, eliminator:0 });
+
+            if (!it.points || typeof it.points !== 'object'){
+              throw new Error(`Missing points rule in season-notes.json for ${s} / ${d}`);
+            }
+
+            const wh = Number(it.points.winHome);
+            const wa = Number(it.points.winAway);
+            const dr = Number(it.points.draw);
+            const ls = Number(it.points.loss);
+
+            if (!state.seasonFormats.has(s)) state.seasonFormats.set(s, new Map());
+            if (!state.seasonPoints.has(s)) state.seasonPoints.set(s, new Map());
+
+            state.seasonFormats.get(s).set(d, {
+              champions,
+              automatic,
+              playoffsSemi: po.semi,
+              playoffsElim: po.elim,
+              relegation
+            });
+
+            state.seasonPoints.get(s).set(d, {
+              winHome: wh,
+              winAway: wa,
+              draw: dr,
+              loss: ls
+            });
+          }
+        }
+
+        function indexExpulsions(raw){
+          state.expulsions.clear();
+
+          const list = Array.isArray(raw) ? raw : Array.isArray(raw?.expulsions) ? raw.expulsions : [];
+          for (const it of list){
+            if (!it?.season || !it?.team || !it?.date || !it?.division) continue;
+
+            const s = String(it.season);
+            const d = String(it.division);
+            const team = String(it.team);
+            const date = toISO(it.date);
+
+            if (!state.expulsions.has(s)) state.expulsions.set(s, new Map());
+            const dm = state.expulsions.get(s);
+            if (!dm.has(d)) dm.set(d, []);
+            dm.get(d).push({ team, date });
+          }
+
+          for (const dm of state.expulsions.values()){
+            for (const [div, arr] of dm.entries()){
+              arr.sort((a,b)=> isoToNum(a.date) - isoToNum(b.date));
+              dm.set(div, arr);
+            }
+          }
+        }
+
+        function getSeasonFormat(seasonKey, divisionName){
+          const fmt = state.seasonFormats.get(String(seasonKey))?.get(String(divisionName)) || null;
+          if (!fmt) throw new Error(`Missing season format for ${seasonKey} / ${divisionName}`);
+          return fmt;
+        }
+
+        function pointsRuleFor(seasonKey, divisionName){
+          const rule = state.seasonPoints.get(String(seasonKey))?.get(String(divisionName)) || null;
+          if (!rule) throw new Error(`Missing points rule for ${seasonKey} / ${divisionName}`);
+          return rule;
+        }
+
+        function getBandPositions(seasonKey, divisionName){
+          const fmt = getSeasonFormat(seasonKey, divisionName);
+          const championEnd = fmt.champions > 0 ? fmt.champions : null;
+          const automaticEnd = fmt.automatic > 0 ? (fmt.champions + fmt.automatic) : null;
+          const semiStart = fmt.playoffsSemi > 0 ? (fmt.champions + fmt.automatic + 1) : null;
+          const semiEnd = fmt.playoffsSemi > 0 ? (semiStart + fmt.playoffsSemi - 1) : null;
+          const elimStart = fmt.playoffsElim > 0 ? (fmt.champions + fmt.automatic + fmt.playoffsSemi + 1) : null;
+          const elimEnd = fmt.playoffsElim > 0 ? (elimStart + fmt.playoffsElim - 1) : null;
+
+          return {
+            championEnd,
+            automaticEnd,
+            semiStart,
+            semiEnd,
+            elimStart,
+            elimEnd,
+            playoffExists: fmt.playoffsSemi > 0 || fmt.playoffsElim > 0
+          };
+        }
+
+        function getLastLeagueDateForSeasonDivision(seasonKey, divisionName){
+          const seasonObj = state.byKey?.[seasonKey];
+          const divObj = seasonObj?.divisions?.[divisionName];
+          const matches = Array.isArray(divObj?.matches) ? divObj.matches : [];
+
+          const leagueDates = matches
+            .filter(m => !m?.playoffs && !m?.playoff_round)
+            .map(m => toISO(m.date))
+            .filter(Boolean)
+            .sort((a,b)=> isoToNum(a) - isoToNum(b));
+
+          return leagueDates.length ? leagueDates[leagueDates.length - 1] : null;
+        }
+
+        function getSeasonEndDateForSeasonDivision(seasonKey, divisionName){
+          const seasonObj = state.byKey?.[seasonKey];
+          const divisionMatches = Array.isArray(seasonObj?.divisions?.[divisionName]?.matches)
+            ? seasonObj.divisions[divisionName].matches
+            : [];
+
+          let matches = divisionMatches;
+          if (divisionName === 'North' || divisionName === 'South'){
+            const sharedMatches = Array.isArray(seasonObj?.divisions?.['North/South']?.matches)
+              ? seasonObj.divisions['North/South'].matches
+              : [];
+            matches = divisionMatches.concat(sharedMatches);
+          }
+
+          const playoffDates = matches
+            .filter(m => (m?.playoffs || m?.playoff_round))
+            .map(m => toISO(m.date))
+            .filter(Boolean)
+            .sort((a,b)=> isoToNum(a) - isoToNum(b));
+
+          const lastPlayoff = playoffDates.length ? playoffDates[playoffDates.length - 1] : null;
+          const lastLeague = getLastLeagueDateForSeasonDivision(seasonKey, divisionName);
+
+          return lastPlayoff || lastLeague || null;
+        }
+
+        function activeNotesFor(seasonKey, divisionName, asOfISO, includeUndated){
+          const fm = state.seasonNotesFull.get(String(seasonKey));
+          if (!fm) return [];
+          const arr = fm.get(String(divisionName)) || [];
+          return arr.filter(n => {
+            const ed = n?.effectiveDate;
+            if (!ed) return !!includeUndated;
+            if (ed === 'start_of_season' || ed === 'end_of_season') return true;
+            if (/^\d{4}-\d{2}-\d{2}$/.test(ed)) return isoToNum(ed) <= isoToNum(asOfISO);
+            return !!includeUndated;
+          });
+        }
+
+        function expungedTeamsFor(seasonKey, divisionName, asOfISO, includeUndated){
+          const out = new Set();
+
+          const dm = state.expulsions.get(String(seasonKey));
+          if (dm){
+            const arr = dm.get(String(divisionName)) || [];
+            const asNum = isoToNum(asOfISO);
+            for (const e of arr){
+              if (isoToNum(e.date) <= asNum) out.add(canon(e.team));
+            }
+          }
+
+          const notes = activeNotesFor(seasonKey, divisionName, asOfISO, includeUndated);
+          notes.filter(n => n.type === 'expulsion').forEach(n => {
+            if (n.entity) out.add(canon(n.entity));
+          });
+
+          return out;
+        }
+
+        function initTeamStats(){
+          return { P:0, W:0, D:0, L:0, GF:0, GA:0, GD:0, Pts:0 };
+        }
+
+        function addMatch(statsByTeam, match, ptsRule){
+          const home = String(match.home_entity || match.home || '').trim();
+          const away = String(match.away_entity || match.away || '').trim();
+          const hg = Number(match.home_goals);
+          const ag = Number(match.away_goals);
+
+          if (!home || !away) return;
+          if (!Number.isFinite(hg) || !Number.isFinite(ag)) return;
+
+          const status = String(match.status || '').trim().toLowerCase();
+          const isAbandoned = status === 'abandoned';
+          const awarded = String(match.awarded || '').trim().toLowerCase();
+          const countGoals = match.count_goals !== false;
+          const countPoints = match.count_points !== false;
+
+          if (isAbandoned && !countGoals && !countPoints){
+            return;
+          }
+
+          if (!statsByTeam.has(home)) statsByTeam.set(home, initTeamStats());
+          if (!statsByTeam.has(away)) statsByTeam.set(away, initTeamStats());
+
+          const H = statsByTeam.get(home);
+          const A = statsByTeam.get(away);
+
+          if (countGoals){
+            H.GF += hg;
+            H.GA += ag;
+            A.GF += ag;
+            A.GA += hg;
+          }
+
+          if (!countPoints){
+            return;
+          }
+
+          H.P += 1;
+          A.P += 1;
+
+          if (isAbandoned){
+            if (awarded === 'home'){
+              H.W += 1;
+              A.L += 1;
+              H.Pts += Number(ptsRule.winHome);
+              return;
+            }
+
+            if (awarded === 'away'){
+              A.W += 1;
+              H.L += 1;
+              A.Pts += Number(ptsRule.winAway);
+              return;
+            }
+
+            if (awarded === 'draw'){
+              H.D += 1;
+              A.D += 1;
+              H.Pts += Number(ptsRule.draw);
+              A.Pts += Number(ptsRule.draw);
+              return;
+            }
+
+            if (awarded === 'none' || awarded === ''){
+              H.P -= 1;
+              A.P -= 1;
+              return;
+            }
+          }
+
+          if (hg > ag){
+            H.W += 1;
+            A.L += 1;
+            H.Pts += Number(ptsRule.winHome);
+          } else if (hg < ag){
+            A.W += 1;
+            H.L += 1;
+            A.Pts += Number(ptsRule.winAway);
+          } else {
+            H.D += 1;
+            A.D += 1;
+            H.Pts += Number(ptsRule.draw);
+            A.Pts += Number(ptsRule.draw);
+          }
+        }
+
+        function computeStandings(seasonKey, divisionName, asOfISO){
+          const season = state.byKey[seasonKey];
+          const div = season?.divisions?.[divisionName];
+          const matches = Array.isArray(div?.matches) ? div.matches : [];
+          const ptsRule = pointsRuleFor(seasonKey, divisionName);
+          const asNum = isoToNum(asOfISO);
+          const expSet = expungedTeamsFor(seasonKey, divisionName, asOfISO, false);
+
+          const allTeams = new Set();
+          for (const m of matches){
+            const h = String(m.home_entity || m.home || '').trim();
+            const a = String(m.away_entity || m.away || '').trim();
+            if (h) allTeams.add(h);
+            if (a) allTeams.add(a);
+          }
+
+          const stats = new Map();
+
+          for (const m of matches){
+            if (m?.playoffs || m?.playoff_round) continue;
+
+            const dateISO = toISO(m.date);
+            if (!dateISO || isoToNum(dateISO) > asNum) continue;
+
+            const h = String(m.home_entity || m.home || '').trim();
+            const a = String(m.away_entity || m.away || '').trim();
+            if (!h || !a) continue;
+
+            if (expSet.has(canon(h)) || expSet.has(canon(a))) continue;
+
+            const hg = Number(m.home_goals);
+            const ag = Number(m.away_goals);
+            if (!Number.isFinite(hg) || !Number.isFinite(ag)) continue;
+
+            addMatch(stats, m, ptsRule);
+          }
+
+          const rows = [];
+          for (const entity of allTeams){
+            const s = stats.get(entity) || initTeamStats();
+            s.GD = s.GF - s.GA;
+
+            const slug = resolveTeamSlug(entity, seasonKey);
+            let teamLabel = entity;
+            if (slug){
+              const meta = state.metaBySlug.get(slug);
+              if (meta?.primaryName) teamLabel = meta.primaryName;
+              const rules = Array.isArray(meta?.displayRules) ? meta.displayRules : [];
+              const rule = rules.find(r => r.as && ruleMatchesSeason(r, seasonKey));
+              if (rule?.as) teamLabel = rule.as;
+            }
+
+            const isExp = expSet.has(canon(entity));
+            if (isExp){
+              rows.push({ entity, team: teamLabel, P:0,W:0,D:0,L:0,GF:0,GA:0,GD:0,Pts:0, classes:['expunged'], move:'down' });
+            } else {
+              rows.push({ entity, team: teamLabel, P:s.P,W:s.W,D:s.D,L:s.L,GF:s.GF,GA:s.GA,GD:s.GD,Pts:s.Pts, classes:[], move:'' });
+            }
+          }
+
+          rows.sort((a,b)=>{
+            if (b.Pts !== a.Pts) return b.Pts - a.Pts;
+            if (b.GD !== a.GD) return b.GD - a.GD;
+            if (b.GF !== a.GF) return b.GF - a.GF;
+            return String(a.entity).localeCompare(String(b.entity));
+          });
+
+          rows.forEach((r,i)=> r.pos = i + 1);
+          return rows;
+        }
+
+        function applyPointsAdjustments(seasonKey, divisionName, asOfISO, rows, includeUndated){
+          const notes = activeNotesFor(seasonKey, divisionName, asOfISO, includeUndated)
+            .filter(n => n.type === 'points_deduction' && Number.isFinite(n.pointsValue));
+
+          if (!notes.length) return rows;
+
+          const deltaByEntity = new Map();
+          for (const n of notes){
+            if (!n.entity) continue;
+            const k = canon(n.entity);
+            deltaByEntity.set(k, (deltaByEntity.get(k) || 0) + Number(n.pointsValue));
+          }
+
+          rows.forEach(r => {
+            const isExpunged = Array.isArray(r.classes) && r.classes.includes('expunged');
+            if (isExpunged){
+              r.P = 0;
+              r.W = 0;
+              r.D = 0;
+              r.L = 0;
+              r.GF = 0;
+              r.GA = 0;
+              r.GD = 0;
+              r.Pts = 0;
+              return;
+            }
+
+            const k = canon(r.entity || r.team);
+            if (deltaByEntity.has(k)) r.Pts = Number(r.Pts || 0) + deltaByEntity.get(k);
+          });
+
+          rows.sort((a,b)=>{
+            if (b.Pts !== a.Pts) return b.Pts - a.Pts;
+            if (b.GD !== a.GD) return b.GD - a.GD;
+            if (b.GF !== a.GF) return b.GF - a.GF;
+            return String(a.entity || a.team).localeCompare(String(b.entity || b.team));
+          });
+
+          rows.forEach((r,i)=> r.pos = i + 1);
+          return rows;
+        }
+
+        function applyPPGRankingIfNeeded(seasonKey, divisionName, asOfISO, rows, includeUndated){
+          if (!Array.isArray(rows) || !rows.length) return rows;
+          const notes = activeNotesFor(seasonKey, divisionName, asOfISO, !!includeUndated);
+          const usesPPG = notes.some(n => String(n.type || '').toLowerCase() === 'ppg');
+          if (!usesPPG) return rows;
+
+          rows.forEach(r => {
+            const p = Number(r.P || 0);
+            const pts = Number(r.Pts || 0);
+            r._ppg = p > 0 ? (pts / p) : 0;
+          });
+
+          rows.sort((a,b)=>{
+            if (b._ppg !== a._ppg) return b._ppg - a._ppg;
+            if (b.Pts !== a.Pts) return b.Pts - a.Pts;
+            if (b.GD !== a.GD) return b.GD - a.GD;
+            if (b.GF !== a.GF) return b.GF - a.GF;
+            return String(a.entity || a.team).localeCompare(String(b.entity || b.team));
+          });
+
+          rows.forEach((r,i)=> r.pos = i + 1);
+          rows.forEach(r => delete r._ppg);
+          return rows;
+        }
+
+        function playoffMatchesForLookup(seasonKey, divisionName){
+          const seasonObj = state.byKey[seasonKey];
+          const currentDivMatches = Array.isArray(seasonObj?.divisions?.[divisionName]?.matches)
+            ? seasonObj.divisions[divisionName].matches
+            : [];
+
+          if (divisionName === 'North' || divisionName === 'South'){
+            const sharedMatches = Array.isArray(seasonObj?.divisions?.['North/South']?.matches)
+              ? seasonObj.divisions['North/South'].matches
+              : [];
+            return currentDivMatches.concat(sharedMatches);
+          }
+
+          return currentDivMatches;
+        }
+
+        function findPlayoffWinnerFromResults(seasonKey, divisionName){
+          const matches = playoffMatchesForLookup(seasonKey, divisionName);
+
+          const finals = matches
+            .filter(m => {
+              if (!m || !m.playoffs) return false;
+              const pr = String(m.playoff_round || '').trim().toLowerCase();
+              return pr === 'final';
+            })
+            .slice()
+            .sort((a,b)=> isoToNum(toISO(a.date)) - isoToNum(toISO(b.date)));
+
+          const fin = finals.length ? finals[finals.length - 1] : null;
+          if (!fin) return '';
+
+          const h = String(fin.home_entity || fin.home || '').trim();
+          const a = String(fin.away_entity || fin.away || '').trim();
+          if (!h || !a) return '';
+
+          const hg = Number(fin.home_goals);
+          const ag = Number(fin.away_goals);
+
+          if (Number.isFinite(hg) && Number.isFinite(ag)){
+            if (hg > ag) return h;
+            if (ag > hg) return a;
+          }
+
+          const hAet = Number(fin.home_aet);
+          const aAet = Number(fin.away_aet);
+          if (Number.isFinite(hAet) && Number.isFinite(aAet)){
+            if (hAet > aAet) return h;
+            if (aAet > hAet) return a;
+          }
+
+          const hPen = Number(fin.home_pens);
+          const aPen = Number(fin.away_pens);
+          if (Number.isFinite(hPen) && Number.isFinite(aPen)){
+            if (hPen > aPen) return h;
+            if (aPen > hPen) return a;
+          }
+
+          return '';
+        }
+
+        function applyFinalRulesFromNotes(seasonKey, divisionName, asOfISO, rows, includeUndated){
+          const notes = activeNotesFor(seasonKey, divisionName, asOfISO, !!includeUndated);
+          const notesByEntity = new Map();
+
+          for (const n of notes){
+            if (!n.entity) continue;
+            const k = canon(n.entity);
+            if (!notesByEntity.has(k)) notesByEntity.set(k, []);
+            notesByEntity.get(k).push(n);
+          }
+
+          const fmt = getSeasonFormat(seasonKey, divisionName);
+          const bands = getBandPositions(seasonKey, divisionName);
+          const teamCount = rows.length;
+          const relegationLinePos = fmt.relegation > 0 ? (teamCount - fmt.relegation) : null;
+          const playoffWinner = bands.playoffExists ? findPlayoffWinnerFromResults(seasonKey, divisionName) : '';
+
+          const hasNoRelegation = notes.some(n => n.type === 'no_relegation');
+          const teamsNoPlayoffs = new Set(notes.filter(n => n.type === 'no_playoffs' && n.entity).map(n => canon(n.entity)));
+          const teamsNotPromoted = new Set(notes.filter(n => n.type === 'not_promoted' && n.entity).map(n => canon(n.entity)));
+
+          for (const r of rows){
+            r.classes = Array.isArray(r.classes) ? r.classes : [];
+            r.move = '';
+
+            if (r.classes.includes('expunged')){
+              r.move = 'down';
+              continue;
+            }
+
+            const pos = Number(r.pos);
+
+            if (bands.championEnd && pos <= bands.championEnd){
+              if (!r.classes.includes('champion')) r.classes.push('champion');
+              r.move = 'up';
+            }
+
+            if (bands.automaticEnd && pos > bands.championEnd && pos <= bands.automaticEnd){
+              if (!r.classes.includes('promoted')) r.classes.push('promoted');
+              r.move = 'up';
+            }
+
+            if (bands.semiStart && bands.semiEnd && pos >= bands.semiStart && pos <= bands.semiEnd){
+              if (!r.classes.includes('playoff-semi')) r.classes.push('playoff-semi');
+            }
+
+            if (bands.elimStart && bands.elimEnd && pos >= bands.elimStart && pos <= bands.elimEnd){
+              if (!r.classes.includes('playoff-elim')) r.classes.push('playoff-elim');
+            }
+
+            if (!hasNoRelegation && relegationLinePos != null && pos > relegationLinePos){
+              if (!r.classes.includes('relegated')) r.classes.push('relegated');
+              r.move = 'down';
+            }
+          }
+
+          if (playoffWinner){
+            const poKey = canon(playoffWinner);
+            const r = rows.find(x => canon(x.entity || x.team) === poKey);
+            if (r && !teamsNoPlayoffs.has(poKey) && !teamsNotPromoted.has(poKey)){
+              r.classes = r.classes.filter(c => c !== 'playoff-semi' && c !== 'playoff-elim');
+              if (!r.classes.includes('promoted')) r.classes.push('promoted');
+              r.move = 'up';
+            }
+          }
+
+          for (const r of rows){
+            const k = canon(r.entity || r.team);
+            const tnotes = notesByEntity.get(k) || [];
+
+            if (tnotes.some(n => n.type === 'demotion')){
+              if (!r.classes.includes('relegated')) r.classes.push('relegated');
+              r.move = 'down';
+            }
+
+            if (tnotes.some(n => n.type === 'reprieve')){
+              r.classes = r.classes.filter(c => c !== 'relegated');
+              if (r.move === 'down') r.move = '';
+            }
+
+            if (teamsNotPromoted.has(k)){
+              r.classes = r.classes.filter(c => c !== 'promoted');
+              if (r.move === 'up') r.move = '';
+            }
+
+            if (tnotes.some(n => n.type === 'folded')){
+              r.classes = r.classes.filter(c => c !== 'relegated');
+              if (!r.classes.includes('folded')) r.classes.push('folded');
+              r.move = 'down';
+            }
+
+            if (tnotes.some(n => n.type === 'expulsion')){
+              r.classes = r.classes.filter(c => c !== 'relegated');
+              if (!r.classes.includes('expunged')) r.classes.push('expunged');
+              r.move = 'down';
+            }
+
+            if (teamsNoPlayoffs.has(k)){
+              r.classes = r.classes.filter(c => c !== 'playoff-semi' && c !== 'playoff-elim');
+              if (r.move === 'up' && !r.classes.includes('champion') && !r.classes.includes('promoted')){
+                r.move = '';
+              }
+            }
+          }
+
+          if (hasNoRelegation){
+            for (const r of rows){
+              r.classes = r.classes.filter(c => c !== 'relegated');
+              if (r.move === 'down') r.move = '';
+            }
+          }
+
+          return rows;
+        }
+
+        function normMove(v){
+          return (v === 'up' || v === 'down') ? v : '';
+        }
+
+        function normClasses(arr){
+          return (Array.isArray(arr) ? arr : [])
+            .filter(c => [
+              'champion',
+              'promoted',
+              'playoff-semi',
+              'playoff-elim',
+              'relegated',
+              'folded',
+              'expunged'
+            ].includes(c))
+            .slice()
+            .sort();
+        }
+
+        function classKey(arr){
+          return normClasses(arr).join('|');
+        }
+
+        function refRowsFor(seasonKey, divisionName){
+          const season = state.finalByKey[seasonKey];
+          const div = season?.divisions?.[divisionName];
+          const rows = Array.isArray(div?.rows) ? div.rows.slice() : [];
+
+          return rows
+            .sort((a,b)=> Number(a.pos || 0) - Number(b.pos || 0))
+            .map(r => ({
+              entity: String(r.entity || r.team || '').trim(),
+              team: String(r.team || r.entity || '').trim(),
+              pos: Number(r.pos || 0),
+              P: Number(r.P || 0),
+              W: Number(r.W || 0),
+              D: Number(r.D || 0),
+              L: Number(r.L || 0),
+              GF: Number(r.GF || 0),
+              GA: Number(r.GA || 0),
+              GD: Number(r.GD != null ? r.GD : (Number(r.GF || 0) - Number(r.GA || 0))),
+              Pts: Number(r.Pts || 0),
+              classes: normClasses(r.classes || []),
+              move: normMove(r.move || r.movement || '')
+            }));
+        }
+
+        function derivedRowsFor(seasonKey, divisionName){
+          const lastLeagueDate = getLastLeagueDateForSeasonDivision(seasonKey, divisionName);
+          if (!lastLeagueDate){
+            return { error: `No last league date for ${seasonKey} / ${divisionName}` };
+          }
+
+          const seasonEndDate = getSeasonEndDateForSeasonDivision(seasonKey, divisionName) || lastLeagueDate;
+
+          let rows = computeStandings(seasonKey, divisionName, lastLeagueDate);
+          rows = applyPointsAdjustments(seasonKey, divisionName, lastLeagueDate, rows, true);
+          rows = applyPPGRankingIfNeeded(seasonKey, divisionName, lastLeagueDate, rows, true);
+          rows = applyFinalRulesFromNotes(seasonKey, divisionName, seasonEndDate, rows, true);
+
+          return rows.map(r => ({
+            entity: String(r.entity || r.team || '').trim(),
+            team: String(r.team || r.entity || '').trim(),
+            pos: Number(r.pos || 0),
+            P: Number(r.P || 0),
+            W: Number(r.W || 0),
+            D: Number(r.D || 0),
+            L: Number(r.L || 0),
+            GF: Number(r.GF || 0),
+            GA: Number(r.GA || 0),
+            GD: Number(r.GD != null ? r.GD : (Number(r.GF || 0) - Number(r.GA || 0))),
+            Pts: Number(r.Pts || 0),
+            classes: normClasses(r.classes || []),
+            move: normMove(r.move || '')
+          }));
+        }
+
+        function compareSeasonDivision(seasonKey, divisionName){
+          const refRows = refRowsFor(seasonKey, divisionName);
+          const derived = derivedRowsFor(seasonKey, divisionName);
+
+          if (derived && derived.error){
+            return {
+              season: seasonKey,
+              division: divisionName,
+              error: derived.error,
+              mismatches: [],
+              groupedClubs: [],
+              orderChanges: []
+            };
+          }
+
+          const derivedRows = derived;
+          const mismatches = [];
+          const groupedClubs = [];
+
+          const refByEntity = new Map(refRows.map(r => [canon(r.entity), r]));
+          const derByEntity = new Map(derivedRows.map(r => [canon(r.entity), r]));
+
+          const allEntities = Array.from(new Set([
+            ...refRows.map(r => canon(r.entity)),
+            ...derivedRows.map(r => canon(r.entity))
+          ])).sort();
+
+          for (const entityKey of allEntities){
+            const ref = refByEntity.get(entityKey);
+            const der = derByEntity.get(entityKey);
+
+            if (!ref){
+              mismatches.push({
+                type: 'missing_in_reference',
+                entity: der.entity,
+                team: der.team,
+                field: '',
+                derived: der,
+                reference: null
+              });
+              groupedClubs.push({
+                entity: der.entity,
+                team: der.team,
+                mismatches: [{ field:'missing_in_reference' }],
+                derivedFull: der,
+                referenceFull: null
+              });
+              continue;
+            }
+
+            if (!der){
+              mismatches.push({
+                type: 'missing_in_derived',
+                entity: ref.entity,
+                team: ref.team,
+                field: '',
+                derived: null,
+                reference: ref
+              });
+              groupedClubs.push({
+                entity: ref.entity,
+                team: ref.team,
+                mismatches: [{ field:'missing_in_derived' }],
+                derivedFull: null,
+                referenceFull: ref
+              });
+              continue;
+            }
+
+            const clubMismatches = [];
+            for (const field of activeCompareCols()){
+              const refVal = field === 'classes' ? classKey(ref[field]) : ref[field];
+              const derVal = field === 'classes' ? classKey(der[field]) : der[field];
+
+              if (refVal !== derVal){
+                const mm = {
+                  type: field === 'classes' ? 'class_mismatch' : 'field_mismatch',
+                  entity: ref.entity,
+                  team: ref.team,
+                  field,
+                  derived: der[field],
+                  reference: ref[field]
+                };
+                mismatches.push(mm);
+                clubMismatches.push(mm);
+              }
+            }
+
+            if (clubMismatches.length){
+              groupedClubs.push({
+                entity: ref.entity,
+                team: ref.team,
+                mismatches: clubMismatches,
+                derivedFull: der,
+                referenceFull: ref
+              });
+            }
+          }
+
+          const refPos = new Map(refRows.map((r,i) => [canon(r.entity), i + 1]));
+          const derPos = new Map(derivedRows.map((r,i) => [canon(r.entity), i + 1]));
+          const orderChanges = [];
+
+          allEntities.forEach(k => {
+            const rp = refPos.get(k);
+            const dp = derPos.get(k);
+            if (rp == null || dp == null) return;
+            if (rp !== dp){
+              const refRow = refByEntity.get(k);
+              const derRow = derByEntity.get(k);
+              orderChanges.push({
+                entity: (derRow?.entity || refRow?.entity || ''),
+                team: (derRow?.team || refRow?.team || ''),
+                derivedPos: dp,
+                referencePos: rp
+              });
+            }
+          });
+
+          groupedClubs.sort((a,b) => String(a.entity || a.team).localeCompare(String(b.entity || b.team)));
+
+          return {
+            season: seasonKey,
+            division: divisionName,
+            error: '',
+            mismatches,
+            groupedClubs,
+            orderChanges
+          };
+        }
+
+        function runAudit(){
+          const reports = [];
+          let divisionsChecked = 0;
+          let mismatchingDivisions = 0;
+          let totalMismatches = 0;
+          let pointsMismatches = 0;
+
+          for (const seasonKey of Object.keys(state.byKey)){
+            const season = state.byKey[seasonKey];
+            const divNames = visibleDivisionNames(season.divisions || {});
+
+            for (const divisionName of divNames){
+              if (!state.finalByKey[seasonKey]?.divisions?.[divisionName]) continue;
+
+              divisionsChecked += 1;
+
+              const report = compareSeasonDivision(seasonKey, divisionName);
+              reports.push(report);
+
+              const count = (report.mismatches || []).length + (report.error ? 1 : 0);
+              if (count > 0){
+                mismatchingDivisions += 1;
+                totalMismatches += count;
+              }
+
+              pointsMismatches += (report.mismatches || []).filter(m => m.field === 'Pts').length;
+            }
+          }
+
+          state.auditReports = reports;
+          state.auditSummary = {
+            divisionsChecked,
+            mismatchingDivisions,
+            pointsMismatches,
+            totalMismatches
+          };
+        }
+
+        function populateFilters(){
+          const seasons = state.auditReports.map(r => r.season);
+          const divisions = state.auditReports.map(r => r.division);
+
+          const uniqSeasons = Array.from(new Set(seasons)).sort((a,b)=> startYear(a) - startYear(b));
+          const uniqDivisions = Array.from(new Set(divisions)).sort();
+
+          els.seasonFilter.innerHTML = '<option value="">All seasons</option>';
+          uniqSeasons.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s;
+            opt.textContent = s;
+            els.seasonFilter.appendChild(opt);
+          });
+
+          els.divisionFilter.innerHTML = '<option value="">All divisions</option>';
+          uniqDivisions.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d;
+            opt.textContent = d;
+            els.divisionFilter.appendChild(opt);
+          });
+        }
+
+        function reportMatchesFilter(report){
+          const seasonVal = els.seasonFilter.value;
+          const divisionVal = els.divisionFilter.value;
+          const textVal = canon(els.textFilter.value);
+          const mismatchesOnly = els.mismatchesOnly.checked;
+          const pointsOnly = els.pointsOnly.checked;
+
+          if (seasonVal && report.season !== seasonVal) return false;
+          if (divisionVal && report.division !== divisionVal) return false;
+          if (mismatchesOnly && !report.error && !(report.mismatches || []).length) return false;
+
+          if (pointsOnly){
+            const ptsHits = (report.mismatches || []).some(m => m.field === 'Pts');
+            if (!ptsHits) return false;
+          }
+
+          if (textVal){
+            const hay = [
+              report.season,
+              report.division,
+              report.error,
+              ...(report.groupedClubs || []).flatMap(g => [
+                g.entity,
+                g.team,
+                ...(g.mismatches || []).map(m => m.field)
+              ]),
+              ...(report.orderChanges || []).flatMap(x => [x.entity, x.team, x.derivedPos, x.referencePos])
+            ].join(' ').toLowerCase();
+
+            if (!hay.includes(textVal)) return false;
+          }
+
+          return true;
+        }
+
+        function renderSummary(){
+          const s = state.auditSummary || {
+            divisionsChecked: 0,
+            mismatchingDivisions: 0,
+            pointsMismatches: 0,
+            totalMismatches: 0
+          };
+
+          els.statDivisions.textContent = String(s.divisionsChecked || 0);
+          els.statDirty.textContent = String(s.mismatchingDivisions || 0);
+          els.statPoints.textContent = String(s.pointsMismatches || 0);
+          els.statMismatches.textContent = String(s.totalMismatches || 0);
+        }
+
+        function escapeHtml(str){
+          return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        }
+
+        function formatValueForToken(field, value){
+          if (field === 'pos') return `Pos${value ?? ''}`;
+          if (field === 'P') return `P${value ?? ''}`;
+          if (field === 'W') return `W${value ?? ''}`;
+          if (field === 'D') return `D${value ?? ''}`;
+          if (field === 'L') return `L${value ?? ''}`;
+          if (field === 'GF') return `GF${value ?? ''}`;
+          if (field === 'GA') return `GA${value ?? ''}`;
+          if (field === 'GD'){
+            const n = Number(value);
+            if (Number.isFinite(n)) return `GD${n > 0 ? '+' + n : String(n)}`;
+            return `GD${value ?? ''}`;
+          }
+          if (field === 'Pts') return `Pts${value ?? ''}`;
+          if (field === 'classes'){
+            const txt = Array.isArray(value) ? value.join('/') : '';
+            return txt ? `Classes:${txt}` : 'Classes:—';
+          }
+          if (field === 'move'){
+            return `Move:${value || '—'}`;
+          }
+          return `${field}${value ?? ''}`;
+        }
+
+        function renderTokenRun(rowObj, mismatchedFields, isDerived){
+          const source = rowObj || {};
+          return activeCompareCols().map(field => {
+            const txt = formatValueForToken(field, source[field]);
+            const klass = (isDerived && mismatchedFields.has(field))
+              ? 'audit-token audit-token--derived-mismatch'
+              : 'audit-token';
+            return `<span class="${klass}">${escapeHtml(txt)}</span>`;
+          }).join('');
+        }
+
+        function renderClubComparison(group){
+          const mismatchedFields = new Set((group.mismatches || []).map(m => m.field));
+          const derivedFull = group.derivedFull;
+          const referenceFull = group.referenceFull;
+
+          if (!derivedFull || !referenceFull){
+            const missingTxt = !derivedFull ? 'Derived row missing' : 'Reference row missing';
+            return `<div class="audit-compact"><div class="audit-row"><span class="audit-row-label">${escapeHtml(missingTxt)}:</span></div></div>`;
+          }
+
+          return `
+            <div class="audit-compact">
+              <div class="audit-row"><span class="audit-row-label">Derived:</span>${renderTokenRun(derivedFull, mismatchedFields, true)}</div>
+              <div class="audit-row"><span class="audit-row-label">Reference:</span>${renderTokenRun(referenceFull, mismatchedFields, false)}</div>
+            </div>
+          `;
+        }
+
+        function renderOrderChanges(orderChanges){
+          if (!orderChanges || !orderChanges.length) return '';
+
+          const moved = orderChanges
+            .slice()
+            .sort((a,b) => {
+              const ad = Math.abs(Number(a.derivedPos) - Number(a.referencePos));
+              const bd = Math.abs(Number(b.derivedPos) - Number(b.referencePos));
+              if (bd !== ad) return bd - ad;
+              return String(a.entity || a.team).localeCompare(String(b.entity || b.team));
+            });
+
+          const concise = moved
+            .slice(0, 12)
+            .map(x => `<div><strong>${escapeHtml(x.entity || x.team)}</strong>: derived ${escapeHtml(String(x.derivedPos))}, reference ${escapeHtml(String(x.referencePos))}</div>`)
+            .join('');
+
+          const extra = moved.length > 12
+            ? `<div><em>+${escapeHtml(String(moved.length - 12))} more clubs with changed positions</em></div>`
+            : '';
+
+          return `
+            <div class="audit-order">
+              <div class="audit-order__head">Order changes</div>
+              <div class="audit-order__body">
+                ${concise}
+                ${extra}
+              </div>
+            </div>
+          `;
+        }
+
+        function renderResults(){
+          els.results.innerHTML = '';
+
+          const reports = state.auditReports.filter(reportMatchesFilter);
+          if (!reports.length){
+            const empty = document.createElement('div');
+            empty.className = 'audit-empty';
+            empty.textContent = 'No audit rows match the current filters.';
+            els.results.appendChild(empty);
+            return;
+          }
+
+          for (const report of reports){
+            const mismatchCount = (report.mismatches || []).length + (report.error ? 1 : 0);
+            const dirty = mismatchCount > 0;
+
+            const card = document.createElement('section');
+            card.className = 'audit-card ' + (dirty ? 'audit-card--dirty' : 'audit-card--clean');
+
+            const head = document.createElement('div');
+            head.className = 'audit-card__head';
+
+            const h = document.createElement('h2');
+            h.className = 'audit-card__title';
+            h.textContent = `${report.season} / ${report.division}`;
+
+            const pill = document.createElement('div');
+            pill.className = 'audit-pill ' + (dirty ? 'audit-pill--bad' : 'audit-pill--ok');
+            pill.textContent = dirty ? `${mismatchCount} issue${mismatchCount === 1 ? '' : 's'}` : 'No issues';
+
+            head.appendChild(h);
+            head.appendChild(pill);
+            card.appendChild(head);
+
+            const meta = document.createElement('div');
+            meta.className = 'audit-card__meta';
+            meta.textContent = dirty
+              ? 'Derived final standings do not fully match the reference table.'
+              : 'Derived final standings match the reference table.';
+            card.appendChild(meta);
+
+            const body = document.createElement('div');
+            body.className = 'audit-blocks';
+
+            if (!dirty){
+              const empty = document.createElement('div');
+              empty.className = 'audit-empty';
+              empty.textContent = 'No mismatches found.';
+              body.appendChild(empty);
+            } else {
+              if (report.error){
+                const err = document.createElement('div');
+                err.className = 'audit-order';
+                err.innerHTML = `
+                  <div class="audit-order__head">Error</div>
+                  <div class="audit-order__body">${escapeHtml(report.error)}</div>
+                `;
+                body.appendChild(err);
+              }
+
+              let clubsRendered = 0;
+              (report.groupedClubs || []).forEach(group => {
+                const pointsOnly = els.pointsOnly.checked;
+                const hasPts = (group.mismatches || []).some(m => m.field === 'Pts');
+                if (pointsOnly && !hasPts) return;
+
+                clubsRendered += 1;
+
+                const club = document.createElement('section');
+                club.className = 'audit-club';
+                club.innerHTML = `
+                  <div class="audit-club__head">
+                    <div>
+                      <div class="audit-club__title">${escapeHtml(group.entity || '')}</div>
+                      <div class="audit-club__sub">${escapeHtml(group.team || '')}</div>
+                    </div>
+                    <div class="audit-club__count">${escapeHtml(String(group.mismatches.length))} field mismatch${group.mismatches.length === 1 ? '' : 'es'}</div>
+                  </div>
+                  ${renderClubComparison(group)}
+                `;
+                body.appendChild(club);
+              });
+
+              const orderHtml = renderOrderChanges(report.orderChanges || []);
+              if (orderHtml){
+                const wrap = document.createElement('div');
+                wrap.innerHTML = orderHtml;
+                body.appendChild(wrap.firstElementChild);
+              }
+
+              if (!clubsRendered && !(report.orderChanges || []).length && !report.error){
+                const empty = document.createElement('div');
+                empty.className = 'audit-empty';
+                empty.textContent = 'No mismatches found.';
+                body.appendChild(empty);
+              }
+            }
+
+            card.appendChild(body);
+            els.results.appendChild(card);
+          }
+        }
+
+        function downloadAuditJson(){
+          const payload = {
+            version: VERSION,
+            generatedAt: new Date().toISOString(),
+            summary: state.auditSummary,
+            reports: state.auditReports
+          };
+
+          const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'reference-audit.json';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        }
+
+        function refreshAuditUI(){
+          renderSummary();
+          renderResults();
+        }
+
+        async function safeJson(res){
+          const txt = await res.text();
+          const cleaned = txt.replace(/^\uFEFF/, '').trim();
+
+          try { return JSON.parse(cleaned); } catch {}
+
+          const objStart = cleaned.indexOf('{');
+          const objEnd = cleaned.lastIndexOf('}');
+          if (objStart >= 0 && objEnd > objStart){
+            try { return JSON.parse(cleaned.slice(objStart, objEnd + 1)); } catch {}
+          }
+
+          const arrStart = cleaned.indexOf('[');
+          const arrEnd = cleaned.lastIndexOf(']');
+          if (arrStart >= 0 && arrEnd > arrStart){
+            try { return JSON.parse(cleaned.slice(arrStart, arrEnd + 1)); } catch {}
+          }
+
+          throw new Error('Invalid JSON');
+        }
+
+        async function fetchOptionalJson(url){
+          try{
+            const res = await fetch(url + (url.includes('?') ? '&' : '?') + 'v=' + Date.now(), { cache:'no-store', credentials:'omit' });
+            if (!res.ok) return null;
+            return await safeJson(res);
+          } catch {
+            return null;
+          }
+        }
+
+        async function loadData(){
+          const [resultsRes, tablesRes, metaRaw, notesRaw, expulsionsRaw] = await Promise.all([
+            fetch(RESULTS_SRC + (RESULTS_SRC.includes('?') ? '&' : '?') + 'v=' + Date.now(), { cache:'no-store', credentials:'omit' }),
+            fetch(TABLES_SRC  + (TABLES_SRC.includes('?')  ? '&' : '?') + 'v=' + Date.now(), { cache:'no-store', credentials:'omit' }),
+            fetchOptionalJson(CLUBS_META_SRC),
+            fetchOptionalJson(SEASON_NOTES_SRC),
+            fetchOptionalJson(EXPULSIONS_SRC)
+          ]);
+
+          if (!resultsRes.ok) throw new Error('Results: ' + resultsRes.status + ' ' + resultsRes.statusText);
+          if (!tablesRes.ok) throw new Error('Tables: ' + tablesRes.status + ' ' + tablesRes.statusText);
+          if (!notesRaw) throw new Error('Could not load season-notes.json');
+
+          const resultsRaw = await safeJson(resultsRes);
+          const tablesRaw = await safeJson(tablesRes);
+
+          const items = normalizeResults(resultsRaw);
+          const finalItems = normalizeTables(tablesRaw);
+
+          if (!items.length) throw new Error('No seasons found in results.json.');
+          if (!finalItems.length) throw new Error('No seasons found in league-tables.json.');
+
+          buildIndex(items);
+          buildFinalIndex(finalItems);
+
+          if (metaRaw) indexMeta(metaRaw);
+          indexSeasonNotes(notesRaw);
+          indexSeasonFormats(notesRaw);
+          if (expulsionsRaw) indexExpulsions(expulsionsRaw);
+        }
+
+        async function boot(){
+          try{
+            clearErr();
+            await loadData();
+            runAudit();
+            populateFilters();
+            refreshAuditUI();
+
+            els.runAudit.addEventListener('click', () => {
+              try{
+                clearErr();
+                runAudit();
+                populateFilters();
+                refreshAuditUI();
+              } catch(err){
+                showErr('Audit failed.', err.message || String(err));
+              }
+            });
+
+            els.downloadJson.addEventListener('click', () => {
+              try{
+                downloadAuditJson();
+              } catch(err){
+                showErr('Could not download audit JSON.', err.message || String(err));
+              }
+            });
+
+            [els.seasonFilter, els.divisionFilter, els.textFilter, els.mismatchesOnly, els.pointsOnly, els.classesOn, els.moveOn].forEach(el => {
+              el.addEventListener('input', refreshAuditUI);
+              el.addEventListener('change', refreshAuditUI);
+            });
+
+            window.auditReferenceWidget = {
+              version: VERSION,
+              rerun: () => { runAudit(); refreshAuditUI(); return state.auditSummary; },
+              getSummary: () => state.auditSummary,
+              getReports: () => state.auditReports
+            };
+          } catch(err){
+            showErr('Could not load audit widget.', err.message || String(err));
+          }
+        }
+
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+        else boot();
+      })();
+    </script>
+  </body>
+</html>
