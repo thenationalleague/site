@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.38f)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.38g)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -291,7 +291,7 @@
 
     <script>
       (function(){
-        const VERSION = 'v3.38f';
+        const VERSION = 'v3.38g';
         const RESULTS_SRC = "https://raw.githubusercontent.com/rckd-nl/website/main/results.json";
         const TABLES_SRC  = "https://raw.githubusercontent.com/rckd-nl/website/main/league-tables.json";
         // expulsions / expulsions of record are now driven from season-notes.json via type:"expelled"
@@ -911,7 +911,9 @@
             const a = String(m.away || '').trim();
             if (!h || !a) continue;
 
-            if (expelledSet.has(canon(h)) || expelledSet.has(canon(a))) continue;
+            const hKey = normalizedEntityKeyForSeason(h, seasonKey);
+            const aKey = normalizedEntityKeyForSeason(a, seasonKey);
+            if (expelledSet.has(hKey) || expelledSet.has(aKey)) continue;
             
             const hg = Number(m.home_goals);
             const ag = Number(m.away_goals);
@@ -927,7 +929,8 @@
 
             const slug = resolveTeamSlug(team, seasonKey);
             const entity = entityNameForSeason(slug, team);
-            const isExpelled = expelledSet.has(canon(entity));
+            const entityKey = normalizedEntityKeyForSeason(team, seasonKey);
+            const isExpelled = expelledSet.has(entityKey);
 
             if (isExpelled){
               rows.push({
@@ -941,6 +944,7 @@
               rows.push({
                 team,
                 entity,
+                entityKey,
                 P:s.P, W:s.W, D:s.D, L:s.L, GF:s.GF, GA:s.GA, GD:s.GD, Pts:s.Pts,
                 classes:[],
                 move:''
@@ -992,7 +996,7 @@
               return;
             }
 
-            const k = canon(r.entity || r.team);
+            const k = r.entityKey || normalizedEntityKeyForSeason(r.team, seasonKey);
             if (!deltaByTeam.has(k)) return;
             r.Pts = Number(r.Pts || 0) + deltaByTeam.get(k);
           });
@@ -1267,8 +1271,8 @@
           }
 
           if (playoffWinner){
-            const poKey = canon(playoffWinner);
-            const r = rows.find(x => canon(x.entity || x.team) === poKey);
+            const poKey = normalizedEntityKeyForSeason(playoffWinner, seasonKey);
+            const r = rows.find(x => (x.entityKey || normalizedEntityKeyForSeason(x.team, seasonKey)) === poKey);
 
             if (r && !teamsNoPlayoffs.has(poKey) && !teamsNotPromoted.has(poKey)){
               r.classes = r.classes.filter(c => c !== 'playoff-semi' && c !== 'playoff-elim');
@@ -1278,7 +1282,7 @@
           }
 
           for (const r of rows){
-            const k = canon(r.entity || r.team);
+            const k = r.entityKey || normalizedEntityKeyForSeason(r.team, seasonKey);
             const tnotes = notesByEntity.get(k) || [];
 
             if (tnotes.some(n => n.type === 'demoted')){
