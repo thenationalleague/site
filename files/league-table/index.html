@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.38)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.38d)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -137,8 +137,21 @@
 
       th.strongcol, td.strongcol{ font-weight:700; }
 
-      .legend{ font-size:.9rem; color:#555; margin-top:.5rem; }
-      .legend .swatch{ display:inline-block; width:.9em; height:.9em; border-radius:3px; margin:0 .35rem -.12rem .35rem; }
+      .legend{
+        font-size:.9rem;
+        color:#555;
+        margin-top:.5rem;
+      }
+      .legend .swatch{
+        display:inline-block;
+        width:.9em;
+        height:.9em;
+        border-radius:3px;
+        margin:0 .35rem -.12rem .35rem;
+        box-shadow:
+          0 0 0 1.5px rgba(0,0,0,.20),
+          0 1px 2px rgba(0,0,0,.25);
+      }
       .legend .gold{ background:var(--gold); }
       .legend .silver{ background:var(--silver); }
       .legend .po-semi{ background:var(--po-semi); }
@@ -165,6 +178,7 @@
         border-left:4px solid #9e0000;
         background:#f8f8f8;
         color:#222;
+        box-shadow:0 1px 2px rgba(0,0,0,.06);
       }
       .season-note[hidden]{ display:none; }
 
@@ -277,7 +291,7 @@
 
     <script>
       (function(){
-        const VERSION = 'v3.38';
+        const VERSION = 'v3.38d';
 
         const RESULTS_SRC = "https://raw.githubusercontent.com/rckd-nl/website/main/results.json";
         const TABLES_SRC  = "https://raw.githubusercontent.com/rckd-nl/website/main/league-tables.json";
@@ -646,12 +660,7 @@
           });
 
           rows.sort((a,b) => {
-            const aExpelled = Array.isArray(a.classes) && a.classes.includes('expelled');
-            const bExpelled = Array.isArray(b.classes) && b.classes.includes('expelled');
-
-            if (aExpelled && !bExpelled) return 1;
-            if (!aExpelled && bExpelled) return -1;
-
+            if (b._ppg !== a._ppg) return b._ppg - a._ppg;
             if (b.Pts !== a.Pts) return b.Pts - a.Pts;
             if (b.GD !== a.GD) return b.GD - a.GD;
             if (b.GF !== a.GF) return b.GF - a.GF;
@@ -1295,12 +1304,27 @@
         }
 
         function combineNotes(parts){
-          const clean = s => String(s || '').trim().replace(/[\s.;:,]+$/, '');
-          const lowerFirst = s => s ? s[0].toLowerCase()+s.slice(1) : s;
-          const arr = (parts || []).map(clean).filter(Boolean);
+          const clean = s => String(s || '')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .replace(/[.;:,]+$/, '');
+
+          const lowerFirst = s => {
+            const txt = String(s || '').trim();
+            return txt ? txt.charAt(0).toLowerCase() + txt.slice(1) : '';
+          };
+
+          const arr = Array.from(
+            new Set((parts || []).map(clean).filter(Boolean))
+          );
+
           if (!arr.length) return '';
-          const joined = arr.map((t,i) => i===0 ? t : lowerFirst(t)).join('; ');
-          return /[.!?]$/.test(joined) ? joined : joined + '.';
+
+          const joined = arr
+            .map((txt, i) => i === 0 ? txt : lowerFirst(txt))
+            .join('; ');
+
+          return /[.!?]$/.test(joined) ? joined : (joined + '.');
         }
 
         function makeNoteSup(n, rowId, team){
@@ -1385,25 +1409,29 @@
           const divisionWide = [];
 
           for (const n of notes){
+            const noteText = String(n.note || '').trim();
+            const effectiveSuffix = formatNoteDateSuffix(n.effectiveDate);
+
             if (!n.entity){
-              if (n.note){
-                divisionWide.push(String(n.note) + formatNoteDateSuffix(n.effectiveDate));
+              if (noteText){
+                divisionWide.push(noteText + effectiveSuffix);
               }
               continue;
             }
 
-            const entityKey = canon(n.entity);
+            const entityKey = canon(n.entity || n.team || '');
+            if (!entityKey) continue;
 
             if (!teamGroups.has(entityKey)){
               teamGroups.set(entityKey, {
-                team: String(n.team || n.entity).trim(),
-                entity: String(n.entity).trim(),
+                team: String(n.team || n.entity || '').trim(),
+                entity: String(n.entity || n.team || '').trim(),
                 notes: []
               });
             }
 
-            if (n.note){
-              teamGroups.get(entityKey).notes.push(String(n.note) + formatNoteDateSuffix(n.effectiveDate));
+            if (noteText){
+              teamGroups.get(entityKey).notes.push(noteText + effectiveSuffix);
             }
           }
 
