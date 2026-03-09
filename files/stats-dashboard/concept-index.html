@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Club Records — v4.8 (scorelines mobile ordering fix)</title>
+<title>Club Records — v4.9 (derived tables + expelled classes + reprieve notes fix)</title>
   <meta name="color-scheme" content="light" />
   <style>
     :root{
@@ -2279,9 +2279,9 @@ if (!allMatches.length) {
   const ERR = el('error');
   if (ERR) {
     ERR.style.display = 'block';
-    ERR.textContent = 'No clubs found in results.json — cannot populate the selector.';  }
+    ERR.textContent = 'No clubs found in results.json — cannot populate the selector.';
+  }
 }
-
 
         // Founder set
         founderSet.clear();
@@ -4004,22 +4004,25 @@ rowsAll.forEach(r => {
   if (r.regionKey === 'South')  divs.s  = true;
 });
 
-const statusParts=[];
-  if(statusSeen.has('champion')) statusParts.push('<span><span class="sw gold"></span>Champions</span>');
-  if(statusSeen.has('promoted')) statusParts.push('<span><span class="sw silver"></span>Play-off Winner</span>');
-  if(statusSeen.has('playoff'))  statusParts.push('<span><span class="sw blue"></span>Qualified for Play-offs</span>');
-  if(statusSeen.has('relegated'))statusParts.push('<span><span class="sw pink"></span>Relegated</span>');
-  if(statusSeen.has('folded')) statusParts.push('<span><span class="sw black"></span>Folded</span>');
-  if(statusSeen.has('expelled')) statusParts.push('<span><span class="sw expelled"></span>Expelled</span>');
-  
-  if(divs.na) divParts.push('<span><span class="kbox na"></span>National</span>');
-  if(divs.n)  divParts.push('<span><span class="kbox n"></span>North</span>');
-  if(divs.s)  divParts.push('<span><span class="kbox s"></span>South</span>');
-  if(leg){
-    leg.innerHTML =
-      (statusParts.length? `<div class="group"><span class="label">Status:</span> ${statusParts.join(' ')}</div>`:'') +
-      (divParts.length   ? `<div class="group"><span class="label">Division:</span> ${divParts.join(' ')}</div>`  :'');
-  }
+const statusParts = [];
+const divParts = [];
+
+if (statusSeen.has('champion'))  statusParts.push('<span><span class="sw gold"></span>Champions</span>');
+if (statusSeen.has('promoted'))  statusParts.push('<span><span class="sw silver"></span>Play-off Winner</span>');
+if (statusSeen.has('playoff'))   statusParts.push('<span><span class="sw blue"></span>Qualified for Play-offs</span>');
+if (statusSeen.has('relegated')) statusParts.push('<span><span class="sw pink"></span>Relegated</span>');
+if (statusSeen.has('folded'))    statusParts.push('<span><span class="sw black"></span>Folded</span>');
+if (statusSeen.has('expelled'))  statusParts.push('<span><span class="sw expelled"></span>Expelled</span>');
+
+if (divs.na) divParts.push('<span><span class="kbox na"></span>National</span>');
+if (divs.n)  divParts.push('<span><span class="kbox n"></span>North</span>');
+if (divs.s)  divParts.push('<span><span class="kbox s"></span>South</span>');
+
+if (leg){
+  leg.innerHTML =
+    (statusParts.length ? `<div class="group"><span class="label">Status:</span> ${statusParts.join(' ')}</div>` : '') +
+    (divParts.length    ? `<div class="group"><span class="label">Division:</span> ${divParts.join(' ')}</div>`   : '');
+}
 
 // SVG layout (scrollable when > ~11 seasons)
 const cols = seasons.length;
