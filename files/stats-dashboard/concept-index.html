@@ -3631,7 +3631,7 @@ if (i===10) td.classList.add('td-pts');  // Pts = cells[10]
         });
 
         const grouped = [];
-        const bySeason = new Map();
+        const bySeasonEntity = new Map();
 
         const lowerCaseFirst = (txt) => {
           const s = String(txt || '').trim();
@@ -3640,15 +3640,20 @@ if (i===10) td.classList.add('td-pts');  // Pts = cells[10]
         };
 
         list.forEach(n => {
-          const key = String(n.season || '');
-          if (!bySeason.has(key)) {
-            bySeason.set(key, {
-              season: key,
+          const seasonKey = String(n.season || '');
+          const entityKey = norm(n.entity || n.team || '');
+          const key = `${seasonKey}__${entityKey}`;
+
+          if (!bySeasonEntity.has(key)) {
+            bySeasonEntity.set(key, {
+              season: seasonKey,
+              entity: entityKey,
               notes: []
             });
-            grouped.push(bySeason.get(key));
+            grouped.push(bySeasonEntity.get(key));
           }
-          bySeason.get(key).notes.push(String(n.note || '').trim());
+
+          bySeasonEntity.get(key).notes.push(String(n.note || '').trim());
         });
 
         notesEl.hidden = false;
