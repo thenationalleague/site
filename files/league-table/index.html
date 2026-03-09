@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.38d)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.38e)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -291,8 +291,7 @@
 
     <script>
       (function(){
-        const VERSION = 'v3.38d';
-
+        const VERSION = 'v3.38e';
         const RESULTS_SRC = "https://raw.githubusercontent.com/rckd-nl/website/main/results.json";
         const TABLES_SRC  = "https://raw.githubusercontent.com/rckd-nl/website/main/league-tables.json";
         // expulsions / expulsions of record are now driven from season-notes.json via type:"expelled"
@@ -494,6 +493,17 @@
           return slug ? ('row-' + slug) : ('row-' + slugify(label || ''));
         }
 
+        function entityNameForSeason(slug, fallbackName){
+          if (!slug) return String(fallbackName || '').trim();
+
+          const meta = state.metaBySlug.get(slug);
+          if (!meta || !meta.primaryName){
+            return String(fallbackName || '').trim();
+          }
+
+          return String(meta.primaryName || fallbackName || '').trim();
+        }
+        
         function isNoteActiveAsOf(noteObj, asOfISO, includeUndated){
           const ed = noteObj?.effectiveDate;
           if (!ed) return !!includeUndated;
@@ -907,10 +917,14 @@
             const s = stats.get(team) || initTeamStats();
             s.GD = s.GF - s.GA;
 
-            const isExpelled = expelledSet.has(canon(team));
+            const slug = resolveTeamSlug(team, seasonKey);
+            const entity = entityNameForSeason(slug, team);
+            const isExpelled = expelledSet.has(canon(entity));
+
             if (isExpelled){
               rows.push({
                 team,
+                entity,
                 P:0,W:0,D:0,L:0,GF:0,GA:0,GD:0,Pts:0,
                 classes:['expelled'],
                 move:'down'
@@ -918,13 +932,14 @@
             } else {
               rows.push({
                 team,
+                entity,
                 P:s.P, W:s.W, D:s.D, L:s.L, GF:s.GF, GA:s.GA, GD:s.GD, Pts:s.Pts,
                 classes:[],
                 move:''
               });
             }
           }
-
+          
           rows.sort((a,b) => {
             const aExpelled = Array.isArray(a.classes) && a.classes.includes('expelled');
             const bExpelled = Array.isArray(b.classes) && b.classes.includes('expelled');
@@ -969,7 +984,7 @@
               return;
             }
 
-            const k = canon(r.team);
+            const k = canon(r.entity || r.team);
             if (!deltaByTeam.has(k)) return;
             r.Pts = Number(r.Pts || 0) + deltaByTeam.get(k);
           });
@@ -1203,9 +1218,8 @@
             notes
               .filter(n => n.type === 'not_promoted')
               .map(n => {
-                const who = String(n.team || n.entity || '').trim();
-                if (!who) throw new Error(`not_promoted note missing team/entity for ${seasonKey} / ${divisionName}`);
-                return canon(who);
+                if (!n.entity) throw new Error(`not_promoted note missing entity for ${seasonKey} / ${divisionName}`);
+                return canon(n.entity);
               })
           );
 
@@ -1246,7 +1260,7 @@
 
           if (playoffWinner){
             const poKey = canon(playoffWinner);
-            const r = rows.find(x => canon(x.team) === poKey);
+            const r = rows.find(x => canon(x.entity || x.team) === poKey);
 
             if (r && !teamsNoPlayoffs.has(poKey) && !teamsNotPromoted.has(poKey)){
               r.classes = r.classes.filter(c => c !== 'playoff-semi' && c !== 'playoff-elim');
@@ -1256,7 +1270,7 @@
           }
 
           for (const r of rows){
-            const k = canon(r.team);
+            const k = canon(r.entity || r.team);
             const tnotes = notesByEntity.get(k) || [];
 
             if (tnotes.some(n => n.type === 'demoted')){
