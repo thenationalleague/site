@@ -780,25 +780,86 @@
           return { P:0, W:0, D:0, L:0, GF:0, GA:0, GD:0, Pts:0 };
         }
 
-        function addMatch(statsByTeam, home, away, hg, ag, ptsRule){
+        function addMatch(statsByTeam, match, ptsRule){
+          const home = String(match.home || '').trim();
+          const away = String(match.away || '').trim();
+          const hg = Number(match.home_goals);
+          const ag = Number(match.away_goals);
+
+          if (!home || !away) return;
+          if (!Number.isFinite(hg) || !Number.isFinite(ag)) return;
+
+          const status = String(match.status || '').trim().toLowerCase();
+          const isAbandoned = status === 'abandoned';
+          const awarded = String(match.awarded || '').trim().toLowerCase();
+          const countGoals = match.count_goals !== false;
+          const countPoints = match.count_points !== false;
+
+          if (isAbandoned && !countGoals && !countPoints){
+            return;
+          }
+
           if (!statsByTeam.has(home)) statsByTeam.set(home, initTeamStats());
           if (!statsByTeam.has(away)) statsByTeam.set(away, initTeamStats());
 
           const H = statsByTeam.get(home);
           const A = statsByTeam.get(away);
 
-          H.P += 1; A.P += 1;
-          H.GF += hg; H.GA += ag;
-          A.GF += ag; A.GA += hg;
+          if (countGoals){
+            H.GF += hg;
+            H.GA += ag;
+            A.GF += ag;
+            A.GA += hg;
+          }
+
+          if (!countPoints){
+            return;
+          }
+
+          H.P += 1;
+          A.P += 1;
+
+          if (isAbandoned){
+            if (awarded === 'home'){
+              H.W += 1;
+              A.L += 1;
+              H.Pts += Number(ptsRule.winHome);
+              return;
+            }
+
+            if (awarded === 'away'){
+              A.W += 1;
+              H.L += 1;
+              A.Pts += Number(ptsRule.winAway);
+              return;
+            }
+
+            if (awarded === 'draw'){
+              H.D += 1;
+              A.D += 1;
+              H.Pts += Number(ptsRule.draw);
+              A.Pts += Number(ptsRule.draw);
+              return;
+            }
+
+            if (awarded === 'none' || awarded === ''){
+              H.P -= 1;
+              A.P -= 1;
+              return;
+            }
+          }
 
           if (hg > ag){
-            H.W += 1; A.L += 1;
+            H.W += 1;
+            A.L += 1;
             H.Pts += Number(ptsRule.winHome);
           } else if (hg < ag){
-            A.W += 1; H.L += 1;
+            A.W += 1;
+            H.L += 1;
             A.Pts += Number(ptsRule.winAway);
           } else {
-            H.D += 1; A.D += 1;
+            H.D += 1;
+            A.D += 1;
             H.Pts += Number(ptsRule.draw);
             A.Pts += Number(ptsRule.draw);
           }
@@ -839,7 +900,7 @@
             const ag = Number(m.away_goals);
             if (!Number.isFinite(hg) || !Number.isFinite(ag)) continue;
 
-            addMatch(stats, h, a, hg, ag, ptsRule);
+            addMatch(stats, m, ptsRule);
           }
 
           const rows = [];
@@ -890,6 +951,19 @@
           }
 
           rows.forEach(r => {
+            const isExpunged = Array.isArray(r.classes) && r.classes.includes('expunged');
+            if (isExpunged){
+              r.P = 0;
+              r.W = 0;
+              r.D = 0;
+              r.L = 0;
+              r.GF = 0;
+              r.GA = 0;
+              r.GD = 0;
+              r.Pts = 0;
+              return;
+            }
+
             const k = canon(r.team);
             if (!deltaByTeam.has(k)) return;
             r.Pts = Number(r.Pts || 0) + deltaByTeam.get(k);
