@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.38c)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.38)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -646,7 +646,12 @@
           });
 
           rows.sort((a,b) => {
-            if (b._ppg !== a._ppg) return b._ppg - a._ppg;
+            const aExpelled = Array.isArray(a.classes) && a.classes.includes('expelled');
+            const bExpelled = Array.isArray(b.classes) && b.classes.includes('expelled');
+
+            if (aExpelled && !bExpelled) return 1;
+            if (!aExpelled && bExpelled) return -1;
+
             if (b.Pts !== a.Pts) return b.Pts - a.Pts;
             if (b.GD !== a.GD) return b.GD - a.GD;
             if (b.GF !== a.GF) return b.GF - a.GF;
