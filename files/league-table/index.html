@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.38g)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.38h)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -291,7 +291,7 @@
 
     <script>
       (function(){
-        const VERSION = 'v3.38g';
+        const VERSION = 'v3.38h';
         const RESULTS_SRC = "https://raw.githubusercontent.com/rckd-nl/website/main/results.json";
         const TABLES_SRC  = "https://raw.githubusercontent.com/rckd-nl/website/main/league-tables.json";
         // expulsions / expulsions of record are now driven from season-notes.json via type:"expelled"
@@ -504,12 +504,18 @@
           return String(meta.primaryName || fallbackName || '').trim();
         }
 
-          function normalizedEntityKeyForSeason(name, seasonKey){
+        function normalizedEntityKeyForSeason(name, seasonKey){
           const raw = String(name || '').trim();
           if (!raw) return '';
-          const slug = resolveTeamSlug(raw, seasonKey);
-          const entity = entityNameForSeason(slug, raw);
-          return canon(entity);
+          return canon(raw);
+        }
+
+        function matchEntityName(match, side){
+          return String(match?.[side + '_entity'] || match?.[side] || '').trim();
+        }
+
+        function matchDisplayName(match, side){
+          return String(match?.[side] || match?.[side + '_entity'] || '').trim();
         }
         
         function isNoteActiveAsOf(noteObj, asOfISO, includeUndated){
@@ -883,22 +889,50 @@
           const ptsRule = pointsRuleFor(seasonKey, divisionName);
           const asNum = isoToNum(asOfISO);
           const expelledSet = expelledTeamsFor(seasonKey, divisionName, asOfISO, false);
-
           const expelledDisplayMap = expelledDisplayTeamsFor(seasonKey, divisionName, asOfISO, false);
-          
-          const allTeams = new Set();
-          for (const m of matches){
-            const h = String(m.home || '').trim();
-            const a = String(m.away || '').trim();
-            if (h) allTeams.add(h);
-            if (a) allTeams.add(a);
+
+          const teamByEntityKey = new Map();
+          const stats = new Map();
+
+          function ensureRow(entityName, displayName){
+            const entityKey = normalizedEntityKeyForSeason(entityName, seasonKey);
+            if (!entityKey) return null;
+
+            if (!teamByEntityKey.has(entityKey)){
+              teamByEntityKey.set(entityKey, {
+                entity: entityName,
+                team: displayName || entityName
+              });
+            }
+
+            if (!stats.has(entityKey)){
+              stats.set(entityKey, initTeamStats());
+            }
+
+            return entityKey;
           }
 
-          for (const rawName of expelledDisplayMap.values()){
-            allTeams.add(rawName);
+          for (const m of matches){
+            const homeEntity = matchEntityName(m, 'home');
+            const awayEntity = matchEntityName(m, 'away');
+            const homeTeam = matchDisplayName(m, 'home');
+            const awayTeam = matchDisplayName(m, 'away');
+
+            if (homeEntity) ensureRow(homeEntity, homeTeam);
+            if (awayEntity) ensureRow(awayEntity, awayTeam);
           }
-          
-          const stats = new Map();
+
+          for (const [entityKey, displayName] of expelledDisplayMap.entries()){
+            if (!teamByEntityKey.has(entityKey)){
+              teamByEntityKey.set(entityKey, {
+                entity: displayName,
+                team: displayName
+              });
+            }
+            if (!stats.has(entityKey)){
+              stats.set(entityKey, initTeamStats());
+            }
+          }
 
           for (const m of matches){
             if (m?.playoffs || m?.playoff_round) continue;
@@ -907,51 +941,54 @@
             if (!dateISO) continue;
             if (isoToNum(dateISO) > asNum) continue;
 
-            const h = String(m.home || '').trim();
-            const a = String(m.away || '').trim();
-            if (!h || !a) continue;
+            const homeEntity = matchEntityName(m, 'home');
+            const awayEntity = matchEntityName(m, 'away');
+            const homeTeam = matchDisplayName(m, 'home');
+            const awayTeam = matchDisplayName(m, 'away');
 
-            const hKey = normalizedEntityKeyForSeason(h, seasonKey);
-            const aKey = normalizedEntityKeyForSeason(a, seasonKey);
-            if (expelledSet.has(hKey) || expelledSet.has(aKey)) continue;
-            
+            const homeKey = ensureRow(homeEntity, homeTeam);
+            const awayKey = ensureRow(awayEntity, awayTeam);
+
+            if (!homeKey || !awayKey) continue;
+            if (expelledSet.has(homeKey) || expelledSet.has(awayKey)) continue;
+
             const hg = Number(m.home_goals);
             const ag = Number(m.away_goals);
             if (!Number.isFinite(hg) || !Number.isFinite(ag)) continue;
 
-            addMatch(stats, m, ptsRule);
+            const tempMatch = {
+              ...m,
+              home: homeKey,
+              away: awayKey
+            };
+
+            addMatch(stats, tempMatch, ptsRule);
           }
 
           const rows = [];
-          for (const team of allTeams){
-            const s = stats.get(team) || initTeamStats();
+          for (const [entityKey, info] of teamByEntityKey.entries()){
+            const s = stats.get(entityKey) || initTeamStats();
             s.GD = s.GF - s.GA;
 
-            const slug = resolveTeamSlug(team, seasonKey);
-            const entity = entityNameForSeason(slug, team);
-            const entityKey = normalizedEntityKeyForSeason(team, seasonKey);
             const isExpelled = expelledSet.has(entityKey);
 
-            if (isExpelled){
-              rows.push({
-                team,
-                entity,
-                P:0,W:0,D:0,L:0,GF:0,GA:0,GD:0,Pts:0,
-                classes:['expelled'],
-                move:'down'
-              });
-            } else {
-              rows.push({
-                team,
-                entity,
-                entityKey,
-                P:s.P, W:s.W, D:s.D, L:s.L, GF:s.GF, GA:s.GA, GD:s.GD, Pts:s.Pts,
-                classes:[],
-                move:''
-              });
-            }
+            rows.push({
+              team: info.team,
+              entity: info.entity,
+              entityKey,
+              P: isExpelled ? 0 : s.P,
+              W: isExpelled ? 0 : s.W,
+              D: isExpelled ? 0 : s.D,
+              L: isExpelled ? 0 : s.L,
+              GF: isExpelled ? 0 : s.GF,
+              GA: isExpelled ? 0 : s.GA,
+              GD: isExpelled ? 0 : s.GD,
+              Pts: isExpelled ? 0 : s.Pts,
+              classes: isExpelled ? ['expelled'] : [],
+              move: isExpelled ? 'down' : ''
+            });
           }
-          
+
           rows.sort((a,b) => {
             const aExpelled = Array.isArray(a.classes) && a.classes.includes('expelled');
             const bExpelled = Array.isArray(b.classes) && b.classes.includes('expelled');
@@ -996,7 +1033,7 @@
               return;
             }
 
-            const k = r.entityKey || normalizedEntityKeyForSeason(r.team, seasonKey);
+            const k = r.entityKey || normalizedEntityKeyForSeason(r.entity || r.team, seasonKey);
             if (!deltaByTeam.has(k)) return;
             r.Pts = Number(r.Pts || 0) + deltaByTeam.get(k);
           });
@@ -1272,8 +1309,8 @@
 
           if (playoffWinner){
             const poKey = normalizedEntityKeyForSeason(playoffWinner, seasonKey);
-            const r = rows.find(x => (x.entityKey || normalizedEntityKeyForSeason(x.team, seasonKey)) === poKey);
-
+            const r = rows.find(x => (x.entityKey || normalizedEntityKeyForSeason(x.entity || x.team, seasonKey)) === poKey);
+            
             if (r && !teamsNoPlayoffs.has(poKey) && !teamsNotPromoted.has(poKey)){
               r.classes = r.classes.filter(c => c !== 'playoff-semi' && c !== 'playoff-elim');
               if (!r.classes.includes('promoted')) r.classes.push('promoted');
@@ -1282,7 +1319,7 @@
           }
 
           for (const r of rows){
-            const k = r.entityKey || normalizedEntityKeyForSeason(r.team, seasonKey);
+            const k = r.entityKey || normalizedEntityKeyForSeason(r.entity || r.team, seasonKey);
             const tnotes = notesByEntity.get(k) || [];
 
             if (tnotes.some(n => n.type === 'demoted')){
