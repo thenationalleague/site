@@ -1194,9 +1194,8 @@
             notes
               .filter(n => n.type === 'no_playoffs')
               .map(n => {
-                const who = String(n.team || n.entity || '').trim();
-                if (!who) throw new Error(`not_promoted note missing team/entity for ${seasonKey} / ${divisionName}`);
-                return canon(who);
+                if (!n.entity) throw new Error(`no_playoffs note missing entity for ${seasonKey} / ${divisionName}`);
+                return canon(n.entity);
               })
           );
 
@@ -1204,8 +1203,9 @@
             notes
               .filter(n => n.type === 'not_promoted')
               .map(n => {
-                if (!n.entity) throw new Error(`not_promoted note missing entity for ${seasonKey} / ${divisionName}`);
-                return canon(n.entity);
+                const who = String(n.team || n.entity || '').trim();
+                if (!who) throw new Error(`not_promoted note missing team/entity for ${seasonKey} / ${divisionName}`);
+                return canon(who);
               })
           );
 
