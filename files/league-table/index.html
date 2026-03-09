@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National League Archive — Standings (Dynamic from results.json) (v3.38e)</title>
+    <title>National League Archive — Standings (Dynamic from results.json) (v3.38f)</title>
     <meta name="color-scheme" content="light" />
     <style>
       :root{
@@ -291,7 +291,7 @@
 
     <script>
       (function(){
-        const VERSION = 'v3.38e';
+        const VERSION = 'v3.38f';
         const RESULTS_SRC = "https://raw.githubusercontent.com/rckd-nl/website/main/results.json";
         const TABLES_SRC  = "https://raw.githubusercontent.com/rckd-nl/website/main/league-tables.json";
         // expulsions / expulsions of record are now driven from season-notes.json via type:"expelled"
@@ -502,6 +502,14 @@
           }
 
           return String(meta.primaryName || fallbackName || '').trim();
+        }
+
+          function normalizedEntityKeyForSeason(name, seasonKey){
+          const raw = String(name || '').trim();
+          if (!raw) return '';
+          const slug = resolveTeamSlug(raw, seasonKey);
+          const entity = entityNameForSeason(slug, raw);
+          return canon(entity);
         }
         
         function isNoteActiveAsOf(noteObj, asOfISO, includeUndated){
@@ -758,7 +766,7 @@
             .filter(n => n.type === 'expelled')
             .forEach(n => {
               if (!n.entity) throw new Error(`Expelled note missing entity for ${seasonKey} / ${divisionName}`);
-              out.add(canon(n.entity));
+              out.add(normalizedEntityKeyForSeason(n.entity || n.team, seasonKey));
             });
 
           return out;
@@ -777,7 +785,7 @@
             .forEach(n => {
               if (!n.entity) throw new Error(`Expelled note missing entity for ${seasonKey} / ${divisionName}`);
               const raw = String(n.team || n.entity || '').trim();
-              if (raw) out.set(canon(n.entity), raw);
+              if (raw) out.set(normalizedEntityKeyForSeason(n.entity || n.team, seasonKey), raw);
             });
 
           return out;
@@ -966,7 +974,7 @@
           const deltaByTeam = new Map();
           for (const n of notes){
             if (!n.entity) throw new Error(`points_deduction note missing entity for ${seasonKey} / ${divisionName}`);
-            const k = canon(n.entity);
+            const k = normalizedEntityKeyForSeason(n.entity || n.team, seasonKey);
             deltaByTeam.set(k, (deltaByTeam.get(k) || 0) + Number(n.pointsValue));
           }
 
@@ -1188,7 +1196,7 @@
 
           for (const n of notes){
             if (!n.entity) continue;
-            const k = canon(n.entity);
+            const k = normalizedEntityKeyForSeason(n.entity || n.team, seasonKey);
             if (!notesByEntity.has(k)) notesByEntity.set(k, []);
             notesByEntity.get(k).push(n);
           }
@@ -1210,7 +1218,7 @@
               .filter(n => n.type === 'no_playoffs')
               .map(n => {
                 if (!n.entity) throw new Error(`no_playoffs note missing entity for ${seasonKey} / ${divisionName}`);
-                return canon(n.entity);
+                return normalizedEntityKeyForSeason(n.entity || n.team, seasonKey);
               })
           );
 
@@ -1219,7 +1227,7 @@
               .filter(n => n.type === 'not_promoted')
               .map(n => {
                 if (!n.entity) throw new Error(`not_promoted note missing entity for ${seasonKey} / ${divisionName}`);
-                return canon(n.entity);
+                return normalizedEntityKeyForSeason(n.entity || n.team, seasonKey);
               })
           );
 
@@ -1434,7 +1442,7 @@
               continue;
             }
 
-            const entityKey = canon(n.entity || n.team || '');
+            const entityKey = normalizedEntityKeyForSeason(n.entity || n.team, seasonKey);
             if (!entityKey) continue;
 
             if (!teamGroups.has(entityKey)){
