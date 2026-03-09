@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Club Records — v4.7 (scorelines mobile ordering fix)</title>
+  <title>Club Records — v4.8 (scorelines mobile ordering fix)</title>
   <meta name="color-scheme" content="light" />
   <style>
     :root{
@@ -557,32 +557,32 @@
     .row-folded{ background:#000; color:#fff; }
     .zebra-odd{ background:var(--z1); } .zebra-even{ background:#fff; }
     .gap-row td{ text-align:center !important; font-style:italic; color:#4b4458; background:var(--gap) !important; border-top:1px dashed #bda9e6; border-bottom:1px dashed #bda9e6; }
-    /* NEW (v4.2.1): Expunged row look + white overrides for GD + arrows in folded/expunged */
-    .row-expunged{ background:#9ca3af; color:#fff; } /* neutral grey */
+    /* NEW (v4.2.1): Expelled row look + white overrides for GD + arrows in folded/expelled */
+    .row-expelled{ background:#9ca3af; color:#fff; } /* neutral grey */
 
-    /* Force GD colours and movement arrows to white inside folded/expunged rows */
-    /* v4.2.3: Table-only footnote markers inside folded/expunged rows must be white */
+    /* Force GD colours and movement arrows to white inside folded/expelled rows */
+    /* v4.2.3: Table-only footnote markers inside folded/expelled rows must be white */
     .row-folded .note-ref,
     .row-folded .note-ref a,
-    .row-expunged .note-ref,
-    .row-expunged .note-ref a{
+    .row-expelled .note-ref,
+    .row-expelled .note-ref a{
       color:#fff !important;
       opacity:1 !important; /* kill the default .75 that looked grey */  
     }
     .row-folded .gd-pos,
     .row-folded .gd-zero,
     .row-folded .gd-neg,
-    .row-expunged .gd-pos,
-    .row-expunged .gd-zero,
-    .row-expunged .gd-neg{
+    .row-expelled .gd-pos,
+    .row-expelled .gd-zero,
+    .row-expelled .gd-neg{
       color:#fff !important;
     }
     .row-folded .move-up,
     .row-folded .move-down,
     .row-folded .move-none,
-    .row-expunged .move-up,
-    .row-expunged .move-down,
-    .row-expunged .move-none{
+    .row-expelled .move-up,
+    .row-expelled .move-down,
+    .row-expelled .move-none{
       color:#fff !important;
     }
     .seasons .gd-pos{ color:var(--gd-pos); font-weight:400; }
@@ -934,8 +934,8 @@
 .legend .blue{  background:var(--blue2); }
 .legend .pink{  background:var(--pink); }
 .legend .black{ background:#000; }
-.legend .expunged{ background:#9ca3af; }
-
+.legend .expelled{ background:#9ca3af; }
+    
 /* Boxed National / North / South keys (kept but with the same shadow) */
 .legend .kbox{
   display:inline-block; vertical-align:middle;
@@ -1639,8 +1639,10 @@ function visibleDivisionNames(divisionsObj){
 function normalizeNoteType(v){
   const t = String(v || 'general').trim().toLowerCase().replace(/[\s-]+/g, '_');
   if (t === 'expelled' || t === 'expulsion') return 'expulsion';
+  if (t === 'expunged') return 'expulsion';
   if (t === 'point_deduction' || t === 'pointsdeduction') return 'points_deduction';
   if (t === 'no_playoff') return 'no_playoffs';
+  if (t === 'reprieved' || t === 'reprieve') return 'reprieve';
   return t;
 }
 function normalizeSeasonNotes(raw){
@@ -1792,7 +1794,7 @@ function getSeasonEndDateForSeasonDivision(seasonObj, divisionName){
   const lastLeague = getLastLeagueDateForSeasonDivision(seasonObj, divisionName);
   return lastPlayoff || lastLeague || null;
 }
-function expungedTeamsFor(ctx, seasonKey, divisionName, asOfISO, includeUndated){
+function expelledTeamsFor(ctx, seasonKey, divisionName, asOfISO, includeUndated){
   const out = new Set();
   const notes = activeNotesFor(ctx, seasonKey, divisionName, asOfISO, includeUndated);
   notes.forEach(n => {
@@ -1871,8 +1873,8 @@ function computeStandingsForDivision(ctx, seasonObj, divisionName, asOfISO){
   const matches = getSeasonDivisionMatches(seasonObj, divisionName);
   const ptsRule = pointsRuleFor(ctx, seasonKey, divisionName);
   const asNum = isoToNum(asOfISO);
-  const expSet = expungedTeamsFor(ctx, seasonKey, divisionName, asOfISO, false);
-
+  const expSet = expelledTeamsFor(ctx, seasonKey, divisionName, asOfISO, false);
+  
   const allTeams = new Set();
   matches.forEach(m => {
     const h = norm(m.home_entity || m.home || '');
@@ -2082,7 +2084,7 @@ function applyFinalRulesFromNotes(ctx, seasonObj, divisionName, asOfISO, rows, i
     if (teamsExpelled.has(k)){
       r.P = 0; r.W = 0; r.D = 0; r.L = 0; r.GF = 0; r.GA = 0; r.GD = 0; r.Pts = 0;
       r.classes = r.classes.filter(c => c !== 'relegated');
-      if (!r.classes.includes('expunged')) r.classes.push('expunged');
+      if (!r.classes.includes('expelled')) r.classes.push('expelled');
       r.move = 'down';
     }
   });
@@ -2143,7 +2145,7 @@ function finaliseDerivedClasses(arr){
   const out = new Set();
   (Array.isArray(arr) ? arr : []).forEach(c => {
     if (c === 'playoff' || c === 'playoff-semi' || c === 'playoff-elim') out.add('playoff');
-    else if (['champion','promoted','relegated','folded','expunged'].includes(c)) out.add(c);
+    else if (['champion','promoted','relegated','folded','expelled'].includes(c)) out.add(c);
   });
   return Array.from(out);
 }
@@ -2274,12 +2276,10 @@ if (!allMatches.length) {
     `seasons=${seasons.length} divisions=${divCount} matches=${matchCount}. ` +
     `First division keys: ${keys.join(', ') || '(none)'}`
   );
-  // Do NOT throw here — we’ll populate the Club dropdown from league-tables.json
   const ERR = el('error');
   if (ERR) {
     ERR.style.display = 'block';
-    ERR.textContent = 'No matches found in results.json — falling back to league-tables.json for clubs.';
-  }
+    ERR.textContent = 'No clubs found in results.json — cannot populate the selector.';  }
 }
 
 
@@ -3460,7 +3460,7 @@ if (scLine) scLine.textContent = buildHeaderSuffix() || '';
         playoff  : rows.some(r=> r.classList.contains('row-blue')),
         relegated: rows.some(r=> r.classList.contains('row-pink')),
         folded   : rows.some(r=> r.classList.contains('row-folded')),
-        expunged : rows.some(r=> r.classList.contains('row-expunged')), // v4.2.1
+        expelled : rows.some(r=> r.classList.contains('row-expelled')),
       };
       const parts=[];
       if (has.champion)  parts.push('<span class="swatch gold"></span>Champions');
@@ -3468,7 +3468,7 @@ if (scLine) scLine.textContent = buildHeaderSuffix() || '';
       if (has.playoff)   parts.push('<span class="swatch blue"></span>Qualified for Play-offs');
       if (has.relegated) parts.push('<span class="swatch pink"></span>Relegated');
       if (has.folded)    parts.push('<span class="swatch black"></span>Folded');
-      if (has.expunged)  parts.push('<span class="swatch expunged"></span>Expelled');
+      if (has.expelled)  parts.push('<span class="swatch expelled"></span>Expelled');
       const out = parts.join(', ');
       el('season-legend').innerHTML = out ? ('<strong>Legend:</strong> ' + out) : '';
     }
@@ -3529,7 +3529,7 @@ if (scLine) scLine.textContent = buildHeaderSuffix() || '';
         else if (classes.includes('playoff')) tr.classList.add('row-blue');
         else if (classes.includes('relegated')) tr.classList.add('row-pink');
         else if (classes.includes('folded')) tr.classList.add('row-folded');
-        else if (classes.includes('expunged')) tr.classList.add('row-expunged'); // v4.2.1
+        else if (classes.includes('expelled')) tr.classList.add('row-expelled');
         else tr.classList.add(((idx%2)===0)?'zebra-odd':'zebra-even');
 
         tr.classList.add('anim-in');
@@ -3769,7 +3769,7 @@ function lpStatusKey(classes){
   if(set.has('promoted')) return 'promoted';
   if(set.has('playoff'))  return 'playoff';
   if(set.has('relegated'))return 'relegated';
-  if(set.has('expunged')) return 'expunged';
+  if(set.has('expelled')) return 'expelled';
   return 'other';
 }
 function lpStatusFill(classes){
@@ -3779,7 +3779,7 @@ function lpStatusFill(classes){
   if(k==='promoted') return { fill:'#cfead6', text:'#000' };
   if(k==='playoff')  return { fill:'#e8f0ff', text:'#000' };
   if(k==='relegated')return { fill:'#ffe0e6', text:'#000' };
-  if(k==='expunged') return { fill:'#9ca3af', text:'#fff' }; // match table’s expunged row
+  if(k==='expelled') return { fill:'#9ca3af', text:'#fff' };
   return { fill:'#fff', text:'#111' };
 }
 
@@ -3844,7 +3844,7 @@ function renderLeagueGraph(entity){
     if (set.has('promoted'))  return 'Play-off Winner';
     if (set.has('playoff'))   return 'Play-off Qualifier';
     if (set.has('relegated')) return 'Relegated';
-    if (set.has('expunged'))  return 'Expelled';
+    if (set.has('expelled'))  return 'Expelled';
     return '—';
   }
   function showTip(evt, row, {pin=false} = {}){
@@ -4004,14 +4004,13 @@ rowsAll.forEach(r => {
   if (r.regionKey === 'South')  divs.s  = true;
 });
 
-  const statusParts=[];
+const statusParts=[];
   if(statusSeen.has('champion')) statusParts.push('<span><span class="sw gold"></span>Champions</span>');
   if(statusSeen.has('promoted')) statusParts.push('<span><span class="sw silver"></span>Play-off Winner</span>');
   if(statusSeen.has('playoff'))  statusParts.push('<span><span class="sw blue"></span>Qualified for Play-offs</span>');
   if(statusSeen.has('relegated'))statusParts.push('<span><span class="sw pink"></span>Relegated</span>');
   if(statusSeen.has('folded')) statusParts.push('<span><span class="sw black"></span>Folded</span>');
-  if(statusSeen.has('expunged')) statusParts.push('<span><span class="sw expunged"></span>Expelled</span>');
-  const divParts=[];
+  if(statusSeen.has('expelled')) statusParts.push('<span><span class="sw expelled"></span>Expelled</span>');
   
   if(divs.na) divParts.push('<span><span class="kbox na"></span>National</span>');
   if(divs.n)  divParts.push('<span><span class="kbox n"></span>North</span>');
