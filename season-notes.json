@@ -1006,6 +1006,15 @@
       "type": "reprieve",
       "note": "Reprieved from relegation due to folding of Rushden & Diamonds in the National division."
     },
+     {
+      "season": "2011-12",
+      "division": "National",
+      "team": "Kettering Town",
+      "entity": "Kettering Town",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "note": "Deducted 3 points."
+    },
     {
       "season": "2011-12",
       "division": "National",
