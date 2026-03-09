@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Club Records — v4.9 (derived tables + expelled classes + reprieve notes fix)</title>
+<title>Club Records — v4.9.1 (season table column order fix)</title>
   <meta name="color-scheme" content="light" />
   <style>
     :root{
@@ -634,12 +634,12 @@
 
 @media (max-width:700px){
   .seasons thead th{ font-size:12px; padding:6px 6px; }
-  /* Hide W, D, L, GF, GA (columns 5..9 in the new layout) */
-  .seasons th:nth-child(5),  .seasons td:nth-child(5),
+  /* Hide W, D, L, GF, GA while keeping P, GD, Pos, Pts visible */
   .seasons th:nth-child(6),  .seasons td:nth-child(6),
   .seasons th:nth-child(7),  .seasons td:nth-child(7),
   .seasons th:nth-child(8),  .seasons td:nth-child(8),
-  .seasons th:nth-child(9),  .seasons td:nth-child(9){ display:none; }
+  .seasons th:nth-child(9),  .seasons td:nth-child(9),
+  .seasons th:nth-child(10), .seasons td:nth-child(10){ display:none; }
 }
     @media (max-width:480px){
       .seasons caption{ font-size:1rem; }
@@ -1332,11 +1332,13 @@ body:not(.no-club) #intro{ display:none; }
     <th class="th-season">Season</th>
     <th class="move-col" aria-label="Movement" title="Promotion/Relegation">↕</th>
     <th class="th-division">Division</th>
+    <th><abbr title="Played">P</abbr></th>
     <th><abbr title="Wins">W</abbr></th>
     <th><abbr title="Draws">D</abbr></th>
     <th><abbr title="Losses">L</abbr></th>
     <th><abbr title="Goals For">GF</abbr></th>
     <th><abbr title="Goals Against">GA</abbr></th>
+    <th><abbr title="Goal Difference">GD</abbr></th>
     <th class="strongcol th-pos">Pos</th>
     <th class="strongcol th-pts"><abbr title="Points">Pts</abbr></th>
   </tr>
@@ -3550,25 +3552,50 @@ if (scLine) scLine.textContent = buildHeaderSuffix() || '';
           currLabel,                       // 2: Season
           { move:r.move },                 // 3: Movement arrow
           r.divisionTitle,                 // 4: Division
-          r.W, r.D, r.L, r.GF, r.GA,       // 5..9: W D L GF GA
-          { val:r.pos, strong:true },      // 10: Pos (rightmost-1)
-          { val:r.Pts, strong:true }       // 11: Pts (rightmost)
+          r.P,                             // 5: P
+          r.W,                             // 6: W
+          r.D,                             // 7: D
+          r.L,                             // 8: L
+          r.GF,                            // 9: GF
+          r.GA,                            // 10: GA
+          { gd:r.GD },                     // 11: GD
+          { val:r.pos, strong:true },      // 12: Pos
+          { val:r.Pts, strong:true }       // 13: Pts
         ];
         cells.forEach((val,i)=>{
           const td=document.createElement('td');
+
           if (i===0){
             td.className = 'namekey-col';
             td.style.width = '20px';
             td.innerHTML = `<span class="dot" title="${dispName}"></span>`;
-            tr.appendChild(td); return;
+            tr.appendChild(td);
+            return;
           }
+
           if (i===2){
             td.classList.add('move-col');
             const mv = (val && typeof val==='object') ? val.move : '';
-            if (mv === 'up'){ td.textContent = '↑'; td.classList.add('move-up'); }
-            else if (mv === 'down'){ td.textContent = '↓'; td.classList.add('move-down'); }
-            else { td.textContent=''; td.classList.add('move-none'); }
-            tr.appendChild(td); return;
+            if (mv === 'up'){
+              td.textContent = '↑';
+              td.classList.add('move-up');
+            } else if (mv === 'down'){
+              td.textContent = '↓';
+              td.classList.add('move-down');
+            } else {
+              td.textContent = '';
+              td.classList.add('move-none');
+            }
+            tr.appendChild(td);
+            return;
+          }
+
+          if (i===10 && val && typeof val==='object' && 'gd' in val){
+            const gd = Number(val.gd) || 0;
+            td.textContent = gd > 0 ? `+${gd}` : String(gd);
+            td.classList.add(classForGD(gd));
+            tr.appendChild(td);
+            return;
           }
 
           if (val && typeof val==='object'){
@@ -3577,10 +3604,11 @@ if (scLine) scLine.textContent = buildHeaderSuffix() || '';
           } else {
             td.textContent = (val != null ? val : '');
           }
-if (i===1) { td.classList.add('td-season'); td.style.textAlign='left'; } // Season col
-if (i===3) { td.classList.add('td-division'); td.style.textAlign='left'; } // Division col
-if (i===9)  td.classList.add('td-pos');  // Pos = cells[9]
-if (i===10) td.classList.add('td-pts');  // Pts = cells[10]
+
+          if (i===1)  { td.classList.add('td-season'); td.style.textAlign='left'; }   // Season
+          if (i===3)  { td.classList.add('td-division'); td.style.textAlign='left'; } // Division
+          if (i===11) td.classList.add('td-pos');                                    // Pos
+          if (i===12) td.classList.add('td-pts');                                    // Pts
 
           tr.appendChild(td);
         });
