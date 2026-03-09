@@ -1263,7 +1263,7 @@
               r.move = 'down';
             }
 
-            if (tnotes.some(n => n.type === 'reprieve')){
+            if (tnotes.some(n => n.type === 'reprieved')){
               r.classes = r.classes.filter(c => c !== 'relegated');
               if (r.move === 'down') r.move = '';
             }
