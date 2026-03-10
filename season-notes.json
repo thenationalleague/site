@@ -1133,8 +1133,8 @@
       "team": "Farnborough",
       "entity": "Farnborough",
       "type": "points_deduction",
-      "effectiveDate": "2013-04-26",
       "pointsValue": -10,
+      "effectiveDate": "2013-04-26",
       "note": "Deducted 10 points"
     },
     {
