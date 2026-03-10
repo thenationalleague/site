@@ -1123,8 +1123,18 @@
       "team": "Farnborough",
       "entity": "Farnborough",
       "type": "points_deduction",
-      "pointsValue": -14,
-      "note": "Deducted 14 points"
+      "pointsValue": -4,
+      "effectiveDate": "2013-01-13",
+      "note": "Deducted 4 points"
+    },
+      "season": "2012-13",
+      "division": "South",
+      "team": "Farnborough",
+      "entity": "Farnborough",
+      "type": "points_deduction",
+      "effectiveDate": "2013-04-26",
+      "pointsValue": -10,
+      "note": "Deducted 10 points"
     },
     {
       "season": "2012-13",
