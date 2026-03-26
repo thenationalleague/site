@@ -1924,26 +1924,6 @@
             renderReferenceTable(seasonKey, divisionName);
             return;
           }
-
-          const seasonEndDate = getSeasonEndDateForSeasonDivision(seasonKey, divisionName) || lastLeagueDate;
-          const isFinal = (mode === 'final');
-          const standingsAsOf = isFinal ? seasonEndDate : lastLeagueDate;
-
-          let rows = computeStandings(seasonKey, divisionName, lastLeagueDate);
-          rows = applyPointsAdjustments(seasonKey, divisionName, standingsAsOf, rows, isFinal);
-          rows = applyPPGRankingIfNeeded(seasonKey, divisionName, standingsAsOf, rows, isFinal);
-
-          if (!isFinal){
-            rows = applyZonesFromSeasonFormat(seasonKey, divisionName, rows, false);
-            rows = applyClinchedEmphasis(seasonKey, divisionName, lastLeagueDate, rows);
-            renderRows(rows, seasonKey, { showMovement:false });
-            applyCutLinesToRenderedTable(getCutRulesForSeason(seasonKey, divisionName, rows.length));
-            renderSeasonDivisionNotesAndRefs(seasonKey, divisionName, lastLeagueDate, false);
-            rebuildLegend();
-            return;
-          }
-
-          rows = applyFinalRulesFromNotes(seasonKey, divisionName, seasonEndDate, rows, true);
           
         const seasonEndDate = getSeasonEndDateForSeasonDivision(seasonKey, divisionName) || lastLeagueDate;
         const isFinal = (mode === 'final');
