@@ -1,0 +1,1541 @@
+{
+  "notes": [
+    {
+      "season": "1979-80",
+      "division": "National",
+      "team": "Altrincham",
+      "entity": "Altrincham",
+      "type": "not_promoted",
+      "note": "Applied for election to the Football League as Champions, but failed to secure enough votes (Darlington 49, Crewe Alexandra 48, Hereford United 48, Rochdale 26, Altrincham 25)"
+    },
+    {
+      "season": "1980-81",
+      "division": "National",
+      "team": "Altrincham",
+      "entity": "Altrincham",
+      "type": "not_promoted",
+      "note": "Applied for election to the Football League as Champions, but failed to secure enough votes (Tranmere Rovers 48, Hereford United 46, York City 46, Halifax Town 41, Altrincham 15)"
+    },
+    {
+      "season": "1981-82",
+      "division": "National",
+      "team": "Runcorn",
+      "entity": "Runcorn",
+      "type": "not_promoted",
+      "note": "Ineligible to apply for election due to not meeting Football League requirements"
+    },
+    {
+      "season": "1981-82",
+      "division": "National",
+      "team": "Telford United",
+      "entity": "Telford United",
+      "type": "not_promoted",
+      "note": "Applied for election to the Football League as highest-placed eligible finishers, but failed to secure enough votes (Northampton Town 53, Crewe Alexandra 50, Rochdale 48, Scunthorpe United 48, Telford United 13)"
+    },
+    {
+      "season": "1982-83",
+      "division": "National",
+      "team": "Enfield",
+      "entity": "Enfield",
+      "type": "not_promoted",
+      "note": "Ineligible to apply for election due to not meeting Football League requirements"
+    },
+    {
+      "season": "1982-83",
+      "division": "National",
+      "team": "Maidstone United",
+      "entity": "Maidstone United (original)",
+      "type": "not_promoted",
+      "note": "Applied for election to the Football League as highest-placed eligible finishers, but failed to secure enough votes (Blackpool 52, Crewe Alexandra 49, Hereford United 49, Hartlepool United 36, Maidstone United 26)"
+    },
+    {
+      "season": "1983-84",
+      "division": "National",
+      "team": "Maidstone United",
+      "entity": "Maidstone United (original)",
+      "type": "not_promoted",
+      "note": "Applied for election to the Football League as Champions, but failed to secure enough votes (Chester City 52, Halifax Town 52, Rochdale 50, Hartlepool United 32, Maidstone United 22)"
+    },
+    {
+      "season": "1984-85",
+      "division": "National",
+      "team": "Wealdstone",
+      "entity": "Wealdstone",
+      "type": "not_promoted",
+      "note": "Ineligible to apply for election due to not meeting Football League requirements"
+    },
+    {
+      "season": "1984-85",
+      "division": "National",
+      "team": "Bath City",
+      "entity": "Bath City",
+      "type": "not_promoted",
+      "note": "Applied for election to the Football League as highest-placed eligible finishers, but failed to secure enough votes (Northampton Town 52, Stockport County 50, Torquay United 50, Halifax Town 48, Bath City 8)"
+    },
+    {
+      "season": "1984-85",
+      "division": "National",
+      "team": "Gateshead",
+      "entity": "Gateshead",
+      "type": "points_deduction",
+      "pointsValue": -1,
+      "note": "Deducted 1 point"
+    },
+    {
+      "season": "1985-86",
+      "division": "National",
+      "team": "Enfield",
+      "entity": "Enfield",
+      "type": "not_promoted",
+      "note": "Applied for election to the Football League as Champions, but failed to secure enough votes (Exeter City 64, Preston North End 62.5, Cambridge United 61, Torquay United 61, Enfield 7.5)"
+    },
+    {
+      "season": "1986-87",
+      "division": "National",
+      "team": "Nuneaton Borough",
+      "entity": "Nuneaton Borough",
+      "type": "demoted",
+      "note": "Demoted to the Southern League Premier Division due to financial irregularities"
+    },
+    {
+      "season": "1986-87",
+      "division": "National",
+      "team": "Welling United",
+      "entity": "Welling United",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to demotion of Nuneaton Borough"
+    },
+    {
+      "season": "1988-89",
+      "division": "National",
+      "team": "Newport County",
+      "entity": "Newport County",
+      "type": "expelled",
+      "effectiveDate": "1989-02-27",
+      "note": "Expelled due to failure to fulfil fixtures, and record expunged"
+    },
+    {
+      "season": "1991-92",
+      "division": "National",
+      "team": "Redbridge Forest",
+      "entity": "Redbridge Forest",
+      "type": "merger",
+      "note": "Merged with Dagenham at the conclusion of the season and competed from 1992-93 as Dagenham & Redbridge"
+    },
+    {
+      "season": "1992-93",
+      "division": "National",
+      "team": "Dagenham & Redbridge",
+      "entity": "Dagenham & Redbridge",
+      "type": "points_deduction",
+      "pointsValue": -1,
+      "effectiveDate": "1993-03-23",
+      "note": "Deducted 1 point"
+    },
+    {
+      "season": "1992-93",
+      "division": "National",
+      "team": "Welling United",
+      "entity": "Welling United",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to Chesham United being denied promotion as a result of failing to meet Conference ground requirements"
+    },
+    {
+      "season": "1993-94",
+      "division": "National",
+      "team": "Kidderminster Harriers",
+      "entity": "Kidderminster Harriers",
+      "type": "not_promoted",
+      "note": "Denied promotion to the Football League despite being crowned Champions due to failure to meet ground requirements"
+    },
+    {
+      "season": "1993-94",
+      "division": "National",
+      "team": "Merthyr Tydfil",
+      "entity": "Merthyr Tydfil",
+      "type": "points_deduction",
+      "pointsValue": -2,
+      "effectiveDate": "1993-11-29",
+      "note": "Deducted 2 points"
+    },
+    {
+      "season": "1993-94",
+      "division": "National",
+      "team": "Merthyr Tydfil",
+      "entity": "Merthyr Tydfil",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to Marine being denied promotion as a result of failing to meet Conference ground requirements"
+    },
+    {
+      "season": "1994-95",
+      "division": "National",
+      "team": "Macclesfield Town",
+      "entity": "Macclesfield Town",
+      "type": "not_promoted",
+      "note": "Denied promotion to the Football League despite being crowned Champions due to failure to meet ground requirements"
+    },
+    {
+      "season": "1994-95",
+      "division": "National",
+      "team": "Yeovil Town",
+      "entity": "Yeovil Town",
+      "type": "points_deduction",
+      "pointsValue": -1,
+      "effectiveDate": "1994-10-14",
+      "note": "Deducted 1 point"
+    },
+    {
+      "season": "1995-96",
+      "division": "National",
+      "team": "Stevenage Borough",
+      "entity": "Stevenage Borough",
+      "type": "not_promoted",
+      "note": "Denied promotion to the Football League despite being crowned Champions due to failure to meet ground requirements"
+    },
+    {
+      "season": "1995-96",
+      "division": "National",
+      "team": "Dover Athletic",
+      "entity": "Dover Athletic",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to Bamber Bridge being denied promotion as a result of failing to meet Conference ground requirements"
+    },
+    {
+      "season": "1997-98",
+      "division": "National",
+      "team": "Slough Town",
+      "entity": "Slough Town",
+      "type": "demoted",
+      "note": "Demoted to the Isthmian League Premier Division due to failure to meet Football Conference ground requirements"
+    },
+    {
+      "season": "1997-98",
+      "division": "National",
+      "team": "Telford United",
+      "entity": "Telford United",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to demotion of Slough Town"
+    },
+    {
+      "season": "1998-99",
+      "division": "National",
+      "team": "Barrow",
+      "entity": "Barrow",
+      "type": "demoted",
+      "note": "Demoted to the Northern Premier League Premier Division due to entering administration"
+    },
+    {
+      "season": "1998-99",
+      "division": "National",
+      "team": "Welling United",
+      "entity": "Welling United",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to demotion of Barrow"
+    },
+    {
+      "season": "2001-02",
+      "division": "National",
+      "team": "Scarborough",
+      "entity": "Scarborough",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "effectiveDate": "2001-12-13",
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2001-02",
+      "division": "National",
+      "team": "Scarborough",
+      "entity": "Scarborough",
+      "type": "points_deduction",
+      "pointsValue": 2,
+      "effectiveDate": "2002-01-22",
+      "note": "Initial deduction reduced to 1 point"
+    },
+    {
+      "season": "2003-04",
+      "division": "National",
+      "team": "Telford United",
+      "entity": "Telford United",
+      "type": "folded",
+      "note": "Folded upon the conclusion of the season"
+    },
+    {
+      "season": "2003-04",
+      "division": "National",
+      "team": "Margate",
+      "entity": "Margate",
+      "type": "demoted",
+      "note": "Demoted to Football Conference South due to failure to meet Football Conference ground requirements"
+    },
+    {
+      "season": "2003-04",
+      "division": "National",
+      "team": "Burton Albion",
+      "entity": "Burton Albion",
+      "type": "points_deduction",
+      "pointsValue": -1,
+      "effectiveDate": "2003-11-26",
+      "note": "Deducted 1 point"
+    },
+    {
+      "season": "2003-04",
+      "division": "National",
+      "team": "Farnborough Town",
+      "entity": "Farnborough Town",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to folding of Telford United, demotion of Margate, and Hucknall Town being denied promotion as a result of failing to meet Conference standards"
+    },
+    {
+      "season": "2003-04",
+      "division": "National",
+      "team": "Leigh RMI",
+      "entity": "Leigh RMI",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to folding of Telford United, demotion of Margate, and Hucknall Town being denied promotion as a result of failing to meet Conference standards"
+    },
+    {
+      "season": "2003-04",
+      "division": "National",
+      "team": "Northwich Victoria",
+      "entity": "Northwich Victoria",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to folding of Telford United, demotion of Margate, and Hucknall Town being denied promotion as a result of failing to meet Conference standards"
+    },
+    {
+      "season": "2004-05",
+      "division": "National",
+      "team": "Northwich Victoria",
+      "entity": "Northwich Victoria",
+      "type": "demoted",
+      "note": "Demoted to Football Conference North due to failure to meet Football Conference ground requirements"
+    },
+    {
+      "season": "2004-05",
+      "division": "National",
+      "team": "Northwich Victoria",
+      "entity": "Northwich Victoria",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "effectiveDate": "2004-09-28",
+      "note": "Deducted 10 points due to entering administration"
+    },
+    {
+      "season": "2004-05",
+      "division": "National",
+      "team": "Tamworth",
+      "entity": "Tamworth",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "effectiveDate": "2004-12-20",
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2004-05",
+      "division": "National",
+      "team": "Forest Green Rovers",
+      "entity": "Forest Green Rovers",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to demotion of Northwich Victoria"
+    },
+    {
+      "season": "2004-05",
+      "division": "North",
+      "team": "Redditch United",
+      "entity": "Redditch United",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2004-05",
+      "division": "North",
+      "team": "Worksop Town",
+      "entity": "Worksop Town",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "note": "Deducted 10 points"
+    },
+    {
+      "season": "2004-05",
+      "division": "South",
+      "team": "Hornchurch",
+      "entity": "Hornchurch (original)",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "note": "Deducted 10 points"
+    },
+    {
+      "season": "2004-05",
+      "division": "South",
+      "team": "Margate",
+      "entity": "Margate",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "note": "Deducted 10 points"
+    },
+    {
+      "season": "2004-05",
+      "division": "South",
+      "team": "Redbridge",
+      "entity": "Redbridge",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2004-05",
+      "division": "South",
+      "team": "Maidenhead United",
+      "entity": "Maidenhead United",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to folding of Hornchurch"
+    },
+    {
+      "season": "2004-05",
+      "division": "South",
+      "team": "Lewes",
+      "entity": "Lewes",
+      "type": "no_playoffs",
+      "note": "Unable to compete in play-offs due to ground issues"
+    },
+    {
+      "season": "2005-06",
+      "division": "National",
+      "team": "Canvey Island",
+      "entity": "Canvey Island",
+      "type": "demoted",
+      "note": "Voluntarily resigned to the Isthmian League Division One North"
+    },
+    {
+      "season": "2005-06",
+      "division": "National",
+      "team": "Scarborough",
+      "entity": "Scarborough",
+      "type": "demoted",
+      "note": "Demoted to the Football Conference North due to failure to fulfil Football Conference financial guidelines"
+    },
+    {
+      "season": "2005-06",
+      "division": "National",
+      "team": "Altrincham",
+      "entity": "Altrincham",
+      "type": "points_deduction",
+      "pointsValue": -18,
+      "effectiveDate": "2006-04-20",
+      "note": "Deducted 18 points"
+    },
+    {
+      "season": "2005-06",
+      "division": "National",
+      "team": "Altrincham",
+      "entity": "Altrincham",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to demotion of Scarborough, resignation of Canvey Island, and expansion of the Conference to 24 teams"
+    },
+    {
+      "season": "2005-06",
+      "division": "North",
+      "team": "Leigh RMI",
+      "entity": "Leigh RMI",
+      "type": "points_deduction",
+      "pointsValue": -1,
+      "effectiveDate": "2006-04-25",
+      "note": "Deducted 1 point"
+    },
+    {
+      "season": "2005-06",
+      "division": "North",
+      "team": "Leigh RMI",
+      "entity": "Leigh RMI",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to Canvey Island's three-level demotion from the National division"
+    },
+    {
+      "season": "2005-06",
+      "division": "South",
+      "team": "Weymouth",
+      "entity": "Weymouth",
+      "type": "points_deduction",
+      "pointsValue": -4,
+      "note": "Deducted 4 points"
+    },
+    {
+      "season": "2005-06",
+      "division": "South",
+      "team": "Havant & Waterlooville",
+      "entity": "Havant & Waterlooville",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2005-06",
+      "division": "South",
+      "team": "Cambridge City",
+      "entity": "Cambridge City",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2005-06",
+      "division": "South",
+      "team": "Maidenhead United",
+      "entity": "Maidenhead United",
+      "type": "points_deduction",
+      "pointsValue": -2,
+      "note": "Deducted 2 points"
+    },
+    {
+      "season": "2006-07",
+      "division": "National",
+      "team": "Crawley Town",
+      "entity": "Crawley Town",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "effectiveDate": "2006-06-05",
+      "note": "Deducted 10 points"
+    },
+    {
+      "season": "2006-07",
+      "division": "National",
+      "team": "Altrincham",
+      "entity": "Altrincham",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to Boston United's two-level demotion from League Two"
+    },
+    {
+      "season": "2006-07",
+      "division": "North",
+      "team": "Moor Green",
+      "entity": "Moor Green",
+      "type": "merger",
+      "note": "Merged with Solihull Borough at the conclusion of the season and competed from 2007-08 as Solihull Moors"
+    },
+    {
+      "season": "2006-07",
+      "division": "North",
+      "team": "Scarborough",
+      "entity": "Scarborough",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "note": "Deducted 10 points"
+    },
+    {
+      "season": "2006-07",
+      "division": "North",
+      "team": "Lancaster City",
+      "entity": "Lancaster City",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "effectiveDate": "2006-12-18",
+      "note": "Deducted 10 points"
+    },
+    {
+      "season": "2006-07",
+      "division": "North",
+      "team": "Scarborough",
+      "entity": "Scarborough",
+      "type": "folded",
+      "note": "Folded upon the conclusion of the season"
+    },
+    {
+      "season": "2006-07",
+      "division": "South",
+      "team": "Weston-super-Mare",
+      "entity": "Weston-super-Mare",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to folding of Farnborough Town and merger of Hayes and Yeading"
+    },
+    {
+      "season": "2006-07",
+      "division": "South",
+      "team": "Hayes",
+      "entity": "Hayes",
+      "type": "reprieved",
+      "note": "Merged with Yeading at the conclusion of the season and competed from 2007-08 as Hayes & Yeading United"
+    },
+    {
+      "season": "2006-07",
+      "division": "South",
+      "team": "Yeading",
+      "entity": "Yeading",
+      "type": "merger",
+      "note": "Merged with Hayes at the conclusion of the season and competed from 2007-08 as Hayes & Yeading United"
+    },
+    {
+      "season": "2006-07",
+      "division": "South",
+      "team": "Farnborough Town",
+      "entity": "Farnborough Town",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "effectiveDate": "2006-06-25",
+      "note": "Deducted 10 points"
+    },
+    {
+      "season": "2006-07",
+      "division": "South",
+      "team": "Farnborough Town",
+      "entity": "Farnborough Town",
+      "type": "folded",
+      "note": "Folded upon the conclusion of the season"
+    },
+    {
+      "season": "2007-08",
+      "division": "National",
+      "team": "Crawley Town",
+      "entity": "Crawley Town",
+      "type": "points_deduction",
+      "pointsValue": -6,
+      "effectiveDate": "2007-08-07",
+      "note": "Deducted 6 points"
+    },
+    {
+      "season": "2007-08",
+      "division": "National",
+      "team": "Halifax Town",
+      "entity": "Halifax Town",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "effectiveDate": "2008-03-26",
+      "note": "Deducted 10 points; folded upon the conclusion of the season"
+    },
+    {
+      "season": "2007-08",
+      "division": "National",
+      "team": "Halifax Town",
+      "entity": "Halifax Town",
+      "type": "folded",
+      "note": "Deducted 10 points; folded upon the conclusion of the season"
+    },
+    {
+      "season": "2007-08",
+      "division": "National",
+      "team": "Altrincham",
+      "entity": "Altrincham",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to folding of Halifax Town"
+    },
+    {
+      "season": "2007-08",
+      "division": "North",
+      "team": "Nuneaton Borough",
+      "entity": "Nuneaton Borough",
+      "type": "demoted",
+      "note": "Demoted to Southern League Division One Midlands as a result of liquidation and reformed immediately as Nuneaton Town"
+    },
+    {
+      "season": "2007-08",
+      "division": "North",
+      "team": "Boston United",
+      "entity": "Boston United",
+      "type": "demoted",
+      "note": "Demoted to Northern Premier League Premier Division due to failure to exit administration"
+    },
+    {
+      "season": "2007-08",
+      "division": "North",
+      "team": "Hucknall Town",
+      "entity": "Hucknall Town",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to demotions of Nuneaton Borough and Boston United"
+    },
+    {
+      "season": "2007-08",
+      "division": "North",
+      "team": "Vauxhall Motors",
+      "entity": "Vauxhall Motors",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to demotions of Nuneaton Borough and Boston United"
+    },
+    {
+      "season": "2007-08",
+      "division": "South",
+      "team": "Cambridge City",
+      "entity": "Cambridge City",
+      "type": "demoted",
+      "note": "Demoted to Southern League Premier Division due to failure to meet Football Conference South ground requirements"
+    },
+    {
+      "season": "2007-08",
+      "division": "South",
+      "team": "Weston-super-Mare",
+      "entity": "Weston-super-Mare",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to demotion of Cambridge City and folding of Halifax Town in the National division"
+    },
+    {
+      "season": "2007-08",
+      "division": "South",
+      "team": "Dorchester Town",
+      "entity": "Dorchester Town",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to demotion of Cambridge City and folding of Halifax Town in the National division"
+    },
+    {
+      "season": "2008-09",
+      "division": "National",
+      "team": "Oxford United",
+      "entity": "Oxford United",
+      "type": "points_deduction",
+      "pointsValue": -5,
+      "effectiveDate": "2009-01-12",
+      "note": "Deducted 5 points"
+    },
+    {
+      "season": "2008-09",
+      "division": "National",
+      "team": "Crawley Town",
+      "entity": "Crawley Town",
+      "type": "points_deduction",
+      "pointsValue": -1,
+      "effectiveDate": "2009-02-28",
+      "note": "Deducted 1 point"
+    },
+    {
+      "season": "2008-09",
+      "division": "National",
+      "team": "Mansfield Town",
+      "entity": "Mansfield Town",
+      "type": "points_deduction",
+      "pointsValue": -4,
+      "effectiveDate": "2008-10-06",
+      "note": "Deducted 4 points"
+    },
+    {
+      "season": "2008-09",
+      "division": "North",
+      "team": "King's Lynn",
+      "entity": "King's Lynn",
+      "type": "demoted",
+      "note": "Demoted to Northern Premier League Premier Division due to failure to meet Football Conference North ground requirements"
+    },
+    {
+      "season": "2008-09",
+      "division": "North",
+      "team": "Hyde United",
+      "entity": "Hyde United",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to demotion of King's Lynn"
+    },
+    {
+      "season": "2008-09",
+      "division": "North",
+      "team": "Northwich Victoria",
+      "entity": "Northwich Victoria",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "note": "Deducted 10 points due to entering administration"
+    },
+    {
+      "season": "2008-09",
+      "division": "South",
+      "team": "Team Bath",
+      "entity": "Team Bath",
+      "type": "folded",
+      "note": "Folded upon the conclusion of the season"
+    },
+    {
+      "season": "2008-09",
+      "division": "South",
+      "team": "Thurrock",
+      "entity": "Thurrock",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to folding of Team Bath"
+    },
+    {
+      "season": "2008-09",
+      "division": "South",
+      "team": "Fisher Athletic",
+      "entity": "Fisher Athletic",
+      "type": "folded",
+      "note": "Folded upon the conclusion of the season"
+    },
+    {
+      "season": "2008-09",
+      "division": "South",
+      "team": "Bognor Regis Town",
+      "entity": "Bognor Regis Town",
+      "type": "points_deduction",
+      "pointsValue": -7,
+      "note": "Deducted 7 points"
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "team": "Salisbury City",
+      "entity": "Salisbury City",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "effectiveDate": "2009-09-03",
+      "note": "Deducted 10 points"
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "team": "Salisbury City",
+      "entity": "Salisbury City",
+      "type": "demoted",
+      "note": "Demoted to Southern League Premier Division due to failure to exit administration"
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "team": "Forest Green Rovers",
+      "entity": "Forest Green Rovers",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to the demotion of Salisbury City"
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "team": "Gateshead",
+      "entity": "Gateshead",
+      "type": "points_deduction",
+      "pointsValue": -1,
+      "effectiveDate": "2009-10-11",
+      "note": "Deducted 1 point"
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "team": "Grays Athletic",
+      "entity": "Grays Athletic",
+      "type": "points_deduction",
+      "pointsValue": -2,
+      "effectiveDate": "2010-04-09",
+      "note": "Deducted 2 points"
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "team": "Grays Athletic",
+      "entity": "Grays Athletic",
+      "type": "general",
+      "note": "Declined to join Football Conference South upon relegation and instead joined Isthmian League Division One North"
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "team": "Chester City",
+      "entity": "Chester City",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "effectiveDate": "2009-05-17",
+      "note": "Deducted 10 points"
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "team": "Chester City",
+      "entity": "Chester City",
+      "type": "points_deduction",
+      "pointsValue": -15,
+      "effectiveDate": "2009-08-06",
+      "note": "Deduction increased to 25 points"
+    },
+    {
+      "season": "2009-10",
+      "division": "National",
+      "team": "Chester City",
+      "entity": "Chester City",
+      "type": "expelled",
+      "effectiveDate": "2010-02-26",
+      "note": "Expelled, and record expunged"
+    },
+    {
+      "season": "2009-10",
+      "division": "North",
+      "team": "Northwich Victoria",
+      "entity": "Northwich Victoria",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "effectiveDate": "start_of_season",
+      "note": "Begun season with 10-point deduction"
+    },
+    {
+      "season": "2009-10",
+      "division": "North",
+      "team": "Farsley Celtic",
+      "entity": "Farsley Celtic",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "effectiveDate": "start_of_season",
+      "note": "Begun season with 10-point deduction"
+    },
+    {
+      "season": "2009-10",
+      "division": "North",
+      "team": "Northwich Victoria",
+      "entity": "Northwich Victoria",
+      "type": "demoted",
+      "note": "Demoted to Northern Premier League Premier Division due to financial issues"
+    },
+    {
+      "season": "2009-10",
+      "division": "North",
+      "team": "Vauxhall Motors",
+      "entity": "Vauxhall Motors",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to the folding of Chester City and demotion of Northwich Victoria"
+    },
+    {
+      "season": "2009-10",
+      "division": "North",
+      "team": "Harrogate Town",
+      "entity": "Harrogate Town",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to the folding of Chester City and demotion of Northwich Victoria"
+    },
+    {
+      "season": "2009-10",
+      "division": "North",
+      "team": "Farsley Celtic",
+      "entity": "Farsley Celtic",
+      "type": "expelled",
+      "effectiveDate": "2010-03-08",
+      "note": "Resigned and folded, and record expunged"
+    },
+    {
+      "season": "2009-10",
+      "division": "South",
+      "team": "Worcester City",
+      "entity": "Worcester City",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to demotions of Salisbury City and Grays Athletic from the National division"
+    },
+    {
+      "season": "2009-10",
+      "division": "South",
+      "team": "Weston-super-Mare",
+      "entity": "Weston-super-Mare",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to demotion of Salisbury City from the National division and three-level demotion of Grays Athletic from the National division"
+    },
+    {
+      "season": "2010-11",
+      "division": "National",
+      "team": "Kidderminster Harriers",
+      "entity": "Kidderminster Harriers",
+      "type": "points_deduction",
+      "pointsValue": -5,
+      "effectiveDate": "2011-01-21",
+      "note": "Deducted 5 points"
+    },
+    {
+      "season": "2010-11",
+      "division": "National",
+      "team": "Histon",
+      "entity": "Histon",
+      "type": "points_deduction",
+      "pointsValue": -5,
+      "effectiveDate": "2011-01-21",
+      "note": "Deducted 5 points"
+    },
+    {
+      "season": "2010-11",
+      "division": "National",
+      "team": "Kettering Town",
+      "entity": "Kettering Town",
+      "type": "points_deduction",
+      "pointsValue": -2,
+      "note": "Deducted 2 points"
+    },
+    {
+      "season": "2010-11",
+      "division": "National",
+      "team": "Rushden & Diamonds",
+      "entity": "Rushden & Diamonds",
+      "type": "points_deduction",
+      "pointsValue": -5,
+      "note": "Deducted 5 points"
+    },
+    {
+      "season": "2010-11",
+      "division": "National",
+      "team": "Rushden & Diamonds",
+      "entity": "Rushden & Diamonds",
+      "type": "folded",
+      "note": "Folded upon the conclusion of the season"
+    },
+    {
+      "season": "2010-11",
+      "division": "National",
+      "team": "Southport",
+      "entity": "Southport",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to folding of Rushden & Diamonds"
+    },
+    {
+      "season": "2010-11",
+      "division": "North",
+      "team": "Redditch United",
+      "entity": "Redditch United",
+      "type": "points_deduction",
+      "pointsValue": -5,
+      "note": "Deducted 5 points"
+    },
+    {
+      "season": "2010-11",
+      "division": "North",
+      "team": "Ilkeston Town",
+      "entity": "Ilkeston Town",
+      "type": "expelled",
+      "effectiveDate": "2010-09-16",
+      "note": "Expelled, and record expunged"
+    },
+    {
+      "season": "2010-11",
+      "division": "North",
+      "team": "Eastwood Town",
+      "entity": "Eastwood Town",
+      "type": "no_playoffs",
+      "note": "Unable to compete in play-offs due to ground issues"
+    },
+    {
+      "season": "2010-11",
+      "division": "South",
+      "team": "Welling United",
+      "entity": "Welling United",
+      "type": "points_deduction",
+      "pointsValue": -5,
+      "effectiveDate": "2010-09-16",
+      "note": "Deducted 5 points"
+    },
+    {
+      "season": "2010-11",
+      "division": "South",
+      "team": "St Albans City",
+      "entity": "St Albans City",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "effectiveDate": "2011-02-04",
+      "note": "Deducted 10 points"
+    },
+    {
+      "season": "2010-11",
+      "division": "South",
+      "team": "Thurrock",
+      "entity": "Thurrock",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to folding of Rushden & Diamonds in the National division"
+    },
+    {
+      "season": "2011-12",
+      "division": "National",
+      "team": "Kettering Town",
+      "entity": "Kettering Town",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2011-12",
+      "division": "National",
+      "team": "Darlington",
+      "entity": "Darlington (original)",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "note": "Deducted 10 points"
+    },
+    {
+      "season": "2011-12",
+      "division": "National",
+      "team": "Darlington",
+      "entity": "Darlington (original)",
+      "type": "folded",
+      "note": "Folded upon the conclusion of the season"
+    },
+    {
+      "season": "2011-12",
+      "division": "North",
+      "team": "Nuneaton Town",
+      "entity": "Nuneaton Town",
+      "type": "points_deduction",
+      "pointsValue": -6,
+      "effectiveDate": "2012-03-30",
+      "note": "Deducted 6 points"
+    },
+    {
+      "season": "2011-12",
+      "division": "South",
+      "team": "Farnborough",
+      "entity": "Farnborough",
+      "type": "points_deduction",
+      "pointsValue": -5,
+      "effectiveDate": "2012-02-28",
+      "note": "Deducted 5 points"
+    },
+    {
+      "season": "2012-13",
+      "division": "North",
+      "team": "Solihull Moors",
+      "entity": "Solihull Moors",
+      "type": "points_deduction",
+      "pointsValue": -4,
+      "note": "Deducted 4 points"
+    },
+    {
+      "season": "2012-13",
+      "division": "North",
+      "team": "Workington",
+      "entity": "Workington",
+      "type": "points_deduction",
+      "pointsValue": -4,
+      "effectiveDate": "2013-01-29",
+      "note": "Deducted 4 points"
+    },
+    {
+      "season": "2012-13",
+      "division": "North",
+      "team": "Hinckley United",
+      "entity": "Hinckley United",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "effectiveDate": "2012-12-13",
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2012-13",
+      "division": "North",
+      "team": "Hinckley United",
+      "entity": "Hinckley United",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "effectiveDate": "2013-04-15",
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2012-13",
+      "division": "South",
+      "team": "Salisbury City",
+      "entity": "Salisbury City",
+      "type": "points_deduction",
+      "pointsValue": -1,
+      "effectiveDate": "2013-03-01",
+      "note": "Deducted 1 point"
+    },
+    {
+      "season": "2012-13",
+      "division": "South",
+      "team": "Farnborough",
+      "entity": "Farnborough",
+      "type": "points_deduction",
+      "pointsValue": -4,
+      "effectiveDate": "2013-01-13",
+      "note": "Deducted 4 points"
+    },
+    {
+      "season": "2012-13",
+      "division": "South",
+      "team": "Farnborough",
+      "entity": "Farnborough",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "effectiveDate": "2013-04-26",
+      "note": "Deducted 10 points"
+    },
+    {
+      "season": "2012-13",
+      "division": "South",
+      "team": "Truro City",
+      "entity": "Truro City",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "effectiveDate": "2012-08-31",
+      "note": "Deducted 10 points"
+    },
+    {
+      "season": "2013-14",
+      "division": "National",
+      "team": "Alfreton Town",
+      "entity": "Alfreton Town",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2013-14",
+      "division": "National",
+      "team": "Salisbury City",
+      "entity": "Salisbury City",
+      "type": "folded",
+      "note": "Folded upon the conclusion of the season"
+    },
+    {
+      "season": "2013-14",
+      "division": "National",
+      "team": "Dartford",
+      "entity": "Dartford",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to folding of Salisbury City"
+    },
+    {
+      "season": "2013-14",
+      "division": "National",
+      "team": "Chester",
+      "entity": "Chester",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to folding of Salisbury City"
+    },
+    {
+      "season": "2013-14",
+      "division": "National",
+      "team": "Aldershot Town",
+      "entity": "Aldershot Town",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "note": "Deducted 10 points"
+    },
+    {
+      "season": "2013-14",
+      "division": "National",
+      "team": "Hereford United",
+      "entity": "Hereford United",
+      "type": "demoted",
+      "note": "Demoted to Southern League Premier Division due to financial irregularities"
+    },
+    {
+      "season": "2013-14",
+      "division": "North",
+      "team": "Vauxhall Motors",
+      "entity": "Vauxhall Motors",
+      "type": "demoted",
+      "note": "Voluntarily resigned to the West Cheshire League"
+    },
+    {
+      "season": "2013-14",
+      "division": "North",
+      "team": "Harrogate Town",
+      "entity": "Harrogate Town",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "effectiveDate": "2013-09-24",
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2013-14",
+      "division": "North",
+      "team": "Oxford City",
+      "entity": "Oxford City",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "effectiveDate": "2014-03-03",
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2013-14",
+      "division": "North",
+      "team": "Oxford City",
+      "entity": "Oxford City",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to resignation of Vauxhall Motors"
+    },
+    {
+      "season": "2013-14",
+      "division": "South",
+      "team": "Hayes & Yeading United",
+      "entity": "Hayes & Yeading United",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to Hereford United's two-level demotion from the National division"
+    },
+    {
+      "season": "2014-15",
+      "division": "National",
+      "team": "Forest Green Rovers",
+      "entity": "Forest Green Rovers",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "effectiveDate": "2014-09-26",
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2014-15",
+      "division": "National",
+      "team": "AFC Telford United",
+      "entity": "AFC Telford United",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "effectiveDate": "2015-05-13",
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2014-15",
+      "division": "National",
+      "team": "Nuneaton Town",
+      "entity": "Nuneaton Town",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "effectiveDate": "2015-04-07",
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2015-16",
+      "division": "North",
+      "team": "Nuneaton Town",
+      "entity": "Nuneaton Town",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2016-17",
+      "division": "North",
+      "team": "Darlington 1883",
+      "entity": "Darlington",
+      "type": "no_playoffs",
+      "note": "Unable to compete in play-offs due to ground issues"
+    },
+    {
+      "season": "2016-17",
+      "division": "South",
+      "team": "Hungerford Town",
+      "entity": "Hungerford Town",
+      "type": "no_playoffs",
+      "note": "Unable to compete in play-offs due to ground issues"
+    },
+    {
+      "season": "2016-17",
+      "division": "South",
+      "team": "Poole Town",
+      "entity": "Poole Town",
+      "type": "no_playoffs",
+      "note": "Unable to compete in play-offs due to ground issues"
+    },
+    {
+      "season": "2016-17",
+      "division": "South",
+      "team": "Hampton & Richmond Borough",
+      "entity": "Hampton & Richmond Borough",
+      "type": "playoffs",
+      "note": "Qualified for play-offs as next highest-ranking team"
+    },
+    {
+      "season": "2017-18",
+      "division": "South",
+      "team": "Braintree Town",
+      "entity": "Braintree Town",
+      "type": "points_deduction",
+      "pointsValue": -1,
+      "note": "Deducted 1 point"
+    },
+    {
+      "season": "2018-19",
+      "division": "National",
+      "team": "Gateshead",
+      "entity": "Gateshead",
+      "type": "points_deduction",
+      "pointsValue": -9,
+      "note": "Deducted 9 points"
+    },
+    {
+      "season": "2018-19",
+      "division": "National",
+      "team": "Gateshead",
+      "entity": "Gateshead",
+      "type": "demoted",
+      "note": "Demoted to National League North due to financial irregularities"
+    },
+    {
+      "season": "2018-19",
+      "division": "National",
+      "team": "Aldershot Town",
+      "entity": "Aldershot Town",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to demotion of Gateshead"
+    },
+    {
+      "season": "2018-19",
+      "division": "National",
+      "team": "Braintree Town",
+      "entity": "Braintree Town",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2018-19",
+      "division": "South",
+      "team": "Concord Rangers",
+      "entity": "Concord Rangers",
+      "type": "points_deduction",
+      "pointsValue": -3,
+      "note": "Deducted 3 points"
+    },
+    {
+      "season": "2018-19",
+      "division": "South",
+      "team": "Concord Rangers",
+      "entity": "Concord Rangers",
+      "type": "no_playoffs",
+      "note": "Unable to compete in play-offs due to ground issues"
+    },
+    {
+      "season": "2019-20",
+      "division": "National",
+      "type": "ppg",
+      "effectiveDate": "end_of_season",
+      "note": "Final standings determined by points per game due to season curtailment"
+    },
+    {
+      "season": "2019-20",
+      "division": "North",
+      "type": "ppg",
+      "effectiveDate": "end_of_season",
+      "note": "Final standings determined by points per game due to season curtailment"
+    },
+    {
+      "season": "2019-20",
+      "division": "South",
+      "type": "ppg",
+      "effectiveDate": "end_of_season",
+      "note": "Final standings determined by points per game due to season curtailment"
+    },
+    {
+      "season": "2019-20",
+      "division": "National",
+      "team": "Maidenhead United",
+      "entity": "Maidenhead United",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to Bury's expulsion from League One"
+    },
+    {
+      "season": "2019-20",
+      "division": "North",
+      "team": "Blyth Spartans",
+      "entity": "Blyth Spartans",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to early curtailment of the season as a result of the covid-19 pandemic"
+    },
+    {
+      "season": "2019-20",
+      "division": "North",
+      "team": "Bradford (Park Avenue)",
+      "entity": "Bradford (Park Avenue)",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to early curtailment of the season as a result of the covid-19 pandemic"
+    },
+    {
+      "season": "2019-20",
+      "division": "South",
+      "team": "Braintree Town",
+      "entity": "Braintree Town",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to early curtailment of the season as a result of the covid-19 pandemic"
+    },
+    {
+      "season": "2019-20",
+      "division": "South",
+      "team": "Hungerford Town",
+      "entity": "Hungerford Town",
+      "type": "reprieved",
+      "note": "Reprieved from relegation due to early curtailment of the season as a result of the covid-19 pandemic"
+    },
+    {
+      "season": "2020-21",
+      "division": "National",
+      "team": "Macclesfield Town",
+      "entity": "Macclesfield Town",
+      "type": "points_deduction",
+      "pointsValue": -17,
+      "note": "Deducted 17 points"
+    },
+    {
+      "season": "2020-21",
+      "division": "National",
+      "team": "Macclesfield Town",
+      "entity": "Macclesfield Town",
+      "type": "expelled",
+      "effectiveDate": "2020-09-29",
+      "note": "Expelled, and record expunged"
+    },
+    {
+      "season": "2020-21",
+      "division": "National",
+      "team": "Dover Athletic",
+      "entity": "Dover Athletic",
+      "type": "expelled",
+      "effectiveDate": "2021-03-26",
+      "note": "Expelled and record expunged"
+    },
+    {
+      "season": "2020-21",
+      "division": "National",
+      "type": "no_relegation",
+      "note": "Due to the curtailment of both the National North and South seasons, there was no relegation from the National League"
+    },
+    {
+      "season": "2020-21",
+      "division": "North",
+      "team": "Gloucester City",
+      "entity": "Gloucester City",
+      "type": "not_promoted",
+      "note": "Crowned champions, but due to the curtailment of the National League North season, there was no promotion to the National League"
+    },
+    {
+      "season": "2020-21",
+      "division": "South",
+      "team": "Dorking Wanderers",
+      "entity": "Dorking Wanderers",
+      "type": "not_promoted",
+      "note": "Crowned champions, but due to the curtailment of the National League North season, there was no promotion to the National League"
+    },
+    {
+      "season": "2021-22",
+      "division": "National",
+      "team": "Dover Athletic",
+      "entity": "Dover Athletic",
+      "type": "points_deduction",
+      "pointsValue": -12,
+      "note": "Deducted 12 points"
+    },
+    {
+      "season": "2022-23",
+      "division": "National",
+      "team": "Gateshead",
+      "entity": "Gateshead",
+      "type": "points_deduction",
+      "pointsValue": -1,
+      "effectiveDate": "2023-03-01",
+      "note": "Deducted 1 point"
+    },
+    {
+      "season": "2022-23",
+      "division": "South",
+      "team": "Welling United",
+      "entity": "Welling United",
+      "type": "points_deduction",
+      "pointsValue": -1,
+      "note": "Deducted 1 point"
+    },
+    {
+      "season": "2023-24",
+      "division": "National",
+      "team": "Southend United",
+      "entity": "Southend United",
+      "type": "points_deduction",
+      "pointsValue": -10,
+      "effectiveDate": "2023-08-23",
+      "note": "Deducted 10 points"
+    },
+    {
+      "season": "2023-24",
+      "division": "National",
+      "team": "Gateshead",
+      "entity": "Gateshead",
+      "type": "no_playoffs",
+      "note": "Unable to compete in play-offs due to ground issues"
+    },
+    {
+      "season": "2023-24",
+      "division": "South",
+      "team": "Torquay United",
+      "entity": "Torquay United",
+      "type": "points_deduction",
+      "pointsValue": -11,
+      "note": "Deducted 11 points"
+    }
+  ]
+}
