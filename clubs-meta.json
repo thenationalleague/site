@@ -47,6 +47,7 @@
     "nicknames": [
     { "entity": "AFC Fylde", "nickname": "The Coasters" },
     { "entity": "AFC Telford United", "nickname": "The Bucks" },
+    { "entity": "AFC Totton", "nickname": "The Stags" },
     { "entity": "AFC Wimbledon", "nickname": "The Dons" },
     { "entity": "Accrington Stanley", "nickname": "Stanley" },
     { "entity": "Aldershot Town", "nickname": "The Shots" },
@@ -154,6 +155,7 @@
     { "entity": "Histon", "nickname": "The Stutes" },
     { "entity": "Hornchurch", "nickname": "The Urchins" },
     { "entity": "Hornchurch (original)", "nickname": "The Urchins" },
+    { "entity": "Horsham", "nickname": "The Hornets" },
     { "entity": "Hucknall Town", "nickname": "The Yellows" },
     { "entity": "Hungerford Town", "nickname": "The Crusaders" },
     { "entity": "Hyde United", "nickname": "The Tigers" },
@@ -507,7 +509,11 @@
     { "entity": "Marine", "first_season": "2024-25", "status": "promoted" },
     { "entity": "Needham Market", "first_season": "2024-25", "status": "promoted" },
     { "entity": "Radcliffe", "first_season": "2024-25", "status": "promoted" },
-    { "entity": "Salisbury", "first_season": "2024-25", "status": "promoted" }
+    { "entity": "Salisbury", "first_season": "2024-25", "status": "promoted" },
+
+    { "entity": "AFC Totton", "first_season": "2025-26", "status": "promoted" },
+    { "entity": "Horsham", "first_season": "2025-26", "status": "promoted" }
+      
   ],
   "hints": {
     "entity_field_name": "entity",
