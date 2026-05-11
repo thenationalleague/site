@@ -499,6 +499,26 @@
       letter-spacing: .08em;
       line-height: 1.15;
     }
+    .card-head-suffix {
+      font-weight: 500;
+      color: var(--text-muted);
+      font-size: .85em;
+      margin-left: 4px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .card-head-suffix:empty { display:none; }
+    #streak-card h3 .card-head-suffix,
+    #season-cap .card-head-suffix {
+      font-weight: 500;
+      color: var(--text-muted);
+      font-size: .85em;
+      margin-left: 4px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    #streak-card h3 .card-head-suffix:empty,
+    #season-cap .card-head-suffix:empty { display:none; }
 
     /* ---- v5 AT-A-GLANCE STRIP ---- */
     #strip { padding: 18px; }
@@ -639,6 +659,37 @@
     @media (max-width:860px){ .grid-pair { grid-template-columns: 1fr; } }
 
     /* ---- Scoreline Heatmap (v4.9.15) ---- */
+    .hm-root {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 720px) {
+      .hm-root { grid-template-columns: 1fr; }
+      .hm-detail { order: 2; }
+      .hm-grid-host { order: 1; }
+    }
+    .hm-detail {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .hm-detail > * + * { margin-top: 6px; }
+    .hm-detail strong { font-weight: 700; }
+    .hm-detail-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .hm-detail-row {
+      padding: 4px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: baseline;
+    }
+    .hm-detail-row .res.W { color: var(--wcol); font-weight: 700; }
+    .hm-detail-row .res.D { color: var(--dcol); font-weight: 700; }
+    .hm-detail-row .res.L { color: var(--lcol); font-weight: 700; }
+    .hm-cue { font-size: 12px; margin-top: 8px; }
     .hm-wrap {
       overflow-x: auto; -webkit-overflow-scrolling: touch;
       padding-bottom: 4px; position: relative;
@@ -1132,6 +1183,17 @@
       border-top:1px dashed #bda9e6;
       border-bottom:1px dashed #bda9e6;
     }
+    .seasons .era-row td {
+      text-align: center;
+      font-style: italic;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: var(--off-white);
+      padding: 8px 0;
+      letter-spacing: .04em;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
 
     /* Preserve folded/expelled readability */
     .row-folded .note-ref, .row-folded .note-ref a,
@@ -1474,6 +1536,7 @@
 
       <!-- AT-A-GLANCE STRIP -->
       <div class="card" id="strip" style="margin-bottom:14px">
+        <div class="card-head">At a glance<span class="card-head-suffix"></span></div>
         <div id="strip-primary" class="stat-grid"></div>
         <div class="sep"></div>
         <div id="strip-secondary" class="stat-grid secondary"></div>
@@ -1483,6 +1546,7 @@
 
       <!-- HOME/AWAY COMPARISON -->
       <div class="card" id="ha-card" style="margin-bottom:14px">
+        <div class="card-head">Home vs away<span class="card-head-suffix"></span></div>
         <div class="ha-grid">
           <div class="ha-side" id="ha-home"></div>
           <div class="ha-side ha-divider" id="ha-away"></div>
@@ -1491,14 +1555,17 @@
 
       <!-- SCORELINE HEATMAP -->
       <div class="card" id="heatmap-card" style="margin-bottom:14px;position:relative">
-        <div class="card-head">Scorelines</div>
-        <div id="hm-root"></div>
+        <div class="card-head">Scorelines<span class="card-head-suffix"></span></div>
+        <div id="hm-root" class="hm-root">
+          <div class="hm-detail" id="hm-detail" aria-live="polite"></div>
+          <div class="hm-grid-host" id="hm-grid-host"></div>
+        </div>
       </div>
 
       <!-- RECORDS -->
       <div class="card" id="records-card" style="margin-bottom:14px">
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div class="card-head">Records</div>
+          <div class="card-head">Records<span class="card-head-suffix"></span></div>
           <div class="rec-toggle" id="rec-toggle" role="tablist" aria-label="Record view">
             <button type="button" role="tab" data-val="results" aria-pressed="true">Results</button>
             <button type="button" role="tab" data-val="goals" aria-pressed="false">Goals</button>
@@ -1517,7 +1584,7 @@
       <!-- STREAKS + OPPONENTS -->
       <div class="grid-pair" style="margin-bottom:14px">
         <div class="streakCard" id="streak-card">
-          <h3>Streaks</h3>
+          <h3>Streaks<span class="card-head-suffix"></span></h3>
           <div class="stSwitch">
             <div class="seg full" id="streak-seg" role="tablist" aria-label="Streak type">
               <button type="button" role="tab" data-val="wins" aria-pressed="true">Wins</button>
@@ -1552,7 +1619,7 @@
           </div>
         </div>
         <div class="card" id="opp-card">
-          <h3 class="card-head">Opponents</h3>
+          <h3 class="card-head">Opponents<span class="card-head-suffix"></span></h3>
           <div class="seg full seg--compact" id="opp-seg" role="group" aria-label="Opponent view">
             <button type="button" data-val="played" aria-pressed="true">Most played</button>
             <button type="button" data-val="wins" aria-pressed="false">Most wins vs</button>
@@ -1573,7 +1640,7 @@
       <div class="seasons-wrap">
         <div class="seasons-table-wrap">
           <table class="seasons" id="season-table" aria-describedby="season-legend">
-            <caption id="season-cap">Season-by-season — (select a club)</caption>
+            <caption id="season-cap"><span class="season-cap-text">Season-by-season — (select a club)</span><span class="card-head-suffix"></span></caption>
             <thead><tr>
               <th class="namekey-head" aria-label="Team name key"></th>
               <th class="th-season">Season</th>
@@ -2954,6 +3021,17 @@ function getMergerChildren(parentNorm){
       return null;
     }
 
+    // v5: build a "· National · Home only"-style suffix string from current filters
+    function buildHeaderSuffix(){
+      const scopeMap = { all:'', national:'National', step2:'Step 2', north:'North', south:'South' };
+      const venueMap = { all:'', home:'Home only', away:'Away only' };
+      const parts = [];
+      const s = scopeMap[scope]; if (s) parts.push(s);
+      const v = venueMap[venueFilter]; if (v) parts.push(v);
+      if (!parts.length) return '';
+      return ' · ' + parts.join(' · ');
+    }
+
     function render(entity){
       try{
         if (!entity){ updateAppVisibility(); return; }
@@ -2993,6 +3071,10 @@ function getMergerChildren(parentNorm){
 
         renderSeasonTable(entity);
         renderLeagueGraph(entity);
+
+        // v5: per-card filter indicator suffixes
+        const suffix = buildHeaderSuffix();
+        document.querySelectorAll('.card-head-suffix').forEach(n => n.textContent = suffix);
       }catch(e){
         const ERR = el('error'); if (ERR){ ERR.style.display='block'; ERR.textContent = 'Render error: ' + (e.message||String(e)); }
         console.error(e);
@@ -3384,6 +3466,7 @@ function getMergerChildren(parentNorm){
 
     // v4.9.15 — Scoreline heatmap (replaces W/D/L frequency lists)
     let _hmTip = null, _hmActiveCell = null;
+    let _hmCellsRef = null; // last-rendered cells Map (for desktop detail panel)
     function _hmCloseTip(){
       if (_hmActiveCell) _hmActiveCell.classList.remove('hm-active');
       _hmActiveCell = null;
@@ -3392,14 +3475,110 @@ function getMergerChildren(parentNorm){
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.hm-tip') && !e.target.closest('.hm-cell')) _hmCloseTip();
     });
+    // Desktop: clicking outside the grid resets the detail panel back to the stats summary.
+    document.addEventListener('click', (e) => {
+      if (window.matchMedia('(max-width:720px)').matches) return;
+      if (e.target.closest('#hm-root')) return;
+      if (_hmActiveCell){
+        _hmActiveCell.classList.remove('hm-active');
+        _hmActiveCell = null;
+        _hmRenderStatsSummary();
+      }
+    });
+
+    function _hmRenderStatsSummary(){
+      const panel = el('hm-detail');
+      if (!panel || !_hmCellsRef || !_hmCellsRef.size){ if (panel) panel.innerHTML = ''; return; }
+      // Aggregate from existing cells Map
+      let totalCount = 0;
+      let mostKey = '', mostCount = 0;
+      let bigWin = null;    // {gf,ga,opp,season,date}
+      let heavyLoss = null;
+      let cleanSheets = 0, noScore = 0;
+
+      _hmCellsRef.forEach((c, key) => {
+        totalCount += c.count;
+        if (c.count > mostCount){ mostCount = c.count; mostKey = key; }
+      });
+
+      _hmCellsRef.forEach((c) => {
+        c.matches.forEach(({ m, pe, gf, ga }) => {
+          if (ga === 0) cleanSheets++;
+          if (gf === 0) noScore++;
+          const opp = isHomeByEntity(m, pe) ? m.away : m.home;
+          if (gf > ga){
+            const margin = gf - ga;
+            if (!bigWin
+              || margin > (bigWin.gf - bigWin.ga)
+              || (margin === (bigWin.gf - bigWin.ga) && gf > bigWin.gf)
+              || (margin === (bigWin.gf - bigWin.ga) && gf === bigWin.gf && dParse(m.date) > dParse(bigWin.date))){
+              bigWin = { gf, ga, opp, season:m.season, date:m.date };
+            }
+          } else if (ga > gf){
+            const margin = ga - gf;
+            if (!heavyLoss
+              || margin > (heavyLoss.ga - heavyLoss.gf)
+              || (margin === (heavyLoss.ga - heavyLoss.gf) && ga > heavyLoss.ga)
+              || (margin === (heavyLoss.ga - heavyLoss.gf) && ga === heavyLoss.ga && dParse(m.date) > dParse(heavyLoss.date))){
+              heavyLoss = { gf, ga, opp, season:m.season, date:m.date };
+            }
+          }
+        });
+      });
+
+      const pct = (n) => totalCount ? Math.round((n / totalCount) * 100) : 0;
+      const lines = [];
+      if (mostKey){
+        lines.push(`<div>Most common: <strong>${mostKey}</strong> (${mostCount} ×)</div>`);
+      }
+      if (bigWin){
+        lines.push(`<div>Biggest win: <strong>${bigWin.gf}-${bigWin.ga}</strong> vs ${bigWin.opp} (${bigWin.season})</div>`);
+      }
+      if (heavyLoss){
+        lines.push(`<div>Heaviest defeat: <strong>${heavyLoss.gf}-${heavyLoss.ga}</strong> vs ${heavyLoss.opp} (${heavyLoss.season})</div>`);
+      }
+      lines.push(`<div>Clean sheets: ${cleanSheets} (${pct(cleanSheets)}%)</div>`);
+      lines.push(`<div>No-score: ${noScore} (${pct(noScore)}%)</div>`);
+      lines.push(`<div class="hm-cue muted">Click a cell to see the matches.</div>`);
+      panel.innerHTML = lines.join('');
+    }
+
+    function _hmShowDetail(td, gf, ga, data){
+      const panel = el('hm-detail'); if (!panel) return;
+      // Same-cell click -> reset
+      if (_hmActiveCell === td){
+        _hmActiveCell.classList.remove('hm-active');
+        _hmActiveCell = null;
+        _hmRenderStatsSummary();
+        return;
+      }
+      if (_hmActiveCell) _hmActiveCell.classList.remove('hm-active');
+      _hmActiveCell = td; td.classList.add('hm-active');
+
+      const count = data.count;
+      const rowsHtml = data.matches.slice(0, 15).map(({ m, pe, gf:cgf, ga:cga }) => {
+        const atHome = isHomeByEntity(m, pe);
+        const opp = atHome ? m.away : m.home;
+        const ven = isNeutral(m) ? 'N' : (atHome ? 'H' : 'A');
+        const res = cgf > cga ? 'W' : cgf < cga ? 'L' : 'D';
+        return `<div class="hm-detail-row">${fmtDatePretty(m.date)} · ${ven} vs ${opp} <span class="muted">${cgf}-${cga}</span> <span class="res ${res}">${res}</span></div>`;
+      }).join('');
+      panel.innerHTML =
+        `<div class="hm-detail-title">${gf}-${ga} <span class="muted">— ${count} match${count>1?'es':''}</span></div>`
+        + rowsHtml
+        + `<div class="hm-cue muted">Click the cell again or click anywhere outside the grid to reset.</div>`;
+    }
 
     function renderHeatmap(entity){
       const root = el('hm-root');
-      if (!root) return;
-      root.innerHTML = '';
-      _hmCloseTip(); _hmTip = null; _hmActiveCell = null;
+      const gridHost = el('hm-grid-host');
+      const detail = el('hm-detail');
+      if (!root || !gridHost) return;
+      gridHost.innerHTML = '';
+      if (detail) detail.innerHTML = '';
+      _hmCloseTip(); _hmTip = null; _hmActiveCell = null; _hmCellsRef = null;
 
-      if (!entity){ root.innerHTML = '<div class="muted">Select a club.</div>'; return; }
+      if (!entity){ gridHost.innerHTML = '<div class="muted">Select a club.</div>'; return; }
 
       const ents = entitySet();
       const mm = filteredMatchesKPI(ents);
@@ -3423,9 +3602,10 @@ function getMergerChildren(parentNorm){
         if (c.count > maxCount) maxCount = c.count;
       }
 
-      if (!cells.size){ root.innerHTML = '<div class="muted">No scoreline data.</div>'; return; }
+      if (!cells.size){ gridHost.innerHTML = '<div class="muted">No scoreline data.</div>'; return; }
 
       cells.forEach(c => c.matches.sort((a, b) => dParse(b.m.date) - dParse(a.m.date)));
+      _hmCellsRef = cells;
 
       const sqrtMax = Math.sqrt(maxCount);
       const intens = n => Math.sqrt(n) / sqrtMax;
@@ -3475,7 +3655,15 @@ function getMergerChildren(parentNorm){
             td.style.color = cellFg(data.count);
             td.addEventListener('click', (ev) => {
               ev.stopPropagation();
-              _hmShowTip(td, gf, ga, data, root);
+              if (window.matchMedia('(max-width:720px)').matches){
+                if (!_hmTip){
+                  _hmTip = document.createElement('div'); _hmTip.className = 'hm-tip';
+                  root.appendChild(_hmTip);
+                }
+                _hmShowTip(td, gf, ga, data, root);
+              } else {
+                _hmShowDetail(td, gf, ga, data);
+              }
             });
           }
           tr.appendChild(td);
@@ -3489,10 +3677,10 @@ function getMergerChildren(parentNorm){
       xLab.textContent = 'Goals for';
       mainCol.appendChild(xLab);
       outer.appendChild(mainCol);
-      root.appendChild(outer);
+      gridHost.appendChild(outer);
 
-      _hmTip = document.createElement('div'); _hmTip.className = 'hm-tip';
-      root.appendChild(_hmTip);
+      // Default the detail panel (desktop) to the stats summary view.
+      _hmRenderStatsSummary();
     }
 
     function _hmShowTip(td, gf, ga, data, root){
@@ -3770,19 +3958,35 @@ setText('st-title', baseLabel);
       const hasData = data.length>0;
 
       const included = Array.from(combineSelected);
-      cap.textContent = hasData
+      const capText = hasData
         ? `Season-by-season — ${entity}${included.length ? ', including ' + included.join(' / ') : ''}`
         : 'Season-by-season — (select a club)';
+      const capTextEl = cap.querySelector('.season-cap-text');
+      if (capTextEl) capTextEl.textContent = capText; else cap.textContent = capText;
       placeholder.hidden = hasData;
 
       if (!hasData){ rebuildSeasonLegend(); notesEl.hidden = true; notesEl.textContent=''; return; }
 
       const rowNames = [];
       let prevStart = null;
+      let prevDispName = null;
 
       data.forEach((r, idx) => {
         const currStart = startYear(r.season);
         const currLabel = enDash(r.season);
+        const dispName = (displayNameIndex.get(r.entityName)?.get(r.season)) || r.entityName;
+
+        // Era divider: when the display name changes between rows (top-to-bottom is newer-to-older),
+        // insert a divider labelled with the era we're about to enter (i.e. dispName of the current row).
+        if (prevDispName !== null && dispName !== prevDispName){
+          const eraRow = document.createElement('tr');
+          eraRow.className = 'era-row anim-in';
+          const eraTd = document.createElement('td');
+          eraTd.colSpan = visibleSeasonCols();
+          eraTd.textContent = `— ${dispName} —`;
+          eraRow.appendChild(eraTd);
+          tbody.appendChild(eraRow);
+        }
 
         if (prevStart !== null){
           const missingFrom = currStart + 1;
@@ -3800,7 +4004,6 @@ setText('st-title', baseLabel);
           }
         }
 
-        const dispName = (displayNameIndex.get(r.entityName)?.get(r.season)) || r.entityName;
         rowNames.push(dispName);
 
         const tr = document.createElement('tr');
@@ -3886,6 +4089,7 @@ setText('st-title', baseLabel);
 
         tbody.appendChild(tr);
         prevStart = currStart;
+        prevDispName = dispName;
       });
 
       const uniqNames = Array.from(new Set(rowNames)).sort((a,b)=>a.localeCompare(b,'en'));
@@ -4029,7 +4233,7 @@ function visibleSeasonCols(){
 // Ensure all gap rows span the correct # of *visible* columns
 function adjustGapRowColspan(){
   const cols = visibleSeasonCols();
-  document.querySelectorAll('#season-body tr.gap-row > td').forEach(td => td.colSpan = cols);
+  document.querySelectorAll('#season-body tr.gap-row > td, #season-body tr.era-row > td').forEach(td => td.colSpan = cols);
 }
 window.addEventListener('resize', adjustGapRowColspan);
 window.addEventListener('orientationchange', adjustGapRowColspan);
