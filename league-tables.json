@@ -24050,7 +24050,7 @@
               "Pts": 0,
               "classes": [
                 "expelled"
-              ],              
+              ],
               "entity": "Dover Athletic"
             },
             {
@@ -28851,6 +28851,1172 @@
             }
           ],
           "notes": []
+        }
+      }
+    },
+    {
+      "season": "2025-26",
+      "divisions": {
+        "National": {
+          "title": "National League",
+          "rows": [
+            {
+              "pos": 1,
+              "team": "York City",
+              "P": 46,
+              "W": 33,
+              "D": 9,
+              "L": 4,
+              "GF": 114,
+              "GA": 41,
+              "GD": 73,
+              "Pts": 108,
+              "move": "up",
+              "classes": [
+                "champion"
+              ],
+              "entity": "York City"
+            },
+            {
+              "pos": 2,
+              "team": "Rochdale",
+              "P": 46,
+              "W": 33,
+              "D": 7,
+              "L": 6,
+              "GF": 88,
+              "GA": 41,
+              "GD": 47,
+              "Pts": 106,
+              "move": "up",
+              "classes": [
+                "promoted"
+              ],
+              "entity": "Rochdale"
+            },
+            {
+              "pos": 3,
+              "team": "Carlisle United",
+              "P": 46,
+              "W": 29,
+              "D": 8,
+              "L": 9,
+              "GF": 87,
+              "GA": 51,
+              "GD": 36,
+              "Pts": 95,
+              "move": "",
+              "classes": [
+                "playoff"
+              ],
+              "entity": "Carlisle United"
+            },
+            {
+              "pos": 4,
+              "team": "Boreham Wood",
+              "P": 46,
+              "W": 27,
+              "D": 9,
+              "L": 10,
+              "GF": 95,
+              "GA": 58,
+              "GD": 37,
+              "Pts": 90,
+              "move": "",
+              "classes": [
+                "playoff"
+              ],
+              "entity": "Boreham Wood"
+            },
+            {
+              "pos": 5,
+              "team": "Scunthorpe United",
+              "P": 46,
+              "W": 23,
+              "D": 13,
+              "L": 10,
+              "GF": 77,
+              "GA": 62,
+              "GD": 15,
+              "Pts": 82,
+              "move": "",
+              "classes": [
+                "playoff"
+              ],
+              "entity": "Scunthorpe United"
+            },
+            {
+              "pos": 6,
+              "team": "Southend United",
+              "P": 46,
+              "W": 23,
+              "D": 12,
+              "L": 11,
+              "GF": 83,
+              "GA": 47,
+              "GD": 36,
+              "Pts": 81,
+              "move": "",
+              "classes": [
+                "playoff"
+              ],
+              "entity": "Southend United"
+            },
+            {
+              "pos": 7,
+              "team": "Forest Green Rovers",
+              "P": 46,
+              "W": 23,
+              "D": 12,
+              "L": 11,
+              "GF": 82,
+              "GA": 52,
+              "GD": 30,
+              "Pts": 81,
+              "move": "",
+              "classes": [
+                "playoff"
+              ],
+              "entity": "Forest Green Rovers"
+            },
+            {
+              "pos": 8,
+              "team": "FC Halifax Town",
+              "P": 46,
+              "W": 20,
+              "D": 10,
+              "L": 16,
+              "GF": 69,
+              "GA": 66,
+              "GD": 3,
+              "Pts": 70,
+              "move": "",
+              "classes": [],
+              "entity": "FC Halifax Town"
+            },
+            {
+              "pos": 9,
+              "team": "Hartlepool United",
+              "P": 46,
+              "W": 18,
+              "D": 14,
+              "L": 14,
+              "GF": 54,
+              "GA": 59,
+              "GD": -5,
+              "Pts": 68,
+              "move": "",
+              "classes": [],
+              "entity": "Hartlepool United"
+            },
+            {
+              "pos": 10,
+              "team": "Woking",
+              "P": 46,
+              "W": 16,
+              "D": 15,
+              "L": 15,
+              "GF": 69,
+              "GA": 54,
+              "GD": 15,
+              "Pts": 63,
+              "move": "",
+              "classes": [],
+              "entity": "Woking"
+            },
+            {
+              "pos": 11,
+              "team": "Tamworth",
+              "P": 46,
+              "W": 17,
+              "D": 11,
+              "L": 18,
+              "GF": 63,
+              "GA": 71,
+              "GD": -8,
+              "Pts": 62,
+              "move": "",
+              "classes": [],
+              "entity": "Tamworth"
+            },
+            {
+              "pos": 12,
+              "team": "Boston United",
+              "P": 46,
+              "W": 15,
+              "D": 14,
+              "L": 17,
+              "GF": 63,
+              "GA": 67,
+              "GD": -4,
+              "Pts": 59,
+              "move": "",
+              "classes": [],
+              "entity": "Boston United"
+            },
+            {
+              "pos": 13,
+              "team": "Altrincham",
+              "P": 46,
+              "W": 17,
+              "D": 6,
+              "L": 23,
+              "GF": 55,
+              "GA": 65,
+              "GD": -10,
+              "Pts": 57,
+              "move": "",
+              "classes": [],
+              "entity": "Altrincham"
+            },
+            {
+              "pos": 14,
+              "team": "Solihull Moors",
+              "P": 46,
+              "W": 14,
+              "D": 14,
+              "L": 18,
+              "GF": 71,
+              "GA": 72,
+              "GD": -1,
+              "Pts": 56,
+              "move": "",
+              "classes": [],
+              "entity": "Solihull Moors"
+            },
+            {
+              "pos": 15,
+              "team": "Wealdstone",
+              "P": 46,
+              "W": 15,
+              "D": 11,
+              "L": 20,
+              "GF": 67,
+              "GA": 74,
+              "GD": -7,
+              "Pts": 56,
+              "move": "",
+              "classes": [],
+              "entity": "Wealdstone"
+            },
+            {
+              "pos": 16,
+              "team": "Yeovil Town",
+              "P": 46,
+              "W": 15,
+              "D": 6,
+              "L": 25,
+              "GF": 48,
+              "GA": 68,
+              "GD": -20,
+              "Pts": 51,
+              "move": "",
+              "classes": [],
+              "entity": "Yeovil Town"
+            },
+            {
+              "pos": 17,
+              "team": "Eastleigh",
+              "P": 46,
+              "W": 13,
+              "D": 11,
+              "L": 22,
+              "GF": 57,
+              "GA": 80,
+              "GD": -23,
+              "Pts": 50,
+              "move": "",
+              "classes": [],
+              "entity": "Eastleigh"
+            },
+            {
+              "pos": 18,
+              "team": "Gateshead",
+              "P": 46,
+              "W": 14,
+              "D": 8,
+              "L": 24,
+              "GF": 54,
+              "GA": 90,
+              "GD": -36,
+              "Pts": 50,
+              "move": "",
+              "classes": [],
+              "entity": "Gateshead"
+            },
+            {
+              "pos": 19,
+              "team": "Sutton United",
+              "P": 46,
+              "W": 11,
+              "D": 14,
+              "L": 21,
+              "GF": 59,
+              "GA": 79,
+              "GD": -20,
+              "Pts": 47,
+              "move": "",
+              "classes": [],
+              "entity": "Sutton United"
+            },
+            {
+              "pos": 20,
+              "team": "Aldershot Town",
+              "P": 46,
+              "W": 13,
+              "D": 7,
+              "L": 26,
+              "GF": 69,
+              "GA": 87,
+              "GD": -18,
+              "Pts": 46,
+              "move": "",
+              "classes": [],
+              "entity": "Aldershot Town"
+            },
+            {
+              "pos": 21,
+              "team": "Brackley Town",
+              "P": 46,
+              "W": 10,
+              "D": 12,
+              "L": 24,
+              "GF": 40,
+              "GA": 75,
+              "GD": -35,
+              "Pts": 42,
+              "move": "down",
+              "classes": [
+                "relegated"
+              ],
+              "entity": "Brackley Town"
+            },
+            {
+              "pos": 22,
+              "team": "Morecambe",
+              "P": 46,
+              "W": 9,
+              "D": 11,
+              "L": 26,
+              "GF": 66,
+              "GA": 103,
+              "GD": -37,
+              "Pts": 38,
+              "move": "down",
+              "classes": [
+                "relegated"
+              ],
+              "entity": "Morecambe"
+            },
+            {
+              "pos": 23,
+              "team": "Braintree Town",
+              "P": 46,
+              "W": 8,
+              "D": 12,
+              "L": 26,
+              "GF": 38,
+              "GA": 76,
+              "GD": -38,
+              "Pts": 36,
+              "move": "down",
+              "classes": [
+                "relegated"
+              ],
+              "entity": "Braintree Town"
+            },
+            {
+              "pos": 24,
+              "team": "Truro City",
+              "P": 46,
+              "W": 8,
+              "D": 10,
+              "L": 28,
+              "GF": 42,
+              "GA": 72,
+              "GD": -30,
+              "Pts": 34,
+              "move": "down",
+              "classes": [
+                "relegated"
+              ],
+              "entity": "Truro City"
+            }
+          ]
+        },
+        "North": {
+          "title": "National League North",
+          "rows": [
+            {
+              "pos": 1,
+              "team": "AFC Fylde",
+              "P": 46,
+              "W": 32,
+              "D": 4,
+              "L": 10,
+              "GF": 112,
+              "GA": 51,
+              "GD": 61,
+              "Pts": 100,
+              "move": "up",
+              "classes": [
+                "champion"
+              ],
+              "entity": "AFC Fylde"
+            },
+            {
+              "pos": 2,
+              "team": "South Shields",
+              "P": 46,
+              "W": 28,
+              "D": 11,
+              "L": 7,
+              "GF": 99,
+              "GA": 43,
+              "GD": 56,
+              "Pts": 95,
+              "move": "",
+              "classes": [
+                "playoff"
+              ],
+              "entity": "South Shields"
+            },
+            {
+              "pos": 3,
+              "team": "Kidderminster Harriers",
+              "P": 46,
+              "W": 25,
+              "D": 12,
+              "L": 9,
+              "GF": 74,
+              "GA": 51,
+              "GD": 23,
+              "Pts": 87,
+              "move": "up",
+              "classes": [
+                "promoted"
+              ],
+              "entity": "Kidderminster Harriers"
+            },
+            {
+              "pos": 4,
+              "team": "Macclesfield",
+              "P": 46,
+              "W": 24,
+              "D": 7,
+              "L": 15,
+              "GF": 81,
+              "GA": 68,
+              "GD": 13,
+              "Pts": 79,
+              "move": "",
+              "classes": [
+                "playoff"
+              ],
+              "entity": "Macclesfield"
+            },
+            {
+              "pos": 5,
+              "team": "Buxton",
+              "P": 46,
+              "W": 22,
+              "D": 7,
+              "L": 17,
+              "GF": 83,
+              "GA": 61,
+              "GD": 22,
+              "Pts": 73,
+              "move": "",
+              "classes": [
+                "playoff"
+              ],
+              "entity": "Buxton"
+            },
+            {
+              "pos": 6,
+              "team": "Scarborough Athletic",
+              "P": 46,
+              "W": 19,
+              "D": 16,
+              "L": 11,
+              "GF": 61,
+              "GA": 52,
+              "GD": 9,
+              "Pts": 73,
+              "move": "",
+              "classes": [
+                "playoff"
+              ],
+              "entity": "Scarborough Athletic"
+            },
+            {
+              "pos": 7,
+              "team": "Chester",
+              "P": 46,
+              "W": 20,
+              "D": 13,
+              "L": 13,
+              "GF": 66,
+              "GA": 64,
+              "GD": 2,
+              "Pts": 73,
+              "move": "",
+              "classes": [
+                "playoff"
+              ],
+              "entity": "Chester"
+            },
+            {
+              "pos": 8,
+              "team": "Merthyr Town",
+              "P": 46,
+              "W": 22,
+              "D": 4,
+              "L": 20,
+              "GF": 95,
+              "GA": 86,
+              "GD": 9,
+              "Pts": 70,
+              "move": "",
+              "classes": [],
+              "entity": "Merthyr Town"
+            },
+            {
+              "pos": 9,
+              "team": "Darlington",
+              "P": 46,
+              "W": 20,
+              "D": 9,
+              "L": 17,
+              "GF": 78,
+              "GA": 68,
+              "GD": 10,
+              "Pts": 69,
+              "move": "",
+              "classes": [],
+              "entity": "Darlington"
+            },
+            {
+              "pos": 10,
+              "team": "Spennymoor Town",
+              "P": 46,
+              "W": 19,
+              "D": 11,
+              "L": 16,
+              "GF": 62,
+              "GA": 69,
+              "GD": -7,
+              "Pts": 68,
+              "move": "",
+              "classes": [],
+              "entity": "Spennymoor Town"
+            },
+            {
+              "pos": 11,
+              "team": "AFC Telford United",
+              "P": 46,
+              "W": 17,
+              "D": 14,
+              "L": 15,
+              "GF": 85,
+              "GA": 65,
+              "GD": 20,
+              "Pts": 65,
+              "move": "",
+              "classes": [],
+              "entity": "AFC Telford United"
+            },
+            {
+              "pos": 12,
+              "team": "Marine",
+              "P": 46,
+              "W": 18,
+              "D": 8,
+              "L": 20,
+              "GF": 62,
+              "GA": 72,
+              "GD": -10,
+              "Pts": 62,
+              "move": "",
+              "classes": [],
+              "entity": "Marine"
+            },
+            {
+              "pos": 13,
+              "team": "Radcliffe",
+              "P": 46,
+              "W": 18,
+              "D": 6,
+              "L": 22,
+              "GF": 76,
+              "GA": 83,
+              "GD": -7,
+              "Pts": 60,
+              "move": "",
+              "classes": [],
+              "entity": "Radcliffe"
+            },
+            {
+              "pos": 14,
+              "team": "Southport",
+              "P": 46,
+              "W": 16,
+              "D": 12,
+              "L": 18,
+              "GF": 64,
+              "GA": 71,
+              "GD": -7,
+              "Pts": 60,
+              "move": "",
+              "classes": [],
+              "entity": "Southport"
+            },
+            {
+              "pos": 15,
+              "team": "Chorley",
+              "P": 46,
+              "W": 15,
+              "D": 12,
+              "L": 19,
+              "GF": 66,
+              "GA": 65,
+              "GD": 1,
+              "Pts": 57,
+              "move": "",
+              "classes": [],
+              "entity": "Chorley"
+            },
+            {
+              "pos": 16,
+              "team": "Worksop Town",
+              "P": 46,
+              "W": 16,
+              "D": 9,
+              "L": 21,
+              "GF": 66,
+              "GA": 74,
+              "GD": -8,
+              "Pts": 57,
+              "move": "",
+              "classes": [],
+              "entity": "Worksop Town"
+            },
+            {
+              "pos": 17,
+              "team": "Oxford City",
+              "P": 46,
+              "W": 15,
+              "D": 11,
+              "L": 20,
+              "GF": 62,
+              "GA": 67,
+              "GD": -5,
+              "Pts": 56,
+              "move": "",
+              "classes": [],
+              "entity": "Oxford City"
+            },
+            {
+              "pos": 18,
+              "team": "Bedford Town",
+              "P": 46,
+              "W": 13,
+              "D": 14,
+              "L": 19,
+              "GF": 66,
+              "GA": 77,
+              "GD": -11,
+              "Pts": 53,
+              "move": "",
+              "classes": [],
+              "entity": "Bedford Town"
+            },
+            {
+              "pos": 19,
+              "team": "King's Lynn Town",
+              "P": 46,
+              "W": 12,
+              "D": 16,
+              "L": 18,
+              "GF": 56,
+              "GA": 64,
+              "GD": -8,
+              "Pts": 52,
+              "move": "",
+              "classes": [],
+              "entity": "King's Lynn Town"
+            },
+            {
+              "pos": 20,
+              "team": "Hereford",
+              "P": 46,
+              "W": 14,
+              "D": 10,
+              "L": 22,
+              "GF": 64,
+              "GA": 79,
+              "GD": -15,
+              "Pts": 52,
+              "move": "",
+              "classes": [],
+              "entity": "Hereford"
+            },
+            {
+              "pos": 21,
+              "team": "Curzon Ashton",
+              "P": 46,
+              "W": 13,
+              "D": 13,
+              "L": 20,
+              "GF": 67,
+              "GA": 88,
+              "GD": -21,
+              "Pts": 52,
+              "move": "down",
+              "classes": [
+                "relegated"
+              ],
+              "entity": "Curzon Ashton"
+            },
+            {
+              "pos": 22,
+              "team": "Alfreton Town",
+              "P": 46,
+              "W": 12,
+              "D": 14,
+              "L": 20,
+              "GF": 49,
+              "GA": 82,
+              "GD": -33,
+              "Pts": 50,
+              "move": "down",
+              "classes": [
+                "relegated"
+              ],
+              "entity": "Alfreton Town"
+            },
+            {
+              "pos": 23,
+              "team": "Peterborough Sports",
+              "P": 46,
+              "W": 10,
+              "D": 9,
+              "L": 27,
+              "GF": 51,
+              "GA": 96,
+              "GD": -45,
+              "Pts": 39,
+              "move": "down",
+              "classes": [
+                "relegated"
+              ],
+              "entity": "Peterborough Sports"
+            },
+            {
+              "pos": 24,
+              "team": "Leamington",
+              "P": 46,
+              "W": 7,
+              "D": 8,
+              "L": 31,
+              "GF": 41,
+              "GA": 90,
+              "GD": -49,
+              "Pts": 29,
+              "move": "down",
+              "classes": [
+                "relegated"
+              ],
+              "entity": "Leamington"
+            }
+          ]
+        },
+        "South": {
+          "title": "National League South",
+          "rows": [
+            {
+              "pos": 1,
+              "team": "Worthing",
+              "P": 46,
+              "W": 25,
+              "D": 9,
+              "L": 12,
+              "GF": 99,
+              "GA": 52,
+              "GD": 47,
+              "Pts": 84,
+              "move": "up",
+              "classes": [
+                "champion"
+              ],
+              "entity": "Worthing"
+            },
+            {
+              "pos": 2,
+              "team": "Hornchurch",
+              "P": 46,
+              "W": 23,
+              "D": 12,
+              "L": 11,
+              "GF": 81,
+              "GA": 64,
+              "GD": 17,
+              "Pts": 81,
+              "move": "up",
+              "classes": [
+                "promoted"
+              ],
+              "entity": "Hornchurch"
+            },
+            {
+              "pos": 3,
+              "team": "Torquay United",
+              "P": 46,
+              "W": 24,
+              "D": 8,
+              "L": 14,
+              "GF": 87,
+              "GA": 62,
+              "GD": 25,
+              "Pts": 80,
+              "move": "",
+              "classes": [
+                "playoff"
+              ],
+              "entity": "Torquay United"
+            },
+            {
+              "pos": 4,
+              "team": "Dorking Wanderers",
+              "P": 46,
+              "W": 23,
+              "D": 10,
+              "L": 13,
+              "GF": 78,
+              "GA": 61,
+              "GD": 17,
+              "Pts": 79,
+              "move": "",
+              "classes": [
+                "playoff"
+              ],
+              "entity": "Dorking Wanderers"
+            },
+            {
+              "pos": 5,
+              "team": "Hemel Hempstead Town",
+              "P": 46,
+              "W": 23,
+              "D": 10,
+              "L": 13,
+              "GF": 55,
+              "GA": 48,
+              "GD": 7,
+              "Pts": 79,
+              "move": "",
+              "classes": [
+                "playoff"
+              ],
+              "entity": "Hemel Hempstead Town"
+            },
+            {
+              "pos": 6,
+              "team": "Weston-super-Mare",
+              "P": 46,
+              "W": 23,
+              "D": 9,
+              "L": 14,
+              "GF": 61,
+              "GA": 48,
+              "GD": 13,
+              "Pts": 78,
+              "move": "",
+              "classes": [
+                "playoff"
+              ],
+              "entity": "Weston-super-Mare"
+            },
+            {
+              "pos": 7,
+              "team": "Maidenhead United",
+              "P": 46,
+              "W": 22,
+              "D": 11,
+              "L": 13,
+              "GF": 66,
+              "GA": 41,
+              "GD": 25,
+              "Pts": 77,
+              "move": "",
+              "classes": [
+                "playoff"
+              ],
+              "entity": "Maidenhead United"
+            },
+            {
+              "pos": 8,
+              "team": "Maidstone United",
+              "P": 46,
+              "W": 22,
+              "D": 11,
+              "L": 13,
+              "GF": 72,
+              "GA": 50,
+              "GD": 22,
+              "Pts": 77,
+              "move": "",
+              "classes": [],
+              "entity": "Maidstone United"
+            },
+            {
+              "pos": 9,
+              "team": "Ebbsfleet United",
+              "P": 46,
+              "W": 22,
+              "D": 11,
+              "L": 13,
+              "GF": 73,
+              "GA": 54,
+              "GD": 19,
+              "Pts": 77,
+              "move": "",
+              "classes": [],
+              "entity": "Ebbsfleet United"
+            },
+            {
+              "pos": 10,
+              "team": "Chelmsford City",
+              "P": 46,
+              "W": 21,
+              "D": 10,
+              "L": 15,
+              "GF": 73,
+              "GA": 62,
+              "GD": 11,
+              "Pts": 73,
+              "move": "",
+              "classes": [],
+              "entity": "Chelmsford City"
+            },
+            {
+              "pos": 11,
+              "team": "Chesham United",
+              "P": 46,
+              "W": 21,
+              "D": 9,
+              "L": 16,
+              "GF": 68,
+              "GA": 55,
+              "GD": 13,
+              "Pts": 72,
+              "move": "",
+              "classes": [],
+              "entity": "Chesham United"
+            },
+            {
+              "pos": 12,
+              "team": "AFC Totton",
+              "P": 46,
+              "W": 20,
+              "D": 6,
+              "L": 20,
+              "GF": 60,
+              "GA": 79,
+              "GD": -19,
+              "Pts": 66,
+              "move": "",
+              "classes": [],
+              "entity": "AFC Totton"
+            },
+            {
+              "pos": 13,
+              "team": "Dagenham & Redbridge",
+              "P": 46,
+              "W": 17,
+              "D": 13,
+              "L": 16,
+              "GF": 61,
+              "GA": 62,
+              "GD": -1,
+              "Pts": 64,
+              "move": "",
+              "classes": [],
+              "entity": "Dagenham & Redbridge"
+            },
+            {
+              "pos": 14,
+              "team": "Tonbridge Angels",
+              "P": 46,
+              "W": 16,
+              "D": 12,
+              "L": 18,
+              "GF": 66,
+              "GA": 65,
+              "GD": 1,
+              "Pts": 60,
+              "move": "",
+              "classes": [],
+              "entity": "Tonbridge Angels"
+            },
+            {
+              "pos": 15,
+              "team": "Horsham",
+              "P": 46,
+              "W": 15,
+              "D": 14,
+              "L": 17,
+              "GF": 53,
+              "GA": 54,
+              "GD": -1,
+              "Pts": 59,
+              "move": "",
+              "classes": [],
+              "entity": "Horsham"
+            },
+            {
+              "pos": 16,
+              "team": "Slough Town",
+              "P": 46,
+              "W": 15,
+              "D": 9,
+              "L": 22,
+              "GF": 69,
+              "GA": 87,
+              "GD": -18,
+              "Pts": 54,
+              "move": "",
+              "classes": [],
+              "entity": "Slough Town"
+            },
+            {
+              "pos": 17,
+              "team": "Salisbury",
+              "P": 46,
+              "W": 14,
+              "D": 11,
+              "L": 21,
+              "GF": 50,
+              "GA": 65,
+              "GD": -15,
+              "Pts": 53,
+              "move": "",
+              "classes": [],
+              "entity": "Salisbury"
+            },
+            {
+              "pos": 18,
+              "team": "Hampton & Richmond Borough",
+              "P": 46,
+              "W": 14,
+              "D": 11,
+              "L": 21,
+              "GF": 56,
+              "GA": 72,
+              "GD": -16,
+              "Pts": 53,
+              "move": "",
+              "classes": [],
+              "entity": "Hampton & Richmond Borough"
+            },
+            {
+              "pos": 19,
+              "team": "Farnborough",
+              "P": 46,
+              "W": 14,
+              "D": 11,
+              "L": 21,
+              "GF": 72,
+              "GA": 92,
+              "GD": -20,
+              "Pts": 53,
+              "move": "",
+              "classes": [],
+              "entity": "Farnborough"
+            },
+            {
+              "pos": 20,
+              "team": "Dover Athletic",
+              "P": 46,
+              "W": 13,
+              "D": 11,
+              "L": 22,
+              "GF": 60,
+              "GA": 75,
+              "GD": -15,
+              "Pts": 50,
+              "move": "",
+              "classes": [],
+              "entity": "Dover Athletic"
+            },
+            {
+              "pos": 21,
+              "team": "Bath City",
+              "P": 46,
+              "W": 10,
+              "D": 13,
+              "L": 23,
+              "GF": 50,
+              "GA": 77,
+              "GD": -27,
+              "Pts": 43,
+              "move": "down",
+              "classes": [
+                "relegated"
+              ],
+              "entity": "Bath City"
+            },
+            {
+              "pos": 22,
+              "team": "Chippenham Town",
+              "P": 46,
+              "W": 11,
+              "D": 9,
+              "L": 26,
+              "GF": 53,
+              "GA": 80,
+              "GD": -27,
+              "Pts": 42,
+              "move": "down",
+              "classes": [
+                "relegated"
+              ],
+              "entity": "Chippenham Town"
+            },
+            {
+              "pos": 23,
+              "team": "Enfield Town",
+              "P": 46,
+              "W": 9,
+              "D": 13,
+              "L": 24,
+              "GF": 55,
+              "GA": 82,
+              "GD": -27,
+              "Pts": 40,
+              "move": "down",
+              "classes": [
+                "relegated"
+              ],
+              "entity": "Enfield Town"
+            },
+            {
+              "pos": 24,
+              "team": "Eastbourne Borough",
+              "P": 46,
+              "W": 9,
+              "D": 9,
+              "L": 28,
+              "GF": 59,
+              "GA": 90,
+              "GD": -31,
+              "Pts": 36,
+              "move": "down",
+              "classes": [
+                "relegated"
+              ],
+              "entity": "Eastbourne Borough"
+            }
+          ]
         }
       }
     }
