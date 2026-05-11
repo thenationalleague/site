@@ -568,49 +568,6 @@
     }
     .honours-line strong { font-weight:900; color: var(--navy); }
 
-    /* ---- v5 HOME/AWAY CARD ---- */
-    #ha-card { padding: 18px; }
-    .ha-grid {
-      display:grid; grid-template-columns: 1fr 1fr;
-      gap:0;
-    }
-    .ha-side {
-      padding: 4px 18px;
-      display:flex; flex-direction:column; gap:8px;
-      min-width:0;
-    }
-    .ha-side:first-child { padding-left:0; }
-    .ha-side:last-child { padding-right:0; }
-    .ha-divider { border-left: 1px solid var(--border); }
-    .ha-head {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--text-muted);
-      font-weight: 800;
-    }
-    .ha-pct {
-      font-size: 32px;
-      font-weight: 900;
-      line-height: 1;
-      color: var(--navy);
-      font-variant-numeric: tabular-nums;
-    }
-    .ha-line {
-      font-size: 14px; color: var(--text);
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-    }
-    .ha-line .wins { color: var(--wcol); }
-    .ha-line .draws { color: var(--dcol); }
-    .ha-line .losses { color: var(--lcol); }
-    .ha-line .gf { color: var(--wcol); }
-    .ha-line .ga { color: var(--lcol); }
-    @media (max-width:480px){
-      .ha-grid { grid-template-columns: 1fr; }
-      .ha-side { padding: 12px 0; }
-      .ha-divider { border-left: none; border-top: 1px solid var(--border); }
-    }
 
     /* ---- v5 RECORDS CARD ---- */
     #records-card { padding: 18px; }
@@ -674,10 +631,17 @@
       font-size: 13px;
       line-height: 1.5;
       color: var(--text);
+      max-height: 360px;
+      overflow-y: auto;
+      padding-right: 4px;
     }
     .hm-detail > * + * { margin-top: 6px; }
     .hm-detail strong { font-weight: 700; }
     .hm-detail-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .hm-detail-title .res.W { color: var(--wcol); }
+    .hm-detail-title .res.D { color: var(--dcol); }
+    .hm-detail-title .res.L { color: var(--lcol); }
+    .hm-detail-list { display: flex; flex-direction: column; }
     .hm-detail-row {
       padding: 4px 0;
       border-bottom: 1px solid var(--border);
@@ -686,9 +650,10 @@
       gap: 6px;
       align-items: baseline;
     }
-    .hm-detail-row .res.W { color: var(--wcol); font-weight: 700; }
-    .hm-detail-row .res.D { color: var(--dcol); font-weight: 700; }
-    .hm-detail-row .res.L { color: var(--lcol); font-weight: 700; }
+    .hm-detail-row:last-child { border-bottom: none; }
+    @media (max-width: 720px){
+      .hm-detail { max-height: 240px; }
+    }
     .hm-cue { font-size: 12px; margin-top: 8px; }
     .hm-wrap {
       overflow-x: auto; -webkit-overflow-scrolling: touch;
@@ -1542,15 +1507,6 @@
         <div id="strip-secondary" class="stat-grid secondary"></div>
         <div class="sep" id="strip-honours-sep"></div>
         <div id="strip-honours" class="honours-line"></div>
-      </div>
-
-      <!-- HOME/AWAY COMPARISON -->
-      <div class="card" id="ha-card" style="margin-bottom:14px">
-        <div class="card-head">Home vs away<span class="card-head-suffix"></span></div>
-        <div class="ha-grid">
-          <div class="ha-side" id="ha-home"></div>
-          <div class="ha-side ha-divider" id="ha-away"></div>
-        </div>
       </div>
 
       <!-- SCORELINE HEATMAP -->
@@ -3026,7 +2982,20 @@ function getMergerChildren(parentNorm){
       const scopeMap = { all:'', national:'National', step2:'Step 2', north:'North', south:'South' };
       const venueMap = { all:'', home:'Home only', away:'Away only' };
       const parts = [];
-      const s = scopeMap[scope]; if (s) parts.push(s);
+      // Only show scope when it actually narrows the data — i.e. the club
+      // played in more than one division. Single-division clubs always have
+      // scope force-set to that division, but the label adds no information.
+      let multiDiv = false;
+      try {
+        if (currentClub){
+          const pres = seasonPresence(entitySet());
+          const n = (pres.hasNat?1:0) + (pres.hasNorth?1:0) + (pres.hasSouth?1:0);
+          multiDiv = n > 1;
+        }
+      } catch(e){ /* ignore */ }
+      if (multiDiv){
+        const s = scopeMap[scope]; if (s) parts.push(s);
+      }
       const v = venueMap[venueFilter]; if (v) parts.push(v);
       if (!parts.length) return '';
       return ' · ' + parts.join(' · ');
@@ -3045,7 +3014,6 @@ function getMergerChildren(parentNorm){
 
         renderScopeBar(entity);
         renderAtAGlance(entity);
-        renderHomeAwayCard(entity);
         renderHeatmap(entity);
         renderRecordsCard(entity);
         renderStreakCard(entity);
@@ -3230,19 +3198,6 @@ function getMergerChildren(parentNorm){
       honDiv.innerHTML = `<strong>Best finish</strong>: ${ordinal(best.pos)} in ${best.div} (${best.seasons.join(', ')})`;
       honDiv.style.display = '';
       if (honSep) honSep.style.display = '';
-    }
-
-    function renderHomeAwayCard(entity){
-      const ents = entitySet();
-      const { home, away } = computeHomeAway(ents);
-      const sideHTML = (label, s) => `
-        <div class="ha-head">${label}</div>
-        <div class="ha-pct">${(s.winPct||0).toFixed(1)}%</div>
-        <div class="ha-line">P ${fmtNum(s.p)} · <span class="wins">W ${fmtNum(s.w)}</span> <span class="draws">D ${fmtNum(s.d)}</span> <span class="losses">L ${fmtNum(s.l)}</span></div>
-        <div class="ha-line"><span class="gf">GF ${fmtNum(s.gf)}</span> · <span class="ga">GA ${fmtNum(s.ga)}</span></div>
-      `;
-      setHTML('ha-home', sideHTML('Home record', home));
-      setHTML('ha-away', sideHTML('Away record', away));
     }
 
     function renderScopeBar(entity){
@@ -3475,9 +3430,8 @@ function getMergerChildren(parentNorm){
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.hm-tip') && !e.target.closest('.hm-cell')) _hmCloseTip();
     });
-    // Desktop: clicking outside the grid resets the detail panel back to the stats summary.
+    // Click outside the grid resets the detail panel back to the stats summary.
     document.addEventListener('click', (e) => {
-      if (window.matchMedia('(max-width:720px)').matches) return;
       if (e.target.closest('#hm-root')) return;
       if (_hmActiveCell){
         _hmActiveCell.classList.remove('hm-active');
@@ -3529,7 +3483,7 @@ function getMergerChildren(parentNorm){
       const pct = (n) => totalCount ? Math.round((n / totalCount) * 100) : 0;
       const lines = [];
       if (mostKey){
-        lines.push(`<div>Most common: <strong>${mostKey}</strong> (${mostCount} ×)</div>`);
+        lines.push(`<div>Most common: <strong>${mostKey}</strong> (${mostCount} occasions)</div>`);
       }
       if (bigWin){
         lines.push(`<div>Biggest win: <strong>${bigWin.gf}-${bigWin.ga}</strong> vs ${bigWin.opp} (${bigWin.season})</div>`);
@@ -3538,7 +3492,7 @@ function getMergerChildren(parentNorm){
         lines.push(`<div>Heaviest defeat: <strong>${heavyLoss.gf}-${heavyLoss.ga}</strong> vs ${heavyLoss.opp} (${heavyLoss.season})</div>`);
       }
       lines.push(`<div>Clean sheets: ${cleanSheets} (${pct(cleanSheets)}%)</div>`);
-      lines.push(`<div>No-score: ${noScore} (${pct(noScore)}%)</div>`);
+      lines.push(`<div>Without scoring: ${noScore} (${pct(noScore)}%)</div>`);
       lines.push(`<div class="hm-cue muted">Click a cell to see the matches.</div>`);
       panel.innerHTML = lines.join('');
     }
@@ -3556,17 +3510,18 @@ function getMergerChildren(parentNorm){
       _hmActiveCell = td; td.classList.add('hm-active');
 
       const count = data.count;
-      const rowsHtml = data.matches.slice(0, 15).map(({ m, pe, gf:cgf, ga:cga }) => {
+      const outcome = gf > ga ? 'wins' : gf < ga ? 'losses' : 'draws';
+      const outcomeCls = gf > ga ? 'W' : gf < ga ? 'L' : 'D';
+      const rowsHtml = data.matches.map(({ m, pe }) => {
         const atHome = isHomeByEntity(m, pe);
         const opp = atHome ? m.away : m.home;
         const ven = isNeutral(m) ? 'N' : (atHome ? 'H' : 'A');
-        const res = cgf > cga ? 'W' : cgf < cga ? 'L' : 'D';
-        return `<div class="hm-detail-row">${fmtDatePretty(m.date)} · ${ven} vs ${opp} <span class="muted">${cgf}-${cga}</span> <span class="res ${res}">${res}</span></div>`;
+        return `<div class="hm-detail-row">${fmtDatePretty(m.date)} · ${opp} · <span class="muted">${ven}</span></div>`;
       }).join('');
       panel.innerHTML =
-        `<div class="hm-detail-title">${gf}-${ga} <span class="muted">— ${count} match${count>1?'es':''}</span></div>`
-        + rowsHtml
-        + `<div class="hm-cue muted">Click the cell again or click anywhere outside the grid to reset.</div>`;
+        `<div class="hm-detail-title"><span class="res ${outcomeCls}">${gf}-${ga} ${outcome}</span> <span class="muted">— ${count} match${count>1?'es':''}</span></div>`
+        + `<div class="hm-detail-list">${rowsHtml}</div>`
+        + `<div class="hm-cue muted">Click the cell again or anywhere outside the grid to reset.</div>`;
     }
 
     function renderHeatmap(entity){
@@ -3655,15 +3610,7 @@ function getMergerChildren(parentNorm){
             td.style.color = cellFg(data.count);
             td.addEventListener('click', (ev) => {
               ev.stopPropagation();
-              if (window.matchMedia('(max-width:720px)').matches){
-                if (!_hmTip){
-                  _hmTip = document.createElement('div'); _hmTip.className = 'hm-tip';
-                  root.appendChild(_hmTip);
-                }
-                _hmShowTip(td, gf, ga, data, root);
-              } else {
-                _hmShowDetail(td, gf, ga, data);
-              }
+              _hmShowDetail(td, gf, ga, data);
             });
           }
           tr.appendChild(td);
