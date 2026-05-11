@@ -2,6 +2,13 @@
 <!--
   Club Records Dashboard
 
+  v4.9.15 (11/05/2026) — Scoreline heatmap
+    • Replaced W/D/L scoreline frequency lists with interactive heatmap grid
+    • GF across top, GA up left side (0 at bottom); wins green, draws gold, losses red
+    • Sqrt-scaled colour intensity for long-tail distribution
+    • Click any cell for reverse-chron match list tooltip
+    • Respects global venue filter and division scope
+
   v4.9.14 (16/04/2026) — Muted data palette + intro text
     • W/D/L colours shifted to muted editorial tones:
       green #16a34a → #2d8a4e (forest), yellow #eab308 → #d4a017 (dark gold),
@@ -76,7 +83,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Club Records — v4.9.14 (muted data palette + intro text)</title>
+<title>Club Records — v4.9.15 (scoreline heatmap)</title>
   <meta name="color-scheme" content="light" />
   <style>
     /* =========================================================================
@@ -653,7 +660,112 @@
       font-size:.78rem;
     }
 
-    /* W/D/L scoreline switcher */
+
+    /* ---- Scoreline Heatmap (v4.9.15) ---- */
+    .hm-wrap {
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px; position: relative;
+    }
+    .hm-outer { display: flex; align-items: stretch; }
+    .hm-y-label-cell {
+      display: flex; align-items: center; justify-content: center; padding-right: 6px;
+    }
+    .hm-main-col {
+      display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 0;
+    }
+    .hm-table { border-collapse: separate; border-spacing: 2px; margin: 0 auto; }
+    .hm-corner {
+      width: 32px; height: 32px; position: relative; background: transparent;
+    }
+    .hm-corner::after {
+      content: ''; position: absolute; top: 4px; right: 4px; bottom: 4px; left: 4px;
+      background: linear-gradient(to bottom right,
+        transparent calc(50% - 0.5px), var(--border) calc(50% - 0.5px),
+        var(--border) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+    }
+    .hm-corner .corner-gf, .hm-corner .corner-ga {
+      position: absolute; font-size: 8px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .08em;
+      color: var(--text-muted); line-height: 1;
+    }
+    .hm-corner .corner-gf { bottom: 3px; right: 4px; }
+    .hm-corner .corner-ga { top: 3px; left: 4px; }
+    .hm-hdr {
+      width: 32px; height: 32px; text-align: center; vertical-align: middle;
+      font-weight: 800; font-size: 11px; color: var(--text-muted);
+      background: transparent; padding: 0;
+    }
+    .hm-cell {
+      width: 32px; height: 32px; text-align: center; vertical-align: middle;
+      font-weight: 800; font-size: 11px; border-radius: 3px; padding: 0;
+      transition: transform .1s ease, box-shadow .1s ease;
+      cursor: default; position: relative;
+    }
+    .hm-cell:not(.hm-empty) { cursor: pointer; }
+    .hm-cell:not(.hm-empty):hover {
+      transform: scale(1.15); box-shadow: 0 2px 8px rgba(0,0,0,.18); z-index: 2;
+    }
+    .hm-cell.hm-active {
+      transform: scale(1.2);
+      box-shadow: 0 0 0 2px var(--text), 0 2px 8px rgba(0,0,0,.2); z-index: 3;
+    }
+    .hm-empty { background: var(--off-white); }
+    .hm-axis-label {
+      text-align: center; font-size: 10px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .1em;
+      color: var(--text-muted); padding: 6px 0 0;
+    }
+    .hm-axis-label-y {
+      writing-mode: vertical-lr; transform: rotate(180deg);
+      font-size: 10px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--text-muted);
+      text-align: center; vertical-align: middle;
+    }
+    .hm-tip {
+      display: none; position: absolute; z-index: 10;
+      background: #fff; color: var(--text);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 0; box-shadow: var(--shadow-lg);
+      width: 260px; max-width: calc(100vw - 40px); overflow: hidden;
+    }
+    .hm-tip.visible { display: block; }
+    .hm-tip-hdr {
+      padding: 10px 12px 8px; font-weight: 900; font-size: .82rem;
+      text-transform: uppercase; letter-spacing: .05em;
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .hm-tip-close {
+      cursor: pointer; font-size: 16px; color: var(--text-muted);
+      line-height: 1; padding: 0 2px; border: none; background: none;
+      font-family: var(--font);
+    }
+    .hm-tip-close:hover { color: var(--text); }
+    .hm-tip-list {
+      max-height: 200px; overflow-y: auto;
+      padding: 0; margin: 0; list-style: none;
+    }
+    .hm-tip-list li {
+      padding: 7px 12px; font-size: .82rem;
+      display: flex; justify-content: space-between;
+      align-items: center; gap: 8px;
+      border-bottom: 1px solid var(--off-white);
+    }
+    .hm-tip-list li:last-child { border-bottom: none; }
+    .hm-tip-date {
+      font-weight: 700; font-size: .72rem; color: var(--text-muted);
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .hm-tip-match {
+      font-weight: 700; flex: 1; min-width: 0;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .hm-tip-venue {
+      font-size: .68rem; font-weight: 800; text-transform: uppercase;
+      color: var(--text-muted); flex-shrink: 0;
+    }
+
+    /* W/D/L scoreline switcher (legacy — kept for reference) */
     .seg-wdl{ display:inline-flex; }
     .seg-wdl button[aria-pressed="true"][data-val="W"]{ background:var(--wcol); color:#fff; border-color:var(--wcol); }
     .seg-wdl button[aria-pressed="true"][data-val="D"]{ background:var(--dcol); color:#000; border-color:var(--dcol); }
@@ -1538,13 +1650,8 @@
               </div>
             </div>
 
-            <div class="perf-wdl">
-              <div class="seg-wdl seg--compact" id="wdl-seg" role="tablist" aria-label="Scoreline view">
-                <button type="button" role="tab" data-val="W" aria-pressed="true">Wins</button>
-                <button type="button" role="tab" data-val="D" aria-pressed="false">Draws</button>
-                <button type="button" role="tab" data-val="L" aria-pressed="false">Losses</button>
-              </div>
-              <div id="sf-grid" class="sf-colgrid"><div class="muted">—</div></div>
+            <div class="perf-heatmap" style="position:relative">
+              <div id="hm-root"></div>
               <div id="scope-results" class="card-scope" style="margin-top:6px"></div>
             </div>
           </div>
@@ -1771,7 +1878,7 @@ let nicknameIndex = new Map();   // ← ensure it exists globally
 
     // New KPI state
     let scope='all';   // 'all' | 'step1' | 'step2' | 'national' | 'north' | 'south'
-    let wdlView='W';   // 'W' | 'D' | 'L'
+    // v4.9.15: wdlView removed (heatmap replaces W/D/L lists)
     let membershipIdx = new Map();
     let firstSeasonIdx = new Map();   // norm(entity) -> { season:'YYYY–YY', status:'founder|promoted|relegated|merger' }
 
@@ -2767,16 +2874,7 @@ if (bwBtn){
           if (e.target && e.target.id === 'st-prev'){ if (streakInstances.length){ streakIdx = (streakIdx - 1 + streakInstances.length) % streakInstances.length; updateStreakInstanceUI(); } return; }
           if (e.target && e.target.id === 'st-next'){ if (streakInstances.length){ streakIdx = (streakIdx + 1) % streakInstances.length; updateStreakInstanceUI(); } return; }
 
-// New KPI: W/D/L scoreline seg
-const wdlBtn = e.target.closest?.('#wdl-seg button[data-val]');
-if (wdlBtn){
-  wdlView = wdlBtn.getAttribute('data-val');
-  document.querySelectorAll('#wdl-seg button').forEach(b=>b.setAttribute('aria-pressed', b===wdlBtn?'true':'false'));
-  renderScorelines(currentClub);
-  updateScopeLines();                 // keep scope line in Results accurate
-  addAnim(el('card-results'));
-  return;
-}
+// v4.9.15: W/D/L switcher removed — heatmap replaces scoreline lists
 
 
 // New KPI: Season scope grid
@@ -3536,59 +3634,153 @@ function renderGoalsCard(entity){
       setText('res-w', fmtNum(a.W)); setText('res-d', fmtNum(a.D)); setText('res-l', fmtNum(a.L)); setText('res-p', fmtNum(a.P));
     }
 
-    function renderScorelines(entity){
-      const grid=el('sf-grid');
-      if(!entity){ grid.innerHTML='<div class="muted">Select a club to see scorelines.</div>'; return; }
+    // v4.9.15 — Scoreline heatmap (replaces W/D/L frequency lists)
+    let _hmTip = null, _hmActiveCell = null;
+    function _hmCloseTip(){
+      if (_hmActiveCell) _hmActiveCell.classList.remove('hm-active');
+      _hmActiveCell = null;
+      if (_hmTip) _hmTip.classList.remove('visible');
+    }
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.hm-tip') && !e.target.closest('.hm-cell')) _hmCloseTip();
+    });
+
+    function renderHeatmap(entity){
+      const root = el('hm-root');
+      if (!root) return;
+      root.innerHTML = '';
+      _hmCloseTip(); _hmTip = null; _hmActiveCell = null;
+
+      if (!entity){ root.innerHTML = '<div class="muted">Select a club.</div>'; return; }
+
       const ents = entitySet();
       const mm = filteredMatchesKPI(ents);
-      const map = new Map();
+
+      const cells = new Map();
+      let maxGF = 0, maxGA = 0, maxCount = 0;
 
       for (const m of mm){
         const pe = perspectiveEntityForMatch(m, ents);
         if (!pe) continue;
-
-        // Use awarded outcome when present (so abandoned can be W/L/D correctly)
-        const r = resByEntity(m, pe);
-        if (r !== wdlView) continue;
-
-        // Synthetic scoreline bucket for abandoned games where goals must not count
-        const key = isAbandonedNoGoals(m) ? 'A-A' : `${gfByEntity(m,pe)}-${gaByEntity(m,pe)}`;
-        map.set(key, (map.get(key) || 0) + 1);
+        if (isAbandonedNoGoals(m)) continue;
+        const gf = gfByEntity(m, pe), ga = gaByEntity(m, pe);
+        if (!Number.isFinite(gf) || !Number.isFinite(ga)) continue;
+        const key = `${gf}-${ga}`;
+        if (!cells.has(key)) cells.set(key, { count:0, matches:[] });
+        const c = cells.get(key);
+        c.count++;
+        c.matches.push({ m, pe, gf, ga });
+        if (gf > maxGF) maxGF = gf;
+        if (ga > maxGA) maxGA = ga;
+        if (c.count > maxCount) maxCount = c.count;
       }
 
-      const items = [...map.entries()].map(([k,c])=>{
-        if (k === 'A-A'){
-          return { gf:NaN, ga:NaN, score:'A–A', count:c };
+      if (!cells.size){ root.innerHTML = '<div class="muted">No scoreline data.</div>'; return; }
+
+      cells.forEach(c => c.matches.sort((a, b) => dParse(b.m.date) - dParse(a.m.date)));
+
+      const sqrtMax = Math.sqrt(maxCount);
+      const intens = n => Math.sqrt(n) / sqrtMax;
+      function cellBg(gf, ga, n){
+        const t = intens(n), L = 92 - (t * 54), S = 30 + (t * 50);
+        if (gf > ga) return `hsl(152,${S}%,${L}%)`;
+        if (gf < ga) return `hsl(350,${S}%,${L}%)`;
+        return `hsl(43,${S}%,${L}%)`;
+      }
+      function cellFg(n){ return intens(n) > 0.65 ? '#fff' : 'var(--text)'; }
+
+      const outer = document.createElement('div'); outer.className = 'hm-outer';
+      const yWrap = document.createElement('div'); yWrap.className = 'hm-y-label-cell';
+      const ySpan = document.createElement('span'); ySpan.className = 'hm-axis-label-y';
+      ySpan.textContent = 'Goals against';
+      yWrap.appendChild(ySpan); outer.appendChild(yWrap);
+
+      const mainCol = document.createElement('div'); mainCol.className = 'hm-main-col';
+      const scrollW = document.createElement('div'); scrollW.className = 'hm-wrap';
+      const tbl = document.createElement('table'); tbl.className = 'hm-table';
+
+      const thead = document.createElement('thead');
+      const hRow = document.createElement('tr');
+      const corner = document.createElement('th'); corner.className = 'hm-corner';
+      corner.innerHTML = '<span class="corner-gf">GF</span><span class="corner-ga">GA</span>';
+      hRow.appendChild(corner);
+      for (let gf = 0; gf <= maxGF; gf++){
+        const th = document.createElement('th'); th.className = 'hm-hdr'; th.textContent = gf;
+        hRow.appendChild(th);
+      }
+      thead.appendChild(hRow); tbl.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      for (let ga = maxGA; ga >= 0; ga--){
+        const tr = document.createElement('tr');
+        const rh = document.createElement('th'); rh.className = 'hm-hdr'; rh.textContent = ga;
+        tr.appendChild(rh);
+        for (let gf = 0; gf <= maxGF; gf++){
+          const td = document.createElement('td');
+          const data = cells.get(`${gf}-${ga}`);
+          if (!data){
+            td.className = 'hm-cell hm-empty';
+          } else {
+            td.className = 'hm-cell' + (gf > ga ? ' hm-win' : gf < ga ? ' hm-loss' : ' hm-draw');
+            td.textContent = data.count;
+            td.style.background = cellBg(gf, ga, data.count);
+            td.style.color = cellFg(data.count);
+            td.addEventListener('click', (ev) => {
+              ev.stopPropagation();
+              _hmShowTip(td, gf, ga, data, root);
+            });
+          }
+          tr.appendChild(td);
         }
-        const [a,b] = k.split('-').map(Number);
-        return { gf:a, ga:b, score:`${a}\u2013${b}`, count:c };
-      });
+        tbody.appendChild(tr);
+      }
+      tbl.appendChild(tbody);
+      scrollW.appendChild(tbl); mainCol.appendChild(scrollW);
 
-      items.sort((a,b)=>{
-        if (a.score === 'A–A') return 1;
-        if (b.score === 'A–A') return -1;
-        return b.count - a.count;
-      });
-      
-      if(!items.length){ grid.innerHTML='<div class="muted">No scorelines for this scope.</div>'; return; }
-      const cols = window.matchMedia('(max-width:720px)').matches ? 2 : 3;
-      const size = Math.ceil(items.length / cols);
+      const xLab = document.createElement('div'); xLab.className = 'hm-axis-label';
+      xLab.textContent = 'Goals for';
+      mainCol.appendChild(xLab);
+      outer.appendChild(mainCol);
+      root.appendChild(outer);
 
-      const col1 = items.slice(0, size);
-      const col2 = items.slice(size, size * 2);
-      const col3 = items.slice(size * 2);
-      const max=items.reduce((m,i)=>Math.max(m,i.count),0)||1;
-      const col = arr => `<div class="sf-list">${
-        arr.map(x=>`
-          <div class="sf-row sf-${wdlView}">
-            <span class="sf-lab">${x.score}</span>
-            <div class="sf-bar"><i style="width:${(x.count*100/max).toFixed(1)}%"></i></div>
-            <span class="sf-ct">${fmtNum(x.count)}</span>
-          </div>`).join('')
-      }</div>`;
-      grid.innerHTML = (cols === 2)
-        ? (col(col1) + col(col2))
-        : (col(col1) + col(col2) + col(col3));
+      _hmTip = document.createElement('div'); _hmTip.className = 'hm-tip';
+      root.appendChild(_hmTip);
+    }
+
+    function _hmShowTip(td, gf, ga, data, root){
+      if (_hmActiveCell) _hmActiveCell.classList.remove('hm-active');
+      if (_hmActiveCell === td){ _hmActiveCell = null; _hmTip.classList.remove('visible'); return; }
+      _hmActiveCell = td; td.classList.add('hm-active');
+
+      const typeWord = gf > ga ? 'wins' : gf < ga ? 'losses' : 'draws';
+      const hdrCol = gf > ga ? 'var(--wcol)' : gf < ga ? 'var(--lcol)' : 'var(--dcol)';
+
+      let html = `<div class="hm-tip-hdr" style="color:${hdrCol}"><span>${gf}-${ga} ${typeWord} &middot; ${data.count}</span><button class="hm-tip-close" aria-label="Close">&times;</button></div>`;
+      html += '<ul class="hm-tip-list">';
+      data.matches.forEach(({ m, pe }) => {
+        const atHome = isHomeByEntity(m, pe);
+        const opp = atHome ? m.away : m.home;
+        const ven = isNeutral(m) ? 'N' : (atHome ? 'H' : 'A');
+        html += `<li><span class="hm-tip-date">${fmtDatePretty(m.date)}</span><span class="hm-tip-match">v ${opp}</span><span class="hm-tip-venue">${ven}</span></li>`;
+      });
+      html += '</ul>';
+
+      _hmTip.innerHTML = html;
+      _hmTip.classList.add('visible');
+
+      const rootRect = root.getBoundingClientRect();
+      const tdRect = td.getBoundingClientRect();
+      let left = (tdRect.left + tdRect.width/2) - rootRect.left - 130;
+      left = Math.max(4, Math.min(left, rootRect.width - 264));
+      let top = tdRect.bottom - rootRect.top + 8;
+      const tipH = Math.min(260, _hmTip.scrollHeight || 200);
+      if (top + tipH > rootRect.height + 40) top = tdRect.top - rootRect.top - tipH - 8;
+      _hmTip.style.left = left + 'px';
+      _hmTip.style.top = top + 'px';
+
+      _hmTip.querySelector('.hm-tip-close').addEventListener('click', (ev) => {
+        ev.stopPropagation(); _hmCloseTip();
+      });
     }
 
 function renderKPIs(entity){
@@ -3596,7 +3788,7 @@ function renderKPIs(entity){
   renderHonoursNew(entity || null);
   renderGoalsCard(entity || null);
 renderResultsDonut(entity || null);
-renderScorelines(entity || null);
+renderHeatmap(entity || null);
 updateScopeLines(); // keep Results/others in sync
 // optional: animate on render
 addAnim(el('card-seasons')); addAnim(el('card-goals')); addAnim(el('card-results'));
