@@ -157,6 +157,7 @@
     }
 
     /* ---- Base ---- */
+    [hidden] { display: none !important; }
     html, body { margin:0; color:var(--text); background:#fff; }
     body { overflow-x:hidden; }
     body, body .topbar, body .sticky, body .section, body .container,
@@ -1469,7 +1470,7 @@
     </div>
 
     <!-- MAIN CONTENT -->
-    <div class="section needs-club" hidden>
+    <div class="section needs-club">
 
       <!-- AT-A-GLANCE STRIP -->
       <div class="card" id="strip" style="margin-bottom:14px">
@@ -2958,7 +2959,7 @@ function getMergerChildren(parentNorm){
         if (!entity){ updateAppVisibility(); return; }
 
         // banner text + nickname + founder
-        setText(el('club-banner'), (entity.display || entity.canon || entity || '').toString().toUpperCase());
+        setText('club-banner', (entity.display || entity.canon || entity || '').toString().toUpperCase());
         show(el('club-banner'), true);
         updateSubbarTitle(entity);
         setFounderBadge(isFounderMember(entity));
