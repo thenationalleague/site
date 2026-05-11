@@ -508,17 +508,15 @@
       letter-spacing: 0;
     }
     .card-head-suffix:empty { display:none; }
-    #streak-card h3 .card-head-suffix,
-    #season-cap .card-head-suffix {
-      font-weight: 500;
-      color: var(--text-muted);
-      font-size: .85em;
-      margin-left: 4px;
-      text-transform: none;
-      letter-spacing: 0;
+    /* In .card h3 / .streakCard h3 the grid auto-places children, which would
+       push the suffix to the far right (column 2). Anchor it to row 2 col 1
+       so it sits as a subtitle directly under the heading instead. */
+    .card h3 > .card-head-suffix,
+    .streakCard > h3 > .card-head-suffix {
+      grid-column: 1; grid-row: 2;
+      margin-left: 0;
+      margin-top: 2px;
     }
-    #streak-card h3 .card-head-suffix:empty,
-    #season-cap .card-head-suffix:empty { display:none; }
 
     /* ---- v5 AT-A-GLANCE STRIP ---- */
     #strip { padding: 18px; }
@@ -631,6 +629,7 @@
       font-size: 13px;
       line-height: 1.5;
       color: var(--text);
+      min-height: 360px;
       max-height: 360px;
       overflow-y: auto;
       padding-right: 4px;
@@ -652,7 +651,7 @@
     }
     .hm-detail-row:last-child { border-bottom: none; }
     @media (max-width: 720px){
-      .hm-detail { max-height: 240px; }
+      .hm-detail { min-height: 0; max-height: 240px; }
     }
     .hm-cue { font-size: 12px; margin-top: 8px; }
     .hm-wrap {
@@ -1143,22 +1142,23 @@
     .gap-row td{
       text-align:center !important;
       font-style:italic;
-      color:#4b4458;
-      background:var(--gap) !important;
-      border-top:1px dashed #bda9e6;
-      border-bottom:1px dashed #bda9e6;
-    }
-    .seasons .era-row td {
-      text-align: center;
-      font-style: italic;
-      font-weight: 700;
       color: var(--text-muted);
-      background: var(--off-white);
-      padding: 8px 0;
-      letter-spacing: .04em;
+      background: transparent !important;
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
+      padding: 8px 0;
+      font-size: 13px;
     }
+    /* Historical-names caption line (sits under the table heading) */
+    .season-names{
+      display:block;
+      font-size: 13px;
+      font-style: italic;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .season-names:empty{ display:none; }
 
     /* Preserve folded/expelled readability */
     .row-folded .note-ref, .row-folded .note-ref a,
@@ -1596,12 +1596,12 @@
       <div class="seasons-wrap">
         <div class="seasons-table-wrap">
           <table class="seasons" id="season-table" aria-describedby="season-legend">
-            <caption id="season-cap"><span class="season-cap-text">Season-by-season — (select a club)</span><span class="card-head-suffix"></span></caption>
+            <caption id="season-cap"><span class="season-cap-text">Season-by-season — (select a club)</span><span class="season-names" id="season-names"></span></caption>
             <thead><tr>
-              <th class="namekey-head" aria-label="Team name key"></th>
               <th class="th-season">Season</th>
               <th class="move-col" aria-label="Movement" title="Promotion/Relegation">↕</th>
               <th class="th-division">Division</th>
+              <th class="strongcol th-pos">Pos</th>
               <th><abbr title="Played">P</abbr></th>
               <th><abbr title="Wins">W</abbr></th>
               <th><abbr title="Draws">D</abbr></th>
@@ -1609,13 +1609,11 @@
               <th><abbr title="Goals For">GF</abbr></th>
               <th><abbr title="Goals Against">GA</abbr></th>
               <th><abbr title="Goal Difference">GD</abbr></th>
-              <th class="strongcol th-pos">Pos</th>
               <th class="strongcol th-pts"><abbr title="Points">Pts</abbr></th>
             </tr></thead>
             <tbody id="season-body"></tbody>
           </table>
         </div>
-        <p class="legend" id="season-name-legend"></p>
         <p class="legend" id="season-legend"></p>
         <div id="club-notes" class="club-notes" hidden></div>
         <div id="season-placeholder" class="placeholder">Select a club from the drop-down menu to view its season-by-season record.</div>
@@ -3018,6 +3016,11 @@ function getMergerChildren(parentNorm){
         renderRecordsCard(entity);
         renderStreakCard(entity);
 
+        // Spritely re-entry on every render: re-trigger fade-ins on the data cards
+        addAnim(el('strip'));
+        addAnim(el('heatmap-card'));
+        addAnim(el('records-card'));
+
         // Opponents: reuse the v4.9.15 logic that builds latestOppRows then renders
         const ents = entitySet();
         const mm = filteredMatchesKPI(ents);
@@ -3427,9 +3430,6 @@ function getMergerChildren(parentNorm){
       _hmActiveCell = null;
       if (_hmTip) _hmTip.classList.remove('visible');
     }
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.hm-tip') && !e.target.closest('.hm-cell')) _hmCloseTip();
-    });
     // Click outside the grid resets the detail panel back to the stats summary.
     document.addEventListener('click', (e) => {
       if (e.target.closest('#hm-root')) return;
@@ -3916,24 +3916,11 @@ setText('st-title', baseLabel);
 
       const rowNames = [];
       let prevStart = null;
-      let prevDispName = null;
 
       data.forEach((r, idx) => {
         const currStart = startYear(r.season);
         const currLabel = enDash(r.season);
         const dispName = (displayNameIndex.get(r.entityName)?.get(r.season)) || r.entityName;
-
-        // Era divider: when the display name changes between rows (top-to-bottom is newer-to-older),
-        // insert a divider labelled with the era we're about to enter (i.e. dispName of the current row).
-        if (prevDispName !== null && dispName !== prevDispName){
-          const eraRow = document.createElement('tr');
-          eraRow.className = 'era-row anim-in';
-          const eraTd = document.createElement('td');
-          eraTd.colSpan = visibleSeasonCols();
-          eraTd.textContent = `— ${dispName} —`;
-          eraRow.appendChild(eraTd);
-          tbody.appendChild(eraRow);
-        }
 
         if (prevStart !== null){
           const missingFrom = currStart + 1;
@@ -3945,7 +3932,7 @@ setText('st-title', baseLabel);
             gap.className = 'gap-row anim-in';
             const td = document.createElement('td');
             td.colSpan = visibleSeasonCols();
-            td.textContent = `— ${label} —`;
+            td.textContent = `Outside the National League · ${label}`;
             gap.appendChild(td);
             tbody.appendChild(gap);
           }
@@ -3969,32 +3956,23 @@ setText('st-title', baseLabel);
         tr.setAttribute('data-entity', norm(r.entityName || ''));
         
         const cells = [
-          { dot:true, name:dispName },     // 1: namekey dot
-          currLabel,                       // 2: Season
-          { move:r.move },                 // 3: Movement arrow
-          r.divisionTitle,                 // 4: Division
-          r.P,                             // 5: P
-          r.W,                             // 6: W
-          r.D,                             // 7: D
-          r.L,                             // 8: L
-          r.GF,                            // 9: GF
-          r.GA,                            // 10: GA
-          { gd:r.GD },                     // 11: GD
-          { val:r.pos, strong:true },      // 12: Pos
-          { val:r.Pts, strong:true }       // 13: Pts
+          currLabel,                       // 0: Season
+          { move:r.move },                 // 1: Movement arrow
+          r.divisionTitle,                 // 2: Division
+          { val:r.pos, strong:true },      // 3: Pos
+          r.P,                             // 4: P
+          r.W,                             // 5: W
+          r.D,                             // 6: D
+          r.L,                             // 7: L
+          r.GF,                            // 8: GF
+          r.GA,                            // 9: GA
+          { gd:r.GD },                     // 10: GD
+          { val:r.Pts, strong:true }       // 11: Pts
         ];
         cells.forEach((val,i)=>{
           const td=document.createElement('td');
 
-          if (i===0){
-            td.className = 'namekey-col';
-            td.style.width = '20px';
-            td.innerHTML = `<span class="dot" title="${dispName}"></span>`;
-            tr.appendChild(td);
-            return;
-          }
-
-          if (i===2){
+          if (i===1){
             td.classList.add('move-col');
             const mv = (val && typeof val==='object') ? val.move : '';
             if (mv === 'up'){
@@ -4026,46 +4004,42 @@ setText('st-title', baseLabel);
             td.textContent = (val != null ? val : '');
           }
 
-          if (i===1)  { td.classList.add('td-season'); td.style.textAlign='left'; }   // Season
-          if (i===3)  { td.classList.add('td-division'); td.style.textAlign='left'; } // Division
-          if (i===11) td.classList.add('td-pos');                                    // Pos
-          if (i===12) td.classList.add('td-pts');                                    // Pts
+          if (i===0)  { td.classList.add('td-season'); td.style.textAlign='left'; }   // Season
+          if (i===2)  { td.classList.add('td-division'); td.style.textAlign='left'; } // Division
+          if (i===3)  td.classList.add('td-pos');                                     // Pos
+          if (i===11) td.classList.add('td-pts');                                     // Pts
 
           tr.appendChild(td);
         });
 
         tbody.appendChild(tr);
         prevStart = currStart;
-        prevDispName = dispName;
       });
 
-      const uniqNames = Array.from(new Set(rowNames)).sort((a,b)=>a.localeCompare(b,'en'));
-      const nameColor = new Map();
-      uniqNames.slice(0,3).forEach((n,i)=> nameColor.set(n, ['#F28C6E','#A479D9','#5FB7B2'][i]) );
-
-      Array.from(tbody.rows).forEach(tr=>{
-        if (tr.classList.contains('gap-row')) return;
-        const dot = tr.cells[0]?.querySelector('.dot');
-        if (dot){
-          const name = dot.getAttribute('title') || '';
-          dot.style.background = nameColor.get(name) || 'transparent';
-        }
-      });
-
-      const nameLeg = el('season-name-legend');
-      if (nameLeg){
-        if (uniqNames.length>1){
-          const legendHTML = uniqNames.slice(0,3).map(n=>`<span class="item"><span class="dot" style="background:${nameColor.get(n)}"></span>${n}</span>`).join('');
-          nameLeg.innerHTML = legendHTML;
+      // Historical names caption: group consecutive seasons by display name and
+      // emit a chronological list. Hidden entirely when the club has only ever
+      // used one name.
+      const namesEl = el('season-names');
+      if (namesEl){
+        const groups = [];
+        data.forEach((r, idx) => {
+          const dispN = rowNames[idx];
+          const last = groups[groups.length - 1];
+          if (last && last.name === dispN){
+            last.firstSeason = r.season; // data is reverse-chrono; keep overwriting to the oldest
+          } else {
+            groups.push({ name: dispN, firstSeason: r.season, lastSeason: r.season });
+          }
+        });
+        if (groups.length > 1){
+          const ordered = groups.slice().reverse(); // oldest → newest
+          namesEl.textContent = ordered.map(g => {
+            const range = (g.firstSeason === g.lastSeason) ? g.firstSeason : `${g.firstSeason} to ${g.lastSeason}`;
+            return `${g.name} (${range})`;
+          }).join(', ');
         } else {
-          nameLeg.innerHTML = '';
+          namesEl.textContent = '';
         }
-      }
-
-      const table = el('season-table');
-      if (table){
-        if (uniqNames.length<=1) table.classList.add('namekey-hidden');
-        else table.classList.remove('namekey-hidden');
       }
 
       (function notes(){
@@ -4073,7 +4047,7 @@ setText('st-title', baseLabel);
         const list = (seasonNotes || []).filter(n => entsForNotes.includes(norm(n.entity || n.team)));
 
         Array.from(tbody.rows).forEach(tr => {
-          const seasonCell = tr.cells && tr.cells[1];
+          const seasonCell = tr.cells && tr.cells[0];
           if (seasonCell) seasonCell.querySelectorAll('.note-ref').forEach(x => x.remove());
         });
 
@@ -4142,7 +4116,7 @@ setText('st-title', baseLabel);
             );
 
           rowsForSeasonEntity.forEach(tr => {
-            const seasonCell = tr && tr.cells ? tr.cells[1] : null;
+            const seasonCell = tr && tr.cells ? tr.cells[0] : null;
             if (!seasonCell) return;
             seasonCell.appendChild(makeSupToNote(num, noteId));
           });
