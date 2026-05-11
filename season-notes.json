@@ -1627,6 +1627,8 @@
 { "season": "2024-25", "division": "National", "title": "National League", "champions": 1, "automatic": 0, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
 { "season": "2024-25", "division": "North", "title": "National League North", "champions": 1, "automatic": 0, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
 { "season": "2024-25", "division": "South", "title": "National League South", "champions": 1, "automatic": 0, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+{ "season": "2025-26", "division": "National", "title": "National League", "champions": 1, "automatic": 0, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
+{ "season": "2025-26", "division": "North", "title": "National League North", "champions": 1, "automatic": 0, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } },
 { "season": "2025-26", "division": "South", "title": "National League South", "champions": 1, "automatic": 0, "playoffs": { "semi": 2, "eliminator": 4 }, "relegation": 4, "points": { "winHome": 3, "winAway": 3, "draw": 1, "loss": 0 } }
   ]
 }
