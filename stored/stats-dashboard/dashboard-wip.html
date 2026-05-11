@@ -2409,6 +2409,73 @@ function finaliseDerivedClasses(arr){
   });
   return Array.from(out);
 }
+// v5: Backfill missing folded/expelled markers so:
+//   (a) Phoenix.old entities' final NL season is flagged as folded.
+//       Their record-expungement happened outside the NL pyramid, so we
+//       can't infer the exact fold date from match data alone — but the
+//       last NL row is a reasonable indicator.
+//   (b) Expelled / expunged seasons that have no surviving league row in
+//       derived tables (because the matches were wiped from results) get
+//       a synthetic placeholder row with zeros and the 'expelled' class,
+//       so they appear in the season table and on the LP graph instead
+//       of vanishing.
+function augmentFoldedAndExpelled(tables, notesRaw, metaObj){
+  if (!Array.isArray(tables)) return;
+  const notesList = normalizeSeasonNotes(notesRaw);
+
+  // (b) Synthesize rows for expulsion/folded notes with no matching row.
+  (Array.isArray(notesList) ? notesList : []).forEach(n => {
+    const t = normalizeNoteType(n.type);
+    const cls = (t === 'expulsion') ? 'expelled' : (t === 'folded' ? 'folded' : null);
+    if (!cls) return;
+    const season = n.season;
+    const division = n.division;
+    const entityKey = n.entity || n.team;
+    if (!season || !division || !entityKey) return;
+    const sObj = tables.find(s => s.season === season);
+    const div  = sObj?.divisions?.[division];
+    if (!div) return;
+    div.rows = div.rows || [];
+    const entN = norm(entityKey);
+    if (div.rows.some(r => norm(r.entity || r.team) === entN)) return;
+    div.rows.push({
+      entity: entityKey, team: entityKey,
+      pos: '', P: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0, GD: 0, Pts: 0,
+      classes: [cls],
+      _synthetic: true
+    });
+  });
+
+  // (a) Mark the chronologically last surviving row of every phoenix.old
+  //     entity as 'folded' (unless already flagged).
+  const phoenixOld = new Set();
+  (metaObj?.relationships?.phoenix || []).forEach(p => {
+    if (p?.old) phoenixOld.add(norm(p.old));
+  });
+  if (phoenixOld.size){
+    const byEntity = new Map();
+    tables.forEach(s => {
+      Object.values(s.divisions || {}).forEach(div => {
+        (div.rows || []).forEach(r => {
+          const k = norm(r.entity || r.team);
+          if (!phoenixOld.has(k)) return;
+          if (!byEntity.has(k)) byEntity.set(k, []);
+          byEntity.get(k).push({ season: s.season, row: r });
+        });
+      });
+    });
+    byEntity.forEach((arr) => {
+      arr.sort((a, b) => startYear(b.season) - startYear(a.season));
+      const last = arr[0];
+      if (!last) return;
+      if (!Array.isArray(last.row.classes)) last.row.classes = [];
+      if (!last.row.classes.includes('folded') && !last.row.classes.includes('expelled')){
+        last.row.classes.push('folded');
+      }
+    });
+  }
+}
+
 function deriveLeagueTablesFromResults(rawResults, notesRaw){
   const seasons = Array.isArray(rawResults?.seasons) ? rawResults.seasons.slice() : [];
   const ctx = buildDerivationContext(notesRaw);
@@ -2551,6 +2618,7 @@ if (!allMatches.length) {
         meta = metaMaybe;
         seasonNotes = normalizeSeasonNotes(notesMaybe);
         tablesSeasons = deriveLeagueTablesFromResults(raw, notesMaybe);
+        augmentFoldedAndExpelled(tablesSeasons, notesMaybe, metaMaybe);
 nicknameIndex = buildNicknameIndex(meta);
 firstSeasonIdx = buildFirstSeasonIndex(meta);
 
