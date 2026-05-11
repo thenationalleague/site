@@ -2442,6 +2442,7 @@ function augmentFoldedAndExpelled(tables, notesRaw, metaObj){
       entity: entityKey, team: entityKey,
       pos: '', P: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0, GD: 0, Pts: 0,
       classes: [cls],
+      move: 'down',
       _synthetic: true
     });
   });
@@ -2471,6 +2472,7 @@ function augmentFoldedAndExpelled(tables, notesRaw, metaObj){
       if (!Array.isArray(last.row.classes)) last.row.classes = [];
       if (!last.row.classes.includes('folded') && !last.row.classes.includes('expelled')){
         last.row.classes.push('folded');
+        last.row.move = 'down';
       }
     });
   }
@@ -4662,6 +4664,20 @@ const yForRank = r => {
   return yInBand(r - RANKS_PER_BAND, y0Bot, botH);           // Step-2 band
 };
 
+// v5.0.6: ceased clubs (folded/expelled) plot at bottom-of-band on the LP
+// graph regardless of where they actually finished — visually communicates
+// "fell off the football pyramid" rather than burying the marker among the
+// real finishing positions. The data layer keeps the true pos for the
+// season table.
+function lpRowRank(row){
+  const tierOff = (both ? (row.tierKey === 'National' ? 0 : 24) : 0);
+  const set = new Set(row.classes || []);
+  const ceased = set.has('folded') || set.has('expelled');
+  const posVal = ceased ? RANKS_PER_BAND
+                        : (Number.isFinite(+row.pos) ? +row.pos : RANKS_PER_BAND);
+  return tierOff + posVal;
+}
+
 
   const NS='http://www.w3.org/2000/svg';
   const mk=t=>document.createElementNS(NS,t);
@@ -4886,8 +4902,8 @@ for (const [, arr] of byEntity) {
     const ib = seasonIdx.get(b.seasonKey);
     if (ia == null || ib == null) continue;
 
-    const rankA = (both ? (a.tierKey === 'National' ? 0 : 24) : 0) + a.pos;
-    const rankB = (both ? (b.tierKey === 'National' ? 0 : 24) : 0) + b.pos;
+    const rankA = lpRowRank(a);
+    const rankB = lpRowRank(b);
     svgFG.appendChild(line(xPositions[ia], yForRank(rankA), xPositions[ib], yForRank(rankB), 'lp-edge'));
   }
 
@@ -4906,7 +4922,7 @@ for (const [, arr] of byEntity) {
         ? xMidBetween(ia, ia + 1)
         : xMidBetween(ia, -1);
 
-      const yA = yForRank((both ? (a.tierKey === 'National' ? 0 : 24) : 0) + a.pos);
+      const yA = yForRank(lpRowRank(a));
 
       // Use 'move' to decide exit direction
       if (a.move === 'up') {
@@ -4946,8 +4962,7 @@ svgFG.appendChild(line(xPositions[ia], yA, midX, yTarget, 'lp-edge'));
             const firstRow  = rowsChild.find(r => r.seasonKey === childKey);
             if (!firstRow) return;   // child didn’t appear in NL/N/S in that season
 
-            const rankChild = (both ? (firstRow.tierKey === 'National' ? 0 : 24) : 0) + firstRow.pos;
-            const yChild    = yForRank(rankChild);
+            const yChild    = yForRank(lpRowRank(firstRow));
 
             // Dotted merger link: parent (this season) → child (first season)
             svgFG.appendChild(
@@ -4974,7 +4989,7 @@ svgFG.appendChild(line(xPositions[ia], yA, midX, yTarget, 'lp-edge'));
         ? xMidBetween(ib - 1, ib)
         : xMidBetween(-1, ib);
 
-      const yB = yForRank((both ? (b.tierKey === 'National' ? 0 : 24) : 0) + b.pos);
+      const yB = yForRank(lpRowRank(b));
     // === META first-season override (only for the very first known row of this entity) ===
     if (!prev && i === 0) {
       const fs = firstSeasonIdx.get(b.entityName); // entityName is already norm()’d
@@ -5023,8 +5038,7 @@ svgFG.appendChild(line(xPositions[ia], yA, midX, yTarget, 'lp-edge'));
               const prevRow    = rowsParent.find(r => r.seasonKey === prevKey);
               if (!prevRow) return;                             // parent didn’t play NL/N/S last season → skip
 
-              const rankP = (both ? (prevRow.tierKey === 'National' ? 0 : 24) : 0) + prevRow.pos;
-              const yPrev = yForRank(rankP);
+              const yPrev = yForRank(lpRowRank(prevRow));
 
               // dotted link from parent (prev season) → merged club (this season)
               svgFG.appendChild(line(xPrev, yPrev, xPositions[ib], yB, 'lp-edge lp-edge-merge'));
@@ -5099,9 +5113,8 @@ dataBySeason.forEach((rows, i) => {
   const dx = offsets(rows.length);
 
   rows.forEach((row, k) => {
-    const rank = (both ? (row.tierKey === 'National' ? 0 : 24) : 0) + row.pos;
     const x = xPositions[i] + dx[k];
-    const y = yForRank(rank);
+    const y = yForRank(lpRowRank(row));
     const { fill, text: txtCol } = lpStatusFill(row.classes);
   // v4.3: shape from movement (up/down), not status classes
   let d = lpPathSquare(S);
