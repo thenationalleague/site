@@ -4018,27 +4018,38 @@ setText('st-title', baseLabel);
         prevStart = currStart;
       });
 
-      // Historical names caption: group consecutive seasons by display name and
-      // emit a chronological list. Hidden entirely when the club has only ever
-      // used one name.
+      // Historical names caption: merge every season that shares a display
+      // name (across phoenix gaps etc.) into one entry, with consecutive runs
+      // collapsed to ranges and non-consecutive runs separated by commas.
+      // Names are listed in order of first appearance (chronologically).
+      // Hidden entirely when the club has only ever used one name.
       const namesEl = el('season-names');
       if (namesEl){
-        const groups = [];
+        const seasonsByName = new Map();
         data.forEach((r, idx) => {
           const dispN = rowNames[idx];
-          const last = groups[groups.length - 1];
-          if (last && last.name === dispN){
-            last.firstSeason = r.season; // data is reverse-chrono; keep overwriting to the oldest
-          } else {
-            groups.push({ name: dispN, firstSeason: r.season, lastSeason: r.season });
-          }
+          if (!seasonsByName.has(dispN)) seasonsByName.set(dispN, []);
+          seasonsByName.get(dispN).push(r.season);
         });
-        if (groups.length > 1){
-          const ordered = groups.slice().reverse(); // oldest → newest
-          namesEl.textContent = ordered.map(g => {
-            const range = (g.firstSeason === g.lastSeason) ? g.firstSeason : `${g.firstSeason} to ${g.lastSeason}`;
-            return `${g.name} (${range})`;
-          }).join(', ');
+        if (seasonsByName.size > 1){
+          const entries = [];
+          seasonsByName.forEach((seasons, name) => {
+            const sorted = seasons.slice().sort((a, b) => startYear(a) - startYear(b));
+            const runs = [[sorted[0]]];
+            for (let i = 1; i < sorted.length; i++){
+              if (startYear(sorted[i]) === startYear(sorted[i-1]) + 1){
+                runs[runs.length-1].push(sorted[i]);
+              } else {
+                runs.push([sorted[i]]);
+              }
+            }
+            const rangeStrs = runs.map(run =>
+              run.length === 1 ? run[0] : `${run[0]} to ${run[run.length-1]}`
+            );
+            entries.push({ name, earliest: startYear(sorted[0]), text: `${name} (${rangeStrs.join(', ')})` });
+          });
+          entries.sort((a, b) => a.earliest - b.earliest);
+          namesEl.textContent = entries.map(e => e.text).join(', ');
         } else {
           namesEl.textContent = '';
         }
