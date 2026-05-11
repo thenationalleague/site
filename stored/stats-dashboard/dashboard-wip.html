@@ -2,8 +2,6 @@
 <!--
   Club Records Dashboard
 
-  v5.0.0 (11/05/2026) — Layout rebuild: single-column flow, two-level scope, at-a-glance strip, H/A card, merged records
-
   v4.9.15 (11/05/2026) — Scoreline heatmap
     • Replaced W/D/L scoreline frequency lists with interactive heatmap grid
     • GF across top, GA up left side (0 at bottom); wins green, draws gold, losses red
@@ -85,7 +83,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Club Records — v5.0.0</title>
+<title>Club Records — v4.9.15 (scoreline heatmap)</title>
   <meta name="color-scheme" content="light" />
   <style>
     /* =========================================================================
@@ -175,47 +173,12 @@
     .left { text-align:left; } .center { text-align:center; }
     .muted { color:var(--text-muted); font-size:.92rem; }
 
-    /* ---- v5 BANNER ---- */
-    .banner { background: var(--primary); color:#fff; }
+    /* ---- Banner-integrated club selector ---- */
     .banner-inner {
       display:flex; align-items:center;
       justify-content:space-between;
       gap:16px; flex-wrap:wrap;
     }
-    .nameCol {
-      display:flex; flex-direction:column; gap:6px;
-      min-width:0; flex:1 1 auto;
-    }
-    .clubname {
-      font-weight:900; letter-spacing:.02em;
-      font-size:38px; line-height:1.05;
-      text-transform:uppercase; color:#fff;
-    }
-    @media (max-width:560px){
-      .clubname { font-size: clamp(1.7rem, 7vw, 2.2rem); }
-    }
-    .club-subtitle {
-      display:none; /* only shown when there's a nickname */
-      font-size:16px; font-weight:600;
-      letter-spacing:.04em;
-      color: rgba(255,255,255,.7);
-    }
-    .club-subtitle.has-nickname { display:block; }
-
-    .badge {
-      display:inline-flex; align-items:center; gap:6px;
-      padding:4px 10px;
-      border-radius:9999px;
-      font-weight:900; font-size:.68rem;
-      text-transform:uppercase; letter-spacing:.1em;
-      line-height:1;
-      background:rgba(255,255,255,.16);
-      color:#fff;
-      border:1px solid rgba(255,255,255,.3);
-      width:max-content;
-    }
-    .badge .star { font-size:.85rem; line-height:1; color:#fff; }
-
     .banner-select { flex:0 0 auto; }
     .banner-select select {
       padding:10px 36px 10px 14px;
@@ -237,77 +200,61 @@
       background-color:rgba(255,255,255,.25);
     }
     .banner-select select option { background:#fff; color:var(--text); }
-    @media (max-width:640px){
-      .banner-inner { flex-direction:column; align-items:stretch; }
-      .banner-select { width:100%; }
-      .banner-select select { width:100%; min-width:0; }
+    /* Pre-selection: hide club name column, dropdown stays same style */
+    body.no-club .nameCol { display:none; }
+
+    /* ---- Hero banner (redesigned) ---- */
+    .sticky { position: relative; z-index: 5; }  /* was sticky; host rejects it */
+
+    .banner {
+      background: var(--primary); color:#fff;
     }
 
-    /* ---- v5 CONTROL BAR ---- */
-    .controlbar {
-      background: var(--navy); color:#fff;
-      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-      overflow:hidden;
-      padding: 12px 18px;
-      margin-bottom: 18px;
-    }
-    body.no-club .controlbar { display:none; }
-    .controlbar-inner {
-      display:flex; align-items:center; gap:14px; flex-wrap:wrap;
-    }
-    .controlbar-left {
-      display:flex; flex-direction:column; gap:8px;
+    .nameCol {
+      display:flex; flex-direction:column; gap:4px;
       min-width:0; flex:1 1 auto;
     }
-    .controlbar-right {
-      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
-      margin-left:auto;
+    .clubname {
+      font-weight:900; letter-spacing:.02em;
+      font-size: clamp(1.7rem, 4vw, 2.4rem);
+      line-height:1.05;
+      text-transform:uppercase;
     }
+    .club-subtitle {
+      display:none; /* only shown when there's a nickname */
+      font-size:.82rem; font-weight:700;
+      letter-spacing:.15em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.75);
+    }
+    .club-subtitle.has-nickname { display:block; }
 
-    /* Scope rows (level 1 + level 2) */
-    .scope-row, .scope-sub {
-      display:flex; flex-wrap:wrap; gap:8px; align-items:center;
-    }
-    .scope-sub { padding-left: 12px; }
-    .scope-sub::before {
-      content: "Step 2:";
-      font-size:.7rem; font-weight:800;
-      color: rgba(255,255,255,.7);
-      text-transform:uppercase; letter-spacing:.08em;
-      margin-right: 4px;
-    }
-    .scope-btn {
-      padding:6px 12px;
-      border:1px solid rgba(255,255,255,.3);
-      border-radius: var(--radius);
-      background: transparent;
-      color: #fff;
-      font-weight:700; font-size:.8rem;
-      line-height:1.1;
-      cursor:pointer;
-      font-family: var(--font);
-      letter-spacing:.03em;
-    }
-    .scope-btn:hover { background: rgba(255,255,255,.1); }
-    .scope-btn[aria-pressed="true"] {
-      background: #fff;
-      color: var(--navy);
-      border-color: #fff;
-    }
-    .scope-btn .scope-count { opacity:.7; margin-left:2px; font-weight:600; }
-    .scope-label {
-      display:inline-block;
-      padding:6px 12px;
-      border:1px solid rgba(255,255,255,.3);
-      border-radius: var(--radius);
+    .badge {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:4px 10px;
+      border-radius:9999px;
+      font-weight:900; font-size:.68rem;
+      text-transform:uppercase; letter-spacing:.1em;
+      line-height:1;
+      background:rgba(255,255,255,.16);
       color:#fff;
-      font-weight:700; font-size:.8rem;
-      line-height:1.1; letter-spacing:.03em;
-      background: rgba(255,255,255,.08);
-      cursor:default;
+      border:1px solid rgba(255,255,255,.3);
+      width:max-content;
+    }
+    .badge .star { font-size:.85rem; line-height:1; color:#fff; }
+
+    /* ---- Control strip: venue + affiliate toggle ---- */
+    .subbar { background: var(--navy); color:#fff; }
+    .subbar .container {
+      padding-block: 10px;
+      display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    }
+    .subbar h2 {
+      /* Hidden by default — JS still writes nickname here but we use .club-subtitle */
+      display:none;
     }
 
-    /* Affiliate toggle group */
+    /* Affiliate toggle group (moved from banner) */
     .combineCol {
       display:flex; align-items:center; gap:10px; flex-wrap:wrap;
       color:#fff; font-size:.82rem;
@@ -326,32 +273,6 @@
       border:1px solid rgba(255,255,255,.18);
     }
     .combineName { font-weight:700; font-size:.78rem; color:#fff; }
-
-    /* Venue segmented (in controlbar) */
-    #venue-seg {
-      display:inline-flex;
-      background: rgba(255,255,255,.1);
-      border:1px solid rgba(255,255,255,.25);
-      border-radius: var(--radius);
-      overflow:hidden;
-    }
-    #venue-seg button {
-      padding:6px 14px;
-      font-weight:800; font-size:.78rem;
-      line-height:1.1;
-      border:0; background:transparent;
-      color: rgba(255,255,255,.85);
-      cursor:pointer;
-      font-family: var(--font);
-      letter-spacing:.05em;
-      text-transform:uppercase;
-    }
-    #venue-seg button + button {
-      border-left:1px solid rgba(255,255,255,.25);
-    }
-    #venue-seg button[aria-pressed="true"] {
-      background:#fff; color: var(--navy);
-    }
 
     .switch{
       --h:16px; --w:30px; --pad:2px;
@@ -377,6 +298,34 @@
     .switch input:checked + .slider{ background:rgba(255,255,255,.7); }
     .switch input:checked + .slider::before{
       transform:translateX(calc(var(--w) - var(--h)));
+    }
+
+    /* Venue switcher in control strip */
+    .subbar #venue-seg{
+      display:inline-flex;
+      background:rgba(255,255,255,.1);
+      border:1px solid rgba(255,255,255,.25);
+      border-radius: var(--radius);
+      overflow:hidden;
+      margin-left:auto;
+    }
+    .subbar #venue-seg button{
+      padding:6px 14px;
+      font-weight:800; font-size:.78rem;
+      line-height:1.1;
+      border:0; background:transparent;
+      color:rgba(255,255,255,.85);
+      cursor:pointer;
+      font-family: var(--font);
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+    .subbar #venue-seg button + button{
+      border-left:1px solid rgba(255,255,255,.25);
+    }
+    .subbar #venue-seg button[aria-pressed="true"]{
+      background:#fff;
+      color:var(--navy);
     }
 
     button.tab-press{ transform: translateY(1px); }
@@ -414,8 +363,12 @@
     #intro p:last-child { margin-bottom: 0; }
 
     /* ---- Hide club-dependent UI until a club is chosen ---- */
-    body.no-club .needs-club { display:none !important; }
-    body.no-club .nameCol { display:none; }
+    body.no-club #combine-wrap,
+    body.no-club .needs-club,
+    body.no-club #venue-seg,
+    body.no-club .subbar .container { display:none !important; }
+    /* Collapse the navy strip entirely if there's nothing to show */
+    body.no-club .subbar{ display:none; }
 
     /* =========================================================================
        CARDS & SECTIONS
@@ -485,157 +438,228 @@
       grid-column:1; grid-row:2;
       margin-top:2px;
     }
-    /* ---- v5 shared utilities ---- */
-    .sep{ height:1px; background:var(--border); margin:12px 0; }
-    .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-
-    /* Card head (plain text variant used by v5) */
-    .card-head {
-      font-size: 1rem;
-      text-transform: uppercase;
-      color: var(--primary);
-      font-weight: 900;
-      letter-spacing: .08em;
-      line-height: 1.15;
+    .section-head #bw-seg {
+      grid-column:2; grid-row: 1 / span 2;
+      align-self:end; justify-self:end;
     }
 
-    /* ---- v5 AT-A-GLANCE STRIP ---- */
-    #strip { padding: 18px; }
-    .stat-grid {
-      display:grid;
-      grid-template-columns: repeat(8, minmax(0, 1fr));
-      gap:14px;
-    }
-    .stat-grid.secondary {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-    @media (max-width:720px){
-      .stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-      .stat-grid.secondary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    @media (max-width:480px){
-      .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .stat-grid.secondary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    .stat {
-      display:flex; flex-direction:column;
-      align-items:flex-start; gap:4px;
-      min-width:0;
-    }
-    .stat .num {
-      font-size: clamp(20px, 2.4vw, 28px);
-      font-weight: 900;
-      line-height: 1;
-      color: var(--text);
-      font-variant-numeric: tabular-nums;
-    }
-    .stat .lab {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--text-muted);
-      font-weight: 700;
-    }
-    .stat .num.wins,   .stat .num.gf,  .stat .num.cs { color: var(--wcol); }
-    .stat .num.draws { color: var(--dcol); }
-    .stat .num.losses, .stat .num.ga,  .stat .num.nosc { color: var(--lcol); }
-
-    .honours-line {
-      font-size:13px;
-      line-height:1.5;
-      color: var(--text);
-    }
-    .honours-line strong { font-weight:900; color: var(--navy); }
-
-    /* ---- v5 HOME/AWAY CARD ---- */
-    #ha-card { padding: 18px; }
-    .ha-grid {
-      display:grid; grid-template-columns: 1fr 1fr;
-      gap:0;
-    }
-    .ha-side {
-      padding: 4px 18px;
-      display:flex; flex-direction:column; gap:8px;
-      min-width:0;
-    }
-    .ha-side:first-child { padding-left:0; }
-    .ha-side:last-child { padding-right:0; }
-    .ha-divider { border-left: 1px solid var(--border); }
-    .ha-head {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--text-muted);
-      font-weight: 800;
-    }
-    .ha-pct {
-      font-size: 32px;
-      font-weight: 900;
-      line-height: 1;
-      color: var(--navy);
-      font-variant-numeric: tabular-nums;
-    }
-    .ha-line {
-      font-size: 14px; color: var(--text);
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-    }
-    .ha-line .wins { color: var(--wcol); }
-    .ha-line .draws { color: var(--dcol); }
-    .ha-line .losses { color: var(--lcol); }
-    .ha-line .gf { color: var(--wcol); }
-    .ha-line .ga { color: var(--lcol); }
-    @media (max-width:480px){
-      .ha-grid { grid-template-columns: 1fr; }
-      .ha-side { padding: 12px 0; }
-      .ha-divider { border-left: none; border-top: 1px solid var(--border); }
-    }
-
-    /* ---- v5 RECORDS CARD ---- */
-    #records-card { padding: 18px; }
-    .rec-toggle {
-      display:inline-flex;
-      border:1.5px solid var(--text);
-      border-radius: var(--radius);
-      overflow:hidden;
-      background:#fff;
-    }
-    .rec-toggle button {
-      padding:6px 12px;
-      font-weight:800; font-size:.78rem;
-      line-height:1.1; border:0;
-      background:#fff; color: var(--text);
-      cursor:pointer;
-      font-family: var(--font);
-      letter-spacing:.04em; text-transform:uppercase;
-    }
-    .rec-toggle button + button { border-left:1.5px solid var(--text); }
-    .rec-toggle button[aria-pressed="true"] {
-      background: var(--text); color:#fff;
-    }
-    .rec-grid {
-      display:grid; grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
-    @media (max-width:720px){ .rec-grid { grid-template-columns: 1fr; } }
-    .rec-col-head {
-      font-size: .82rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      margin-bottom: 8px;
-      color: var(--text);
-    }
-    .rec-col-head.wins   { color: var(--wcol); }
-    .rec-col-head.losses { color: var(--lcol); }
-
-    /* ---- v5 STREAKS + OPPONENTS grid ---- */
-    .grid-pair {
+    /* ---- Overview row (Seasons | Performance) ---- */
+    .grid-top{
       display:grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      gap:14px;
+      margin-bottom:14px;
     }
-    @media (max-width:860px){ .grid-pair { grid-template-columns: 1fr; } }
+    @media (max-width:860px){ .grid-top{ grid-template-columns:1fr; } }
+
+    /* ---- "Seasons" card — editorial stat treatment ---- */
+    #card-seasons .sc-grid {
+      display:grid; gap:1px;
+      background: var(--border);
+      padding:1px;
+      border-radius: var(--radius);
+      overflow:hidden;
+    }
+    #card-seasons .sc-grid.cols-1{ grid-template-columns:1fr; }
+    #card-seasons .sc-grid.cols-2{ grid-template-columns:1fr 1fr; }
+    #card-seasons .sc-grid.cols-3{ grid-template-columns:1fr 1fr 1fr; }
+
+    .sc-btn{
+      border:0; border-radius:0;
+      background:#fff; color:var(--text);
+      padding:10px 10px;
+      font-weight:800; font-size:.78rem;
+      cursor:pointer; text-align:center;
+      font-family: var(--font);
+      text-transform:uppercase; letter-spacing:.05em;
+      transition: background .12s, color .12s;
+    }
+    .sc-btn:hover:not([aria-disabled="true"]):not([aria-pressed="true"]){
+      background: var(--off-white);
+    }
+    .sc-btn[aria-pressed="true"]{
+      background: var(--navy); color:#fff;
+    }
+    .sc-btn[aria-disabled="true"]{
+      background: var(--navy); color:#fff;
+      opacity:1; cursor:default; pointer-events:none;
+    }
+    .span-all{ grid-column:1 / -1; }
+    .span-2{ grid-column: span 2; }
+    .single{ cursor:default; }
+
+    .sep{ height:1px; background:var(--border); margin:6px 0; }
+    .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+    /* Honours block inside Seasons card */
+    #honours { color: var(--text); }
+    #honours h3 { /* JS renders this; suppress the wrapped h3 */
+      margin: 8px 0 4px;
+      font-size:.72rem;
+      color: var(--text-muted);
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      font-weight:800;
+    }
+    .hon-head{ font-weight:900; color:var(--text); margin-bottom:6px; }
+    .hon-body{ color:var(--text); font-size:.95rem; line-height:1.5; }
+    .hon-body strong{ color: var(--navy); font-weight:900; }
+
+    /* Honours always shows all divisions regardless of scope switcher,
+       so suppress the scope qualifier label entirely */
+    #honours #scope-honours,
+    #honours .card-scope { display:none !important; }
+
+    /* ---- "Performance" combined card wrapping Goals + Results ---- */
+    #card-perf {
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding:18px;
+      box-shadow: var(--shadow);
+      display:flex; flex-direction:column; gap:18px;
+    }
+    #card-perf > h3 {
+      margin:0;
+      display:grid;
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto auto;
+      align-items:end;
+      gap:2px 10px;
+      font-size:1.05rem;
+      text-transform:uppercase;
+      color: var(--primary);
+      font-weight:900;
+      letter-spacing:.08em;
+    }
+    #card-perf > h3 > .card-scope {
+      grid-column:1; grid-row:2; margin-top:2px;
+    }
+
+    .perf-layout {
+      display:grid;
+      grid-template-columns: auto 1fr;
+      gap:20px; align-items:start;
+    }
+    @media (max-width:720px){
+      .perf-layout{ grid-template-columns:1fr; }
+    }
+
+    /* Donut (results) */
+    .donut-wrap{
+      --size: 170px;
+      position:relative; width:var(--size); height:var(--size);
+    }
+    .donut{
+      --thick: 20px;
+      position:absolute; inset:0; border-radius:50%;
+      background: conic-gradient(
+        var(--wcol) 0 var(--wdeg),
+        var(--dcol) var(--wdeg) calc(var(--wdeg) + var(--ddeg)),
+        var(--lcol) calc(var(--wdeg) + var(--ddeg)) 360deg
+      );
+    }
+    .donut:after{
+      content:""; position:absolute;
+      inset: calc(var(--thick));
+      background:#fff; border-radius:50%;
+    }
+    .donut-center{
+      position:absolute; inset:0;
+      display:grid; place-items:center; text-align:center;
+      pointer-events:none;
+    }
+    .donut-center .big{
+      font-weight:900; font-size:1.9rem; line-height:1;
+      color: var(--text);
+    }
+    .donut-center .sub{
+      font-size:.68rem; color:var(--text-muted);
+      text-transform:uppercase; letter-spacing:.1em;
+      font-weight:800; margin-top:3px;
+    }
+    .legend-row{
+      display:flex; gap:14px;
+      align-items:center; flex-wrap:wrap;
+      margin-top:10px; justify-content:center;
+    }
+    .key{
+      display:inline-flex; align-items:center; gap:5px;
+      font-weight:800; font-size:.8rem;
+      color: var(--text);
+    }
+    .sw{
+      width:9px; height:9px; border-radius:2px;
+      display:inline-block;
+    }
+    .sw.w{ background:var(--wcol); }
+    .sw.d{ background:var(--dcol); }
+    .sw.l{ background:var(--lcol); }
+
+    /* Goals balance (right side of perf card) */
+    .perf-right {
+      display:flex; flex-direction:column; gap:14px;
+    }
+    .perf-goals {
+      display:flex; flex-direction:column; gap:8px;
+    }
+    .perf-goals-head {
+      font-size:.68rem; color:var(--text-muted);
+      text-transform:uppercase; letter-spacing:.1em;
+      font-weight:800;
+    }
+    .hbar{ display:grid; gap:8px; }
+    .hbar-row{
+      display:grid; grid-template-columns:1fr auto;
+      gap:10px; align-items:center;
+    }
+    .hbar-track{
+      position:relative; height:10px;
+      border-radius:9999px;
+      background:var(--off-white);
+      overflow:hidden;
+      border:1px solid var(--border);
+    }
+    .hbar-fill{
+      position:absolute; inset:0 auto 0 0;
+      width:0%; border-radius:9999px;
+    }
+    .fill-gf{ background: var(--wcol); }
+    .fill-ga{ background: var(--lcol); }
+
+    .chip{
+      display:inline-block;
+      padding:.35rem .75rem;
+      border-radius:12px;
+      font-weight:800; line-height:1;
+      color:#fff; font-size:.82rem;
+      letter-spacing:.03em;
+    }
+    .chip.gf{ background: var(--wcol); }
+    .chip.ga{ background: var(--lcol); }
+    .gd-chip{
+      background:#fff;
+      border:1.5px solid var(--text);
+      color:var(--text);
+      border-radius:12px;
+      padding:.3rem .75rem;
+      font-weight:900; line-height:1;
+      font-size:.82rem;
+    }
+    .gd-pos{ border-color:var(--wcol); color:var(--wcol); }
+    .gd-neg{ border-color:var(--lcol); color:var(--lcol); }
+    .gd-zero{ border-color:var(--text); color:var(--text); }
+    .pill-white{
+      display:inline-block;
+      background: var(--off-white);
+      border:1px solid var(--border);
+      color:var(--text-muted);
+      border-radius:12px;
+      padding:.3rem .75rem;
+      font-weight:700; line-height:1;
+      font-size:.78rem;
+    }
+
 
     /* ---- Scoreline Heatmap (v4.9.15) ---- */
     .hm-wrap {
@@ -741,6 +765,54 @@
       color: var(--text-muted); flex-shrink: 0;
     }
 
+    /* W/D/L scoreline switcher (legacy — kept for reference) */
+    .seg-wdl{ display:inline-flex; }
+    .seg-wdl button[aria-pressed="true"][data-val="W"]{ background:var(--wcol); color:#fff; border-color:var(--wcol); }
+    .seg-wdl button[aria-pressed="true"][data-val="D"]{ background:var(--dcol); color:#000; border-color:var(--dcol); }
+    .seg-wdl button[aria-pressed="true"][data-val="L"]{ background:var(--lcol); color:#fff; border-color:var(--lcol); }
+
+    /* Scoreline frequencies (under W/D/L switcher) */
+    .sf-colgrid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(110px, 1fr));
+      gap:14px;
+      margin-top: 12px;
+    }
+    @media (max-width:720px){
+      .sf-colgrid{ grid-template-columns: repeat(2, minmax(100px, 1fr)); }
+    }
+    .sf-list{
+      display:flex; flex-direction:column; gap:6px;
+      border-left:1px solid var(--border);
+      padding-left:12px;
+    }
+    .sf-colgrid .sf-list:nth-child(3n+1){ border-left:none; padding-left:0; }
+    @media (max-width:720px){
+      .sf-colgrid .sf-list:nth-child(2n+1){ border-left:none; padding-left:0; }
+    }
+    .sf-row{
+      display:grid; grid-template-columns:auto 1fr auto;
+      gap:8px; align-items:center;
+    }
+    .sf-lab{ font-weight:800; font-size:.85rem; color:var(--text); }
+    .sf-bar{
+      position:relative; height:6px;
+      border-radius:9999px;
+      background:var(--off-white);
+      overflow:hidden;
+    }
+    .sf-bar > i{
+      position:absolute; inset:0 auto 0 0;
+      width:0%; display:block; opacity:.5;
+    }
+    .sf-W .sf-bar > i{ background:var(--wcol); }
+    .sf-D .sf-bar > i{ background:var(--dcol); }
+    .sf-L .sf-bar > i{ background:var(--lcol); }
+    .sf-ct{
+      font-variant-numeric:tabular-nums;
+      font-weight:800; font-size:.85rem; color:var(--text);
+    }
+
     /* =========================================================================
        SEGMENTED CONTROLS — unified compact pattern
        ========================================================================= */
@@ -769,6 +841,59 @@
     .seg--compact button[aria-pressed="true"]{
       background:var(--text); color:#fff;
     }
+
+    /* Best & Worst switcher — same compact pattern */
+    #bw-seg{
+      display:inline-flex;
+      border:1.5px solid var(--text);
+      border-radius: var(--radius);
+      overflow:hidden;
+      background:#fff;
+    }
+    #bw-seg button{
+      padding:6px 12px;
+      font-weight:800; font-size:.78rem;
+      line-height:1.1; border:0;
+      background:#fff; color:var(--text);
+      cursor:pointer; font-family: var(--font);
+      letter-spacing:.04em; text-transform:uppercase;
+    }
+    #bw-seg button + button{
+      border-left:1.5px solid var(--text);
+    }
+    #bw-seg button[aria-pressed="true"]{
+      background:var(--text); color:#fff;
+    }
+
+    /* =========================================================================
+       BEST & WORST — outlined pills instead of solid
+       ========================================================================= */
+    .grid-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-bottom:14px;
+    }
+    @media (max-width:860px){ .grid-2{ grid-template-columns:1fr; } }
+
+    .pill{
+      display:inline-block;
+      padding:.4rem .85rem;
+      border-radius: var(--radius);
+      font-weight:900; line-height:1;
+      font-size:.82rem;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      background:#fff;
+      border: 1.5px solid currentColor;
+    }
+    .pill .pill-suffix{
+      font-weight:800; opacity:.95;
+      margin-left:.35rem; white-space:nowrap;
+    }
+    .pill-crimson{ color: var(--wcol); }
+    .pill-blue   { color: var(--lcol); }
+    .pill-black  { color: #000; }
 
     /* Biggest wins / losses record lists */
     .rec-list .item {
@@ -1412,6 +1537,13 @@
       overflow: hidden;
       padding: 18px;
     }
+    .subbar {
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      overflow: hidden;
+      padding: 10px 18px;
+      margin-bottom: 18px;
+    }
+
     /* Row-gap utility (preserved) */
     .row-gap{ margin-bottom:14px; }
 
@@ -1420,8 +1552,6 @@
 </head>
 <body class="no-club">
   <div class="container" id="dash-root">
-
-    <!-- BANNER -->
     <div class="banner">
       <div class="banner-inner">
         <div class="nameCol">
@@ -1439,172 +1569,252 @@
       </div>
     </div>
 
-    <!-- CONTROL BAR -->
-    <div class="controlbar">
-      <div class="controlbar-inner">
-        <div class="controlbar-left">
-          <div class="scope-row needs-club" id="scope-row"></div>
-          <div class="scope-sub needs-club" id="scope-sub" hidden></div>
-        </div>
-        <div class="combineCol needs-club" id="combine-wrap" hidden>
-          <div class="combineTitle">Include:</div>
-          <div id="combine-list" class="combines"></div>
-        </div>
-        <div class="controlbar-right">
-          <div class="venue-seg needs-club" id="venue-seg" role="group" aria-label="Venue">
-            <button type="button" data-val="all" aria-pressed="true">All</button>
-            <button type="button" data-val="home" aria-pressed="false">Home</button>
-            <button type="button" data-val="away" aria-pressed="false">Away</button>
-          </div>
-        </div>
+    <div class="subbar">
+      <h2 id="sub-title" hidden></h2>
+      <div class="combineCol needs-club" id="combine-wrap" hidden>
+        <div class="combineTitle">Include:</div>
+        <div id="combine-list" class="combines"></div>
+      </div>
+      <div class="seg seg--compact" id="venue-seg" role="group" aria-label="Venue">
+        <button type="button" data-val="all"  aria-pressed="true">All</button>
+        <button type="button" data-val="home" aria-pressed="false">Home</button>
+        <button type="button" data-val="away" aria-pressed="false">Away</button>
       </div>
     </div>
 
     <div id="error" class="error" role="alert"></div>
-
-    <!-- INTRO -->
     <div id="intro">
-      <p>Every result. Every season. Every club.</p>
-      <p>Almost half a century of National League football — over 40,000 fixtures across three divisions, searchable by club. Pick a side from the dropdown to explore their full record: results, streaks, rivals, league positions, and more.</p>
-    </div>
+    <p>Every result. Every season. Every club.</p>
+    <p>Almost half a century of National League football — over 40,000 fixtures across three divisions, searchable by club. Pick a side from the dropdown to explore their full record: results, streaks, rivals, league positions, and more.</p>
+  </div>
 
-    <!-- MAIN CONTENT -->
-    <div class="section needs-club" hidden>
+  <div class="section needs-club" hidden>
 
-      <!-- AT-A-GLANCE STRIP -->
-      <div class="card" id="strip" style="margin-bottom:14px">
-        <div id="strip-primary" class="stat-grid"></div>
+
+    <!-- ===== NEW KPI CARDS (replace old four cards) ===== -->
+<div class="grid-top row-gap" id="kpi-top">
+      <div class="card" id="card-seasons">
+        <h3><span class="head-title">Seasons</span></h3>
+        <div id="sc-grid" class="sc-grid cols-1">
+          <button class="sc-btn span-all single" aria-disabled="true">—</button>
+        </div>
         <div class="sep"></div>
-        <div id="strip-secondary" class="stat-grid secondary"></div>
-        <div class="sep" id="strip-honours-sep"></div>
-        <div id="strip-honours" class="honours-line"></div>
+        <div id="honours" class="muted">—</div>
       </div>
 
-      <!-- HOME/AWAY COMPARISON -->
-      <div class="card" id="ha-card" style="margin-bottom:14px">
-        <div class="ha-grid">
-          <div class="ha-side" id="ha-home"></div>
-          <div class="ha-side ha-divider" id="ha-away"></div>
-        </div>
-      </div>
+      <div id="card-perf">
+        <h3>
+          <span class="head-title">Performance</span>
+          <span class="card-scope" id="scope-perf"></span>
+        </h3>
 
-      <!-- SCORELINE HEATMAP -->
-      <div class="card" id="heatmap-card" style="margin-bottom:14px;position:relative">
-        <div class="card-head">Scorelines</div>
-        <div id="hm-root"></div>
-      </div>
-
-      <!-- RECORDS -->
-      <div class="card" id="records-card" style="margin-bottom:14px">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div class="card-head">Records</div>
-          <div class="rec-toggle" id="rec-toggle" role="tablist" aria-label="Record view">
-            <button type="button" role="tab" data-val="results" aria-pressed="true">Results</button>
-            <button type="button" role="tab" data-val="goals" aria-pressed="false">Goals</button>
-          </div>
-        </div>
-        <div id="rec-results" class="rec-grid">
-          <div><div class="rec-col-head wins">Biggest wins</div><div class="rec-list" id="list-bigwin"><div class="muted">—</div></div></div>
-          <div><div class="rec-col-head losses">Heaviest defeats</div><div class="rec-list" id="list-bigloss"><div class="muted">—</div></div></div>
-        </div>
-        <div id="rec-goals" class="rec-grid" style="display:none">
-          <div><div class="rec-col-head wins">Most goals scored</div><div class="rec-list" id="list-mostfor"><div class="muted">—</div></div></div>
-          <div><div class="rec-col-head losses">Most goals conceded</div><div class="rec-list" id="list-mostag"><div class="muted">—</div></div></div>
-        </div>
-      </div>
-
-      <!-- STREAKS + OPPONENTS -->
-      <div class="grid-pair" style="margin-bottom:14px">
-        <div class="streakCard" id="streak-card">
-          <h3>Streaks</h3>
-          <div class="stSwitch">
-            <div class="seg full" id="streak-seg" role="tablist" aria-label="Streak type">
-              <button type="button" role="tab" data-val="wins" aria-pressed="true">Wins</button>
-              <button type="button" role="tab" data-val="unbeaten" aria-pressed="false">Unbeaten</button>
-              <button type="button" role="tab" data-val="losses" aria-pressed="false">Losses</button>
-              <button type="button" role="tab" data-val="winless" aria-pressed="false">Winless</button>
-            </div>
-            <div class="seg full seg--compact" id="streak-mode-seg" role="tablist" aria-label="Streak scope">
-              <button type="button" role="tab" data-val="all" aria-pressed="true">All</button>
-              <button type="button" role="tab" data-val="single" aria-pressed="false">Single season</button>
-              <button type="button" role="tab" data-val="start" aria-pressed="false">Season start</button>
-            </div>
-          </div>
-          <div class="streak-head" id="streak-head">
-            <div class="streak-meta">
-              <div class="streak-title" id="st-title">Longest winning streak</div>
-              <div class="streak-range-wrap">
-                <button class="navbtn" id="st-prev" aria-label="Previous instance" hidden>‹</button>
-                <div class="streak-range" id="st-range">—</div>
-                <span class="streak-counter" id="st-ctr" hidden>1/1</span>
-                <button class="navbtn" id="st-next" aria-label="Next instance" hidden>›</button>
+        <div class="perf-layout">
+          <!-- Left: donut (retains #card-results inner structure) -->
+          <div id="card-results" class="perf-donut">
+            <div class="donut-wrap">
+              <div class="donut" id="res-donut"></div>
+              <div class="donut-center">
+                <div>
+                  <div class="big" id="res-winpct">—%</div>
+                  <div class="sub">Win rate</div>
+                </div>
               </div>
             </div>
-            <div class="streak-count" id="st-count">—</div>
+            <div class="legend-row">
+              <span class="key"><i class="sw w"></i>W <span id="res-w">—</span></span>
+              <span class="key"><i class="sw d"></i>D <span id="res-d">—</span></span>
+              <span class="key"><i class="sw l"></i>L <span id="res-l">—</span></span>
+              <span class="key"><b>P</b> <span id="res-p">—</span></span>
+            </div>
           </div>
-          <div class="table-wrap" id="st-wrap">
-            <table class="streak-table" id="st-table">
-              <colgroup><col class="col-date"/><col class="col-ven"/><col class="col-opp"/><col class="col-score"/><col class="col-res"/></colgroup>
-              <thead><tr><th class="left">Date</th><th class="center th-venue">Venue</th><th class="left">Opponent</th><th class="center th-score">Score</th><th class="center th-result">Result</th></tr></thead>
-              <tbody id="st-rows"><tr><td colspan="3" class="muted">—</td></tr></tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card" id="opp-card">
-          <h3 class="card-head">Opponents</h3>
-          <div class="seg full seg--compact" id="opp-seg" role="group" aria-label="Opponent view">
-            <button type="button" data-val="played" aria-pressed="true">Most played</button>
-            <button type="button" data-val="wins" aria-pressed="false">Most wins vs</button>
-            <button type="button" data-val="losses" aria-pressed="false">Most losses vs</button>
-          </div>
-          <div class="table-wrap anim-in" id="opp-wrap">
-            <table class="opp-table" id="opp-table">
-              <colgroup><col/><col/><col/></colgroup>
-              <thead><tr id="opp-head"><th class="left">Opponent</th><th class="opp-center">P</th><th class="opp-center">W-D-L</th></tr></thead>
-              <tbody id="tb-opps"><tr><td>—</td><td class="opp-center">—</td><td class="opp-center">—</td></tr></tbody>
-            </table>
+
+          <!-- Right: goals balance + scoreline frequencies (retains #card-goals inner structure) -->
+          <div class="perf-right" id="card-goals">
+            <div class="perf-goals">
+              <div class="perf-goals-head" id="scope-goals"></div>
+              <div class="hbar">
+                <div class="hbar-row">
+                  <div class="hbar-track"><div class="hbar-fill fill-gf" id="bar-gf" style="width:0%"></div></div>
+                  <div class="muted" id="gf-share">—%</div>
+                </div>
+                <div class="hbar-row">
+                  <div class="hbar-track"><div class="hbar-fill fill-ga" id="bar-ga" style="width:0%"></div></div>
+                  <div class="muted" id="ga-share">—%</div>
+                </div>
+              </div>
+              <div class="row">
+                <span class="chip gf" id="gb-gf">GF —</span>
+                <span class="chip ga" id="gb-ga">GA —</span>
+                <span class="gd-chip gd-zero" id="gb-gd">GD —</span>
+                <span class="pill-white" id="gb-fixtures">— fixtures</span>
+              </div>
+            </div>
+
+            <div class="perf-heatmap" style="position:relative">
+              <div id="hm-root"></div>
+              <div id="scope-results" class="card-scope" style="margin-top:6px"></div>
+            </div>
           </div>
         </div>
       </div>
+    </div>
+    <!-- ===== END NEW KPI CARDS ===== -->
 
-      <!-- SEASON TABLE -->
-      <h2 class="section-head">Season by season</h2>
-      <div class="seasons-wrap">
-        <div class="seasons-table-wrap">
-          <table class="seasons" id="season-table" aria-describedby="season-legend">
-            <caption id="season-cap">Season-by-season — (select a club)</caption>
-            <thead><tr>
-              <th class="namekey-head" aria-label="Team name key"></th>
-              <th class="th-season">Season</th>
-              <th class="move-col" aria-label="Movement" title="Promotion/Relegation">↕</th>
-              <th class="th-division">Division</th>
-              <th><abbr title="Played">P</abbr></th>
-              <th><abbr title="Wins">W</abbr></th>
-              <th><abbr title="Draws">D</abbr></th>
-              <th><abbr title="Losses">L</abbr></th>
-              <th><abbr title="Goals For">GF</abbr></th>
-              <th><abbr title="Goals Against">GA</abbr></th>
-              <th><abbr title="Goal Difference">GD</abbr></th>
-              <th class="strongcol th-pos">Pos</th>
-              <th class="strongcol th-pts"><abbr title="Points">Pts</abbr></th>
-            </tr></thead>
-            <tbody id="season-body"></tbody>
+    <!-- Existing records grid (unchanged) -->
+<h2 class="section-head card-scope-fix">
+  <span class="head-title">Best &amp; Worst</span>
+  <span class="seg" id="bw-seg" role="tablist" aria-label="Best &amp; Worst view">
+    <button type="button" role="tab" data-val="results" aria-pressed="true">Results</button>
+    <button type="button" role="tab" data-val="goals"   aria-pressed="false">Goals</button>
+  </span>
+  <span class="card-scope" id="scope-bw"></span>
+</h2>
+
+    <div id="records-grid">
+<div class="grid-2 row-gap" id="bw-results">
+        <div class="card">
+<h3><span class="pill pill-crimson">Biggest wins</span></h3>
+          <div class="list rec-list" id="list-bigwin"><div class="muted">—</div></div>
+        </div>
+        <div class="card">
+<h3><span class="pill pill-blue">Heaviest defeats</span></h3>
+          <div class="list rec-list" id="list-bigloss"><div class="muted">—</div></div>
+        </div>
+      </div>
+<div class="grid-2 row-gap" id="bw-goals" style="display:none">
+        <div class="card">
+<h3><span class="pill pill-crimson">Most goals scored</span></h3>
+          <div class="list rec-list" id="list-mostfor"><div class="muted">—</div></div>
+        </div>
+        <div class="card">
+<h3><span class="pill pill-blue">Most goals conceded</span></h3>
+          <div class="list rec-list" id="list-mostag"><div class="muted">—</div></div>
+        </div>
+      </div>
+    </div>
+
+
+<div class="grid-2 row-gap">
+<div class="streakCard" id="streak-card">
+<h3><span class="head-title">Streaks</span><span class="card-scope" id="scope-streaks"></span></h3>
+
+        <div class="stSwitch">
+          <div class="seg full" id="streak-seg" role="tablist" aria-label="Streak type">
+            <button type="button" role="tab" data-val="wins"     aria-pressed="true">Wins</button>
+            <button type="button" role="tab" data-val="unbeaten" aria-pressed="false">Unbeaten</button>
+            <button type="button" role="tab" data-val="losses"   aria-pressed="false">Losses</button>
+            <button type="button" role="tab" data-val="winless"  aria-pressed="false">Winless</button>
+          </div>
+<div class="seg full seg--compact" id="streak-mode-seg" role="tablist" aria-label="Streak scope">
+            <button type="button" role="tab" data-val="all"    aria-pressed="true">All</button>
+            <button type="button" role="tab" data-val="single" aria-pressed="false">Single season</button>
+            <button type="button" role="tab" data-val="start"  aria-pressed="false">Season start</button>
+          </div>
+        </div>
+
+        <div class="streak-head" id="streak-head">
+          <div class="streak-meta">
+            <div class="streak-title" id="st-title">Longest winning streak</div>
+            <div class="streak-range-wrap">
+              <button class="navbtn" id="st-prev" aria-label="Previous instance" hidden>‹</button>
+              <div class="streak-range" id="st-range">—</div>
+              <span class="streak-counter" id="st-ctr" hidden>1/1</span>
+              <button class="navbtn" id="st-next" aria-label="Next instance" hidden>›</button>
+            </div>
+          </div>
+          <div class="streak-count" id="st-count">—</div>
+        </div>
+
+        <div class="table-wrap" id="st-wrap">
+          <table class="streak-table" id="st-table">
+            <colgroup>
+              <col class="col-date" />
+              <col class="col-ven" />
+              <col class="col-opp" />
+              <col class="col-score" />
+              <col class="col-res" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="left">Date</th>
+                <th class="center th-venue">Venue</th>
+                <th class="left">Opponent</th>
+                <th class="center th-score">Score</th>
+                <th class="center th-result">Result</th>
+              </tr>
+            </thead>
+            <tbody id="st-rows">
+              <tr><td colspan="3" class="muted">—</td></tr>
+            </tbody>
           </table>
         </div>
-        <p class="legend" id="season-name-legend"></p>
-        <p class="legend" id="season-legend"></p>
-        <div id="club-notes" class="club-notes" hidden></div>
-        <div id="season-placeholder" class="placeholder">Select a club from the drop-down menu to view its season-by-season record.</div>
       </div>
 
-      <!-- LP GRAPH -->
-      <h2 class="section-head">League positions</h2>
-      <div class="card" id="lp-card">
-        <div id="lp-chart-host" class="lp-chart-wrap"></div>
-        <div class="legend" id="lp-legend"></div>
-        <div id="lp-err" class="error"></div>
+<div class="card" id="opp-card">
+<h3><span class="head-title">Opponents</span><span class="card-scope" id="scope-opponents"></span></h3>
+
+<div class="seg full seg--compact" id="opp-seg" role="group" aria-label="Opponent view">
+          <button type="button" data-val="played" aria-pressed="true">Most played</button>
+          <button type="button" data-val="wins"   aria-pressed="false">Most wins vs</button>
+          <button type="button" data-val="losses" aria-pressed="false">Most losses vs</button>
+        </div>
+        <div class="table-wrap anim-in" id="opp-wrap">
+          <table class="opp-table" id="opp-table">
+            <colgroup><col /><col /><col /></colgroup>
+            <thead>
+              <tr id="opp-head">
+                <th class="left">Opponent</th>
+                <th class="opp-center">P</th>
+                <th class="opp-center">W-D-L</th>
+              </tr>
+            </thead>
+            <tbody id="tb-opps"><tr><td>—</td><td class="opp-center">—</td><td class="opp-center">—</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+<h2 class="section-head">League Positions</h2>
+
+    <div class="seasons-wrap">
+      <div class="seasons-table-wrap">
+        <table class="seasons" id="season-table" aria-describedby="season-legend">
+          <caption id="season-cap">Season-by-season — (select a club)</caption>
+<thead>
+  <tr>
+    <th class="namekey-head" aria-label="Team name key"></th>
+    <th class="th-season">Season</th>
+    <th class="move-col" aria-label="Movement" title="Promotion/Relegation">↕</th>
+    <th class="th-division">Division</th>
+    <th><abbr title="Played">P</abbr></th>
+    <th><abbr title="Wins">W</abbr></th>
+    <th><abbr title="Draws">D</abbr></th>
+    <th><abbr title="Losses">L</abbr></th>
+    <th><abbr title="Goals For">GF</abbr></th>
+    <th><abbr title="Goals Against">GA</abbr></th>
+    <th><abbr title="Goal Difference">GD</abbr></th>
+    <th class="strongcol th-pos">Pos</th>
+    <th class="strongcol th-pts"><abbr title="Points">Pts</abbr></th>
+  </tr>
+</thead>
+
+          <tbody id="season-body"></tbody>
+        </table>
       </div>
 
+      <p class="legend" id="season-name-legend"></p>
+      <p class="legend" id="season-legend"></p>
+
+      <div id="club-notes" class="club-notes" hidden></div>
+
+      <div id="season-placeholder" class="placeholder">Select a club from the drop-down menu to view its season-by-season record in the National League.</div>
+    </div>
+
+    <!-- === League Positions Graph (v4.2) — appended at the end of the dashboard === -->
+    <h2 class="section-head">League Positions Graph</h2>
+    <div class="card" id="lp-card">
+      <div id="lp-chart-host" class="lp-chart-wrap"></div>
+      <div class="legend" id="lp-legend"></div>
+      <div id="lp-err" class="error"></div>
     </div>
   </div>
 
@@ -1700,15 +1910,27 @@ let nicknameIndex = new Map();   // ← ensure it exists globally
 function updateAppVisibility(){
   const hasClub = !!currentClub;
   document.body.classList.toggle('no-club', !hasClub);
-  // CSS handles .needs-club visibility via body.no-club; just keep combine-wrap consistent
+
+  // v4.2.1: Hide/show ALL club-dependent sections immediately (no flash)
+  document.querySelectorAll('.needs-club').forEach(n => {
+    if (!n) return;
+    n.hidden = !hasClub;
+    n.style.display = hasClub ? '' : 'none';
+  });
+
+  // Keep the “Include:” block hidden unless a club is actually selected
   const wrap = document.getElementById('combine-wrap');
-  if (wrap) wrap.hidden = !(combineTargets && combineTargets.length);
+  if (wrap) {
+    const shouldShow = hasClub && combineTargets.length > 0;
+    wrap.hidden = !shouldShow;
+    wrap.style.display = shouldShow ? '' : 'none';
+  }
 }
 
 function setFounderBadge(showing){
-  const b = el('founder-badge'); if(!b) return;
-  b.style.display = showing ? '' : 'none';
-  b.setAttribute('aria-hidden', showing ? 'false' : 'true');
+  const fb = el('founder-badge'); if(!fb) return;
+  fb.style.display = showing ? 'inline-flex' : 'none';
+  fb.setAttribute('aria-hidden', showing ? 'false' : 'true');
 }
 
 function _canon(s){
@@ -1762,15 +1984,17 @@ function nicknameFor(entity){
 }
 
 function updateSubbarTitle(entity){
-  const node = el('club-subtitle-inline');
-  if (!node) return;
-  const nn = entity ? nicknameFor(entity) : '';
+  const h = document.querySelector('.subbar h2');
+  if (!h) return;
+  const nn = nicknameFor(entity);
+
   if (nn){
-    node.textContent = `“${nn}”`;
-    node.classList.add('has-nickname');
+    // Uppercase + quotes, no italics
+    h.textContent = `“${nn.toUpperCase()}”`;
+    h.style.visibility = 'visible';
   } else {
-    node.textContent = '';
-    node.classList.remove('has-nickname');
+    h.textContent = '';            // nothing when no club picked
+    h.style.visibility = 'hidden'; // keep spacer width so switcher stays right
   }
 }
 
@@ -2603,6 +2827,7 @@ if (btnV){
   venueFilter = btnV.getAttribute('data-val');
   document.querySelectorAll('#venue-seg button').forEach(b=>b.setAttribute('aria-pressed', b===btnV?'true':'false'));
   scheduleRender();
+  Promise.resolve().then(() => { updateRecordCardHeaders(); updateScopeLines(); });
   return;
 }
 
@@ -2623,14 +2848,19 @@ if (btnV){
             renderStreakCard(currentClub);
             return;
           }
-          // Records: Results | Goals toggle
-const recBtn = e.target.closest?.('#rec-toggle button[data-val]');
-if (recBtn){
-  const v = recBtn.getAttribute('data-val');
-  document.querySelectorAll('#rec-toggle button').forEach(b =>
-    b.setAttribute('aria-pressed', b === recBtn ? 'true' : 'false'));
-  el('rec-results').style.display = v === 'results' ? '' : 'none';
-  el('rec-goals').style.display   = v === 'goals'   ? '' : 'none';
+          // Best & Worst: Results | Goals toggle
+const bwBtn = e.target.closest?.('#bw-seg button[data-val]');
+if (bwBtn){
+  bwMode = bwBtn.getAttribute('data-val');
+  document.querySelectorAll('#bw-seg button')
+    .forEach(b=>b.setAttribute('aria-pressed', b===bwBtn ? 'true' : 'false'));
+
+  updateBWVisibility();
+
+  // Fade only the active Best & Worst grid
+  const target = document.querySelector(bwMode === 'results' ? '#bw-results' : '#bw-goals');
+  if (target) addAnim(target);
+
   return;
 }
 
@@ -2644,7 +2874,30 @@ if (recBtn){
           if (e.target && e.target.id === 'st-prev'){ if (streakInstances.length){ streakIdx = (streakIdx - 1 + streakInstances.length) % streakInstances.length; updateStreakInstanceUI(); } return; }
           if (e.target && e.target.id === 'st-next'){ if (streakInstances.length){ streakIdx = (streakIdx + 1) % streakInstances.length; updateStreakInstanceUI(); } return; }
 
-// v5.0.0: scope buttons wire themselves up in renderScopeBar()
+// v4.9.15: W/D/L switcher removed — heatmap replaces scoreline lists
+
+
+// New KPI: Season scope grid
+const scBtn = e.target.closest?.('#sc-grid .sc-btn:not([aria-disabled="true"])');
+if (scBtn){
+  const s = scBtn.getAttribute('data-scope');
+  if (s){
+    scope = s;
+    renderKPIs(currentClub);
+    updateRecordCardHeaders();      // pills reset
+    renderStreakCard(currentClub);  // streaks content
+    updateScopeLines();             // update all subtle scope lines
+    // fade-in the affected cards
+    addAnim(el('card-seasons'));
+    addAnim(el('card-goals'));
+    addAnim(el('card-results'));
+    addAnim(el('streak-card'));
+  }
+  return;
+}
+
+
+
 
         });
 
@@ -2955,347 +3208,71 @@ function getMergerChildren(parentNorm){
 
     function render(entity){
       try{
-        if (!entity){ updateAppVisibility(); return; }
-
-        // banner text + nickname + founder
-        setText(el('club-banner'), (entity.display || entity.canon || entity || '').toString().toUpperCase());
-        show(el('club-banner'), true);
-        updateSubbarTitle(entity);
-        setFounderBadge(isFounderMember(entity));
+        const banner = el('club-banner'); if (banner){ banner.hidden=false; banner.textContent = entity.toUpperCase(); }
+setFounderBadge(isFounderByMeta(entity));
+        // v4.4.0 — keep unloaded state clean
         updateAppVisibility();
+    updateSubbarTitle(entity);
+    // Subbar title = nickname in ALL CAPS with quotes, or fallback text
 
-        renderScopeBar(entity);
-        renderAtAGlance(entity);
-        renderHomeAwayCard(entity);
-        renderHeatmap(entity);
-        renderRecordsCard(entity);
-        renderStreakCard(entity);
 
-        // Opponents: reuse the v4.9.15 logic that builds latestOppRows then renders
-        const ents = entitySet();
-        const mm = filteredMatchesKPI(ents);
+        // === NEW: top KPI cards ===
+        renderKPIs(entity);
+
+        // Everything below uses full (no scope) venue-filtered match set, unchanged:
+const ents = entitySet();
+const mm = filteredMatchesKPI(ents); // respects venue + seasons scope
+
+
+        let W=0,D=0,L=0, GF=0, GA=0;
+        const cand = { bigwin:[], bigloss:[], mostfor:[], mostag:[], highest:[] };
         const byOpp = new Map();
-        mm.forEach(m => {
+
+        mm.forEach(m=>{
           const pe = perspectiveEntityForMatch(m, ents); if (!pe) return;
           const r = resByEntity(m, pe);
+          const gF = gfByEntity(m, pe), gA = gaByEntity(m, pe);
+          if (r==='W') W++; else if (r==='D') D++; else L++;
+          if (Number.isFinite(gF)) GF += gF;
+          if (Number.isFinite(gA)) GA += gA;
+
+          const margin = (Number.isFinite(gF)&&Number.isFinite(gA)) ? (gF - gA) : NaN;
+          const total = (Number.isFinite(gF)&&Number.isFinite(gA)) ? (gF + gA) : NaN;
+          const pack = { m, gf:gF, ga:gA, margin, total, chosen: pe };
+          cand.bigwin.push(pack); cand.bigloss.push(pack); cand.mostfor.push(pack); cand.mostag.push(pack); cand.highest.push(pack);
+
           const atHome = isHomeByEntity(m, pe);
           const oppEntity = atHome ? m.away_entity : m.home_entity;
           const oppDisplay = atHome ? m.away : m.home;
           const rec = byOpp.get(oppEntity) || { p:0, w:0, d:0, l:0, name: oppDisplay };
-          rec.p++; if (r === 'W') rec.w++; else if (r === 'D') rec.d++; else rec.l++;
+          rec.p++; if (r==='W') rec.w++; else if (r==='D') rec.d++; else rec.l++;
           rec.name = oppDisplay;
           byOpp.set(oppEntity, rec);
         });
-        latestOppRows = Array.from(byOpp.entries()).map(([oppEntity, r]) => ({ oppEntity, opp: r.name, ...r }));
-        updateOppTheme();
-        renderOppTableFromCache();
+
+          renderRecordList('list-bigwin',  topNBigWins(cand.bigwin,  entity,8), entity);
+          renderRecordList('list-bigloss', topNBigLoss(cand.bigloss, entity,8), entity);
+          renderRecordList('list-mostfor', topNByGF(cand.mostfor,    entity,8), entity);
+          renderRecordList('list-mostag',  topNByGA(cand.mostag,     entity,8), entity);
+updateRecordCardHeaders();
+updateScopeLines();
+updateBWVisibility();   // ensure the chosen pair is shown
+
+
+        renderStreakCard(entity);
+
+        latestOppRows = Array.from(byOpp.entries()).map(([oppEntity,r])=>({oppEntity, opp:r.name, ...r}));
+        updateOppTheme(); renderOppTableFromCache();
 
         renderSeasonTable(entity);
-        renderLeagueGraph(entity);
+        renderLeagueGraph(entity); // v4.2.1: draw League Positions Graph (respects affiliate switches)
+
+        addAnim(el('kpi-top')); addAnim(el('card-results')); addAnim(el('records-grid'));
       }catch(e){
+
         const ERR = el('error'); if (ERR){ ERR.style.display='block'; ERR.textContent = 'Render error: ' + (e.message||String(e)); }
         console.error(e);
       }
-    }
-
-    // ===== v5: new computation + render helpers =====
-
-    function computeCleanSheets(entsArr){
-      const mm = filteredMatchesKPI(entsArr);
-      let cleanSheets = 0, failedToScore = 0;
-      mm.forEach(m => {
-        if (isAbandonedNoGoals(m)) return;
-        const pe = perspectiveEntityForMatch(m, entsArr); if (!pe) return;
-        const gf = gfByEntity(m, pe), ga = gaByEntity(m, pe);
-        if (Number.isFinite(ga) && ga === 0) cleanSheets++;
-        if (Number.isFinite(gf) && gf === 0) failedToScore++;
-      });
-      return { cleanSheets, failedToScore };
-    }
-
-    function countUniqueOpponents(entsArr){
-      const mm = filteredMatchesKPI(entsArr);
-      const set = new Set();
-      mm.forEach(m => {
-        const pe = perspectiveEntityForMatch(m, entsArr); if (!pe) return;
-        const atHome = isHomeByEntity(m, pe);
-        const oppEntity = atHome ? m.away_entity : m.home_entity;
-        if (oppEntity) set.add(norm(oppEntity));
-      });
-      return set.size;
-    }
-
-    function computeHomeAway(entsArr){
-      const home = { p:0,w:0,d:0,l:0,gf:0,ga:0,winPct:0 };
-      const away = { p:0,w:0,d:0,l:0,gf:0,ga:0,winPct:0 };
-      allMatches.forEach(m => {
-        const pe = perspectiveEntityForMatch(m, entsArr); if (!pe) return;
-        if (!hasResult(m)) return;
-        if (!scopeOK(m, scope, pe)) return;
-        if (isNeutral(m)) return;
-        const r = resByEntity(m, pe);
-        const gf = gfByEntity(m, pe), ga = gaByEntity(m, pe);
-        const bucket = isHomeByEntity(m, pe) ? home : away;
-        bucket.p++;
-        if (r === 'W') bucket.w++; else if (r === 'D') bucket.d++; else bucket.l++;
-        if (Number.isFinite(gf)) bucket.gf += gf;
-        if (Number.isFinite(ga)) bucket.ga += ga;
-      });
-      home.winPct = home.p ? (home.w / home.p) * 100 : 0;
-      away.winPct = away.p ? (away.w / away.p) * 100 : 0;
-      return { home, away };
-    }
-
-    function _statCell(num, label, colorClass){
-      const cls = colorClass ? ` ${colorClass}` : '';
-      return `<div class="stat"><div class="num${cls}">${num}</div><div class="lab">${label}</div></div>`;
-    }
-
-    function renderAtAGlance(entity){
-      const ents = entitySet();
-      const agg = computeAggregatesKPI(ents);
-      const cs = computeCleanSheets(ents);
-      const uniqOpp = countUniqueOpponents(ents);
-      const pres = seasonPresence(ents);
-
-      const winRate = agg.P ? (agg.W / agg.P * 100).toFixed(1) + '%' : '—';
-      const gpg = agg.P ? ((agg.GF + agg.GA) / agg.P).toFixed(2) : '—';
-
-      const primaryHTML = [
-        _statCell(fmtNum(pres.counts.ALL), 'Seasons', ''),
-        _statCell(fmtNum(agg.P),            'Played',  ''),
-        _statCell(fmtNum(agg.W),            'Wins',    'wins'),
-        _statCell(fmtNum(agg.D),            'Draws',   'draws'),
-        _statCell(fmtNum(agg.L),            'Losses',  'losses'),
-        _statCell(winRate,                  'Win rate',''),
-        _statCell(fmtNum(agg.GF),           'GF',      'gf'),
-        _statCell(fmtNum(agg.GA),           'GA',      'ga'),
-      ].join('');
-      setHTML('strip-primary', primaryHTML);
-
-      const secondaryHTML = [
-        _statCell(fmtNum(uniqOpp),            'Opponents',     ''),
-        _statCell(gpg,                        'Goals/game',    ''),
-        _statCell(fmtNum(cs.cleanSheets),     'Clean sheets',  'cs'),
-        _statCell(fmtNum(cs.failedToScore),   'Without scoring','nosc'),
-      ].join('');
-      setHTML('strip-secondary', secondaryHTML);
-
-      renderHonoursInline(entity, el('strip-honours'), el('strip-honours-sep'));
-    }
-
-    function renderHonoursInline(entity, honDiv, honSep){
-      if (!honDiv) return;
-      const order = ['National','North','South'];
-      if (!tablesSeasons || !tablesSeasons.length || !entity){
-        honDiv.innerHTML = '';
-        if (honSep) honSep.style.display = 'none';
-        honDiv.style.display = 'none';
-        return;
-      }
-
-      const ents = entitySet();
-      const champs = { National:[], North:[], South:[] };
-      const playoff = { National:[], North:[], South:[] };
-      const nsPlayoff = [];
-
-      for (const s of tablesSeasons){
-        for (const key of order){
-          const div = (s.divisions || {})[key]; if (!div) continue;
-          const rows = Array.isArray(div.rows) ? div.rows : [];
-          const hit = rows.find(r => ents.includes(norm(r.entity ?? r.team)));
-          if (!hit) continue;
-          const classes = Array.isArray(hit.classes) ? hit.classes : [];
-          if (classes.includes('champion')) champs[key].push(s.season);
-          else if (classes.includes('promoted')){
-            if (INTERDIVISION_NS_SEASONS.has(s.season) && STEP2_KEYS.has(key)) nsPlayoff.push(s.season);
-            else playoff[key].push(s.season);
-          }
-        }
-      }
-
-      const parts = [];
-      for (const key of order){
-        if (champs[key].length){
-          parts.push(`<strong>${key} Champions</strong>: ${champs[key].slice().sort().join(', ')}`);
-        }
-      }
-      for (const key of order){
-        if (playoff[key].length){
-          parts.push(`<strong>${key} Play-off Winners</strong>: ${playoff[key].slice().sort().join(', ')}`);
-        }
-      }
-      if (nsPlayoff.length){
-        parts.push(`<strong>North/South Play-off Winners</strong>: ${nsPlayoff.slice().sort().join(', ')}`);
-      }
-
-      if (parts.length){
-        honDiv.innerHTML = parts.join(' · ');
-        honDiv.style.display = '';
-        if (honSep) honSep.style.display = '';
-        return;
-      }
-
-      // Fallback: best finish
-      const best = bestOverall(entity, order);
-      if (!best){
-        honDiv.innerHTML = '';
-        if (honSep) honSep.style.display = 'none';
-        honDiv.style.display = 'none';
-        return;
-      }
-      honDiv.innerHTML = `<strong>Best finish</strong>: ${ordinal(best.pos)} in ${best.div} (${best.seasons.join(', ')})`;
-      honDiv.style.display = '';
-      if (honSep) honSep.style.display = '';
-    }
-
-    function renderHomeAwayCard(entity){
-      const ents = entitySet();
-      const { home, away } = computeHomeAway(ents);
-      const sideHTML = (label, s) => `
-        <div class="ha-head">${label}</div>
-        <div class="ha-pct">${(s.winPct||0).toFixed(1)}%</div>
-        <div class="ha-line">P ${fmtNum(s.p)} · <span class="wins">W ${fmtNum(s.w)}</span> <span class="draws">D ${fmtNum(s.d)}</span> <span class="losses">L ${fmtNum(s.l)}</span></div>
-        <div class="ha-line"><span class="gf">GF ${fmtNum(s.gf)}</span> · <span class="ga">GA ${fmtNum(s.ga)}</span></div>
-      `;
-      setHTML('ha-home', sideHTML('Home record', home));
-      setHTML('ha-away', sideHTML('Away record', away));
-    }
-
-    function renderScopeBar(entity){
-      const row = el('scope-row');
-      const sub = el('scope-sub');
-      if (!row) return;
-      if (!entity){
-        row.innerHTML = '';
-        if (sub){ sub.hidden = true; sub.innerHTML = ''; }
-        return;
-      }
-      const ents = entitySet();
-      const pres = seasonPresence(ents);
-
-      const present = [];
-      if (pres.hasNat)   present.push('National');
-      if (pres.hasNorth) present.push('North');
-      if (pres.hasSouth) present.push('South');
-      const n = present.length;
-      // If affiliates just created a multi-division history, default to "All"
-      if (combineJustChanged && n > 1){ scope = 'all'; combineJustChanged = false; }
-
-      const pressBtn = (label, ds, pressed) =>
-        `<button class="scope-btn" data-scope="${ds}" aria-pressed="${pressed?'true':'false'}">${label} <span class="scope-count">(${fmtNum(/__C__/.test(label)?0:0)})</span></button>`;
-
-      // Simpler builder: label + count is part of the label text.
-      const makeBtn = (label, ds, count, pressed) =>
-        `<button class="scope-btn" data-scope="${ds}" aria-pressed="${pressed?'true':'false'}">${label} <span class="scope-count">(${fmtNum(count)})</span></button>`;
-
-      const makeLabel = (label) => `<span class="scope-label">${label}</span>`;
-
-      // Build level-1 + level-2 by pattern
-      const c = pres.counts;
-      let l1 = '';
-      let l2 = '';
-      let showSub = false;
-
-      const step2Pressed = (scope === 'step2' || scope === 'north' || scope === 'south');
-
-      if (n === 0){
-        row.innerHTML = '';
-        if (sub){ sub.hidden = true; sub.innerHTML = ''; }
-        return;
-      }
-      if (n === 1){
-        // Single-division club: non-clickable label
-        const only = present[0];
-        l1 = makeLabel(`${only} (${fmtNum(only==='National'?c.S1:(only==='North'?c.N:c.S))})`);
-        // Force scope to that division (so filteredMatchesKPI works)
-        const desired = only === 'National' ? 'national' : (only === 'North' ? 'north' : 'south');
-        if (scope !== desired) scope = desired;
-      } else if (pres.hasNat && !(pres.hasNorth && pres.hasSouth)){
-        // National + one Step 2 → flat buttons: All / National / (North|South)
-        const other = pres.hasNorth ? 'North' : 'South';
-        const otherCount = pres.hasNorth ? c.N : c.S;
-        const otherScope = pres.hasNorth ? 'north' : 'south';
-        l1 = [
-          makeBtn('All',      'all',      c.ALL, scope === 'all'),
-          makeBtn('National', 'national', c.S1,  scope === 'national'),
-          makeBtn(other,      otherScope, otherCount, scope === otherScope)
-        ].join('');
-      } else if (!pres.hasNat && pres.hasNorth && pres.hasSouth){
-        // Two Step 2, no National → All / Step 2  + sub: Both / North / South
-        l1 = [
-          makeBtn('All',    'all',   c.ALL,   scope === 'all'),
-          makeBtn('Step 2', 'step2', c.STEP2, step2Pressed)
-        ].join('');
-        showSub = step2Pressed;
-        l2 = [
-          makeBtn('Both',  'step2', c.STEP2, scope === 'step2'),
-          makeBtn('North', 'north', c.N,     scope === 'north'),
-          makeBtn('South', 'south', c.S,     scope === 'south')
-        ].join('');
-      } else {
-        // All three: All / National / Step 2  + sub when Step 2 active
-        l1 = [
-          makeBtn('All',      'all',      c.ALL,   scope === 'all'),
-          makeBtn('National', 'national', c.S1,    scope === 'national'),
-          makeBtn('Step 2',   'step2',    c.STEP2, step2Pressed)
-        ].join('');
-        showSub = step2Pressed && pres.hasNorth && pres.hasSouth;
-        l2 = [
-          makeBtn('Both',  'step2', c.STEP2, scope === 'step2'),
-          makeBtn('North', 'north', c.N,     scope === 'north'),
-          makeBtn('South', 'south', c.S,     scope === 'south')
-        ].join('');
-      }
-
-      row.innerHTML = l1;
-      if (sub){
-        if (showSub){
-          sub.innerHTML = l2;
-          sub.hidden = false;
-        } else {
-          sub.innerHTML = '';
-          sub.hidden = true;
-        }
-      }
-
-      // Wire up clicks per button (clickable scope buttons only)
-      row.querySelectorAll('.scope-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const ds = btn.getAttribute('data-scope');
-          if (!ds) return;
-          scope = ds;
-          render(currentClub);
-        });
-      });
-      if (sub){
-        sub.querySelectorAll('.scope-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const ds = btn.getAttribute('data-scope');
-            if (!ds) return;
-            scope = ds;
-            render(currentClub);
-          });
-        });
-      }
-    }
-
-    function renderRecordsCard(entity){
-      const ents = entitySet();
-      const mm = filteredMatchesKPI(ents);
-      const cand = { bigwin:[], bigloss:[], mostfor:[], mostag:[] };
-      mm.forEach(m => {
-        const pe = perspectiveEntityForMatch(m, ents); if (!pe) return;
-        const gF = gfByEntity(m, pe), gA = gaByEntity(m, pe);
-        const margin = (Number.isFinite(gF) && Number.isFinite(gA)) ? (gF - gA) : NaN;
-        const total  = (Number.isFinite(gF) && Number.isFinite(gA)) ? (gF + gA) : NaN;
-        const pack = { m, gf:gF, ga:gA, margin, total, chosen: pe };
-        cand.bigwin.push(pack); cand.bigloss.push(pack); cand.mostfor.push(pack); cand.mostag.push(pack);
-      });
-      renderRecordList('list-bigwin',  topNBigWins (cand.bigwin,  entity, 10), entity);
-      renderRecordList('list-bigloss', topNBigLoss (cand.bigloss, entity, 10), entity);
-      renderRecordList('list-mostfor', topNByGF    (cand.mostfor, entity, 10), entity);
-      renderRecordList('list-mostag',  topNByGA    (cand.mostag,  entity, 10), entity);
     }
 
     function renderRecordList(listId, items, entity){
@@ -3379,6 +3356,282 @@ function getMergerChildren(parentNorm){
         hasSouth: S.size>0,
         counts: { ALL:ALL.size, S1:S1.size, N:N.size, S:S.size, STEP2:STEP2.size }
       };
+    }
+
+// Keep exactly one clean version of this:
+function applyScopePressedStates(){
+  const btns = document.querySelectorAll('#sc-grid [data-scope]');
+  btns.forEach(b=>{
+    const ds = b.getAttribute('data-scope');
+    let pressed = (ds === scope);
+    // If Step 1/National are present, press both when either is selected
+    if ((scope === 'step1' || scope === 'national') && (ds === 'step1' || ds === 'national')) {
+      pressed = true;
+    }
+    b.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+  });
+}
+
+
+// ---------- Header suffixes (Venue + Division scope) ----------
+function currentScopeLabel(){
+  // Collapse Step 1 → "National" for all user-facing guidance
+  if (scope === 'step1' || scope === 'national') return 'National';
+  if (scope === 'north')    return 'North';
+  if (scope === 'south')    return 'South';
+  if (scope === 'step2')    return 'Step 2';
+  return ''; // 'all'
+
+}
+function currentVenueLabel(){
+  if (venueFilter==='home') return 'Home';
+  if (venueFilter==='away') return 'Away';
+  return ''; // 'all'
+}
+function buildHeaderSuffix(includeVenue = true){
+  const parts = [];
+
+  // Optionally include the Venue (“Home/Away”) piece
+  if (includeVenue){
+    const v = currentVenueLabel(); // "Home", "Away" or ""
+    if (v) parts.push(v);
+  }
+
+  // Show the division label only if the (possibly combined) club history spans >1 division groups
+  const pres = seasonPresence(entitySet());
+  let showDivision = true;
+  if (pres) {
+    const onlyNat   =  pres.hasNat  && !pres.hasNorth && !pres.hasSouth;
+    const onlyNorth = !pres.hasNat  &&  pres.hasNorth && !pres.hasSouth;
+    const onlySouth = !pres.hasNat  && !pres.hasNorth &&  pres.hasSouth;
+
+    if (scope === 'national' || scope === 'step1') showDivision = !onlyNat;
+    else if (scope === 'north')                     showDivision = !onlyNorth;
+    else if (scope === 'south')                     showDivision = !onlySouth;
+    else if (scope === 'step2')                     showDivision = (pres.hasNorth && pres.hasSouth);
+  }
+
+  const s = showDivision ? currentScopeLabel() : '';
+  if (s) parts.push(s);
+
+  // Always use " & " between parts and append " only"
+  return parts.length ? ` (${parts.join(' & ')} only)` : '';
+}
+
+function updateScopeLines(){
+  const scopeTxtAll = buildHeaderSuffix(true)  || '';  // includes Venue
+  const scopeTxtDiv = buildHeaderSuffix(false) || '';  // division only (no Venue)
+
+  // Top cards (Overview intentionally omitted)
+  const setTxt = (sel, txt) => { const n = document.querySelector(sel); if (n) n.textContent = txt; };
+  setTxt('#scope-goals',    scopeTxtAll);
+  setTxt('#scope-results',  scopeTxtAll);
+  setTxt('#scope-honours',  scopeTxtDiv);   // ← Honours/Best Finish must NOT show “Home/Away”
+
+  // Other cards
+  setTxt('#scope-streaks',   scopeTxtAll);
+  setTxt('#scope-opponents', scopeTxtAll);
+
+  // Best & Worst — section header only
+  setTxt('#scope-bw', scopeTxtAll);
+}
+function updateBWVisibility(){
+  const res   = document.getElementById('bw-results');
+  const goals = document.getElementById('bw-goals');
+  if (!res || !goals) return;
+  res.style.display   = (bwMode === 'results') ? '' : 'none';
+  goals.style.display = (bwMode === 'goals')   ? '' : 'none';
+}
+
+/* Update headings for the 5 record cards */
+function updateRecordCardHeaders(){
+  // Ensure the pills are just labels (no scope inside)
+  const bw = document.querySelector('#list-bigwin')?.closest('.card')?.querySelector('h3');
+
+  if (bw) bw.innerHTML = `<span class="pill pill-crimson">Biggest wins</span>`;
+
+  const bl = document.querySelector('#list-bigloss')?.closest('.card')?.querySelector('h3');
+  if (bl) bl.innerHTML = `<span class="pill pill-blue">Heaviest defeats</span>`;
+
+  const mf = document.querySelector('#list-mostfor')?.closest('.card')?.querySelector('h3');
+  if (mf) mf.innerHTML = `<span class="pill pill-crimson">Most goals scored</span>`;
+
+  const ma = document.querySelector('#list-mostag')?.closest('.card')?.querySelector('h3');
+  if (ma) ma.innerHTML = `<span class="pill pill-blue">Most goals conceded</span>`;
+
+  const hg = document.querySelector('#list-highest')?.closest('.card')?.querySelector('h3');
+  if (hg) hg.innerHTML = `<span class="pill pill-black">Highest scoring games</span>`;
+
+  // Now update the subtle scope text under the headers
+  updateScopeLines();
+}
+
+
+    function updateSeasonSwitcher(entity){
+      const grid=el('sc-grid');
+      if(!entity){
+        grid.className='sc-grid cols-1';
+        grid.innerHTML=`<button class="sc-btn span-all single" aria-disabled="true">Select a club</button>`;
+        return;
+      }
+      // Use combined entities (primary + any affiliated included via the switcher)
+      const pres=seasonPresence(entitySet());
+      const present=[]; if(pres.hasNat) present.push('National'); if(pres.hasNorth) present.push('North'); if(pres.hasSouth) present.push('South');
+      const n=present.length;
+      // If affiliates just created a multi-division history, default to "All seasons"
+if (combineJustChanged && n > 1) {
+  scope = 'all';
+  combineJustChanged = false;
+}
+
+      const btn=(label, ds, o={})=>{
+        const pr=ds && scope===ds ? ' aria-pressed="true"' : ' aria-pressed="false"';
+        const dis=o.disabled?' aria-disabled="true"':'';
+        const cls=['sc-btn']; if(o.spanAll)cls.push('span-all'); if(o.span2)cls.push('span-2'); if(o.single)cls.push('single');
+        const data=ds?` data-scope="${ds}"`:'';
+        return `<button class="${cls.join(' ')}"${data}${pr}${dis}>${label}</button>`;
+      };
+      if(n===0){
+        grid.className='sc-grid cols-1';
+        grid.innerHTML=`<button class="sc-btn span-all single" aria-disabled="true">No league-table seasons</button>`;
+        return;
+      }
+      if(n===1){
+        const only=present[0], cnt=only==='National'?pres.counts.S1:only==='North'?pres.counts.N:pres.counts.S;
+        grid.className='sc-grid cols-1';
+        grid.innerHTML=btn(`${only} seasons (${fmtNum(cnt)})`,null,{disabled:true,spanAll:true,single:true});
+        scope=(only==='National'?'national':only.toLowerCase());
+        return;
+      }
+      if(n===2){
+        const [cA,cB]=present;
+        const sA=(cA==='National'?'national':cA.toLowerCase()), sB=(cB==='National'?'national':cB.toLowerCase());
+        const cntA=cA==='National'?pres.counts.S1:(cA==='North'?pres.counts.N:pres.counts.S);
+        const cntB=cB==='National'?pres.counts.S1:(cB==='North'?pres.counts.N:pres.counts.S);
+        grid.className='sc-grid cols-2';
+        grid.innerHTML=[
+          btn(`All seasons (${fmtNum(pres.counts.ALL)})`,'all',{spanAll:true}),
+          btn(`${cA} (${fmtNum(cntA)})`,sA),
+          btn(`${cB} (${fmtNum(cntB)})`,sB)
+        ].join('');
+        applyScopePressedStates(); return;
+      }
+      grid.className='sc-grid cols-3';
+      grid.innerHTML=[
+        btn(`All seasons (${fmtNum(pres.counts.ALL)})`,'all',{spanAll:true}),
+        btn(`Step 1 (${fmtNum(pres.counts.S1)})`,'step1'),
+        btn(`Step 2 (${fmtNum(pres.counts.STEP2)})`,'step2',{span2:true}),
+        btn(`National (${fmtNum(pres.counts.S1)})`,'national'),
+        btn(`North (${fmtNum(pres.counts.N)})`,'north'),
+        btn(`South (${fmtNum(pres.counts.S)})`,'south')
+      ].join('');
+      applyScopePressedStates();
+    }
+
+function renderHonoursNew(entity){
+  const order=['National','North','South'];
+  if(!tablesSeasons.length || !entity){
+    setHTML('honours',
+      `<h3><span class="head-title">Best finish</span><span class="card-scope" id="scope-honours"></span></h3>
+       <div class="hon-body"><span class="muted">—</span></div>`
+    );
+    return;
+  }
+
+  const ents = entitySet(); // include combine
+  const champs={}, playoff={}; order.forEach(k=>{ champs[k]=[]; playoff[k]=[]; });
+  const nsPlayoff = [];
+
+  for (const s of tablesSeasons){
+    for (const key of order){
+      const div = (s.divisions||{})[key]; if (!div) continue;
+      const rows = Array.isArray(div.rows) ? div.rows : [];
+      const hit  = rows.find(r => ents.includes(norm(r.entity ?? r.team)));
+      if (!hit) continue;
+      const classes = Array.isArray(hit.classes) ? hit.classes : [];
+      if (classes.includes('champion'))  champs[key].push(s.season);
+      else if (classes.includes('promoted')){
+        if (INTERDIVISION_NS_SEASONS.has(s.season) && STEP2_KEYS.has(key)) nsPlayoff.push(s.season);
+        else playoff[key].push(s.season);
+      }
+    }
+  }
+
+  const lines=[];
+  for(const key of order){
+    if(champs[key].length) lines.push(`<div><strong>${key} Champions</strong>: ${champs[key].sort().join(', ')}</div>`);
+  }
+  for(const key of order){
+    if(playoff[key].length) lines.push(`<div><strong>${key} Play-off Winners</strong>: ${playoff[key].sort().join(', ')}</div>`);
+  }
+  if (nsPlayoff.length) lines.push(`<div><strong>North/South Play-off Winners</strong>: ${nsPlayoff.sort().join(', ')}</div>`);
+
+  if(lines.length){
+    setHTML('honours',
+      `<h3><span class="head-title">Honours</span><span class="card-scope" id="scope-honours"></span></h3>
+       <div class="hon-body">${lines.join('')}</div>`
+    );
+    return;
+  }
+
+  // Fallback: highest league finish (header becomes “Best finish”)
+  const best = bestOverall(entity, order);
+  if (!best){
+    setHTML('honours',
+      `<h3><span class="head-title">Best finish</span><span class="card-scope" id="scope-honours"></span></h3>
+       <div class="hon-body"><span class="muted">—</span></div>`
+    );
+    return;
+  }
+  const suffix = best.seasons.join(', ');
+  const lead   = `${ordinal(best.pos)} in ${best.div}`;
+  setHTML('honours',
+    `<h3><span class="head-title">Best finish</span><span class="card-scope" id="scope-honours"></span></h3>
+     <div class="hon-body"><strong>${lead}</strong>: ${suffix}</div>`
+  );
+}
+function renderGoalsCard(entity){
+  const ents = entitySet();
+
+  if(!entity){
+    setText('gf-share','—%'); setText('ga-share','—%');
+    setText('gb-gd','GD —'); setText('gb-gf','GF —'); setText('gb-ga','GA —'); setText('gb-fixtures','— fixtures');
+    el('gb-gd').className='gd-chip gd-zero';
+    el('bar-gf').style.width='0%';
+    el('bar-ga').style.width='0%';
+    return;
+  }
+
+  const a = computeAggregatesKPI(ents);
+  const tot = (a.GF + a.GA) || 1;
+  const gfPct = a.GF * 100 / tot;
+  const gaPct = a.GA * 100 / tot;
+
+  el('bar-gf').style.width = `${gfPct.toFixed(1)}%`;
+  el('bar-ga').style.width = `${gaPct.toFixed(1)}%`;
+  setText('gf-share', Number.isFinite(gfPct) ? gfPct.toFixed(1) + '%' : '—%');
+  setText('ga-share', Number.isFinite(gaPct) ? gaPct.toFixed(1) + '%' : '—%');
+
+  setText('gb-gf', `GF ${fmtNum(a.GF)}`);
+  setText('gb-ga', `GA ${fmtNum(a.GA)}`);
+  setText('gb-gd', `GD ${(a.GD > 0 ? '+' : '')}${fmtNum(a.GD)}`);
+  setText('gb-fixtures', `${fmtNum(a.P)} fixtures`);
+
+  const gd = el('gb-gd');
+  gd.className = 'gd-chip ' + (a.GD > 0 ? 'gd-pos' : a.GD < 0 ? 'gd-neg' : 'gd-zero');
+}
+    function renderResultsDonut(entity){
+      const donut=el('res-donut');
+      if(!entity){
+        donut.style.setProperty('--wdeg','0deg'); donut.style.setProperty('--ddeg','0deg');
+        ['res-winpct','res-w','res-d','res-l','res-p'].forEach(id=>setText(id,'—')); return;
+      }
+      const a=computeAggregatesKPI(entitySet());
+      const wdeg=a.P? (a.W/a.P)*360 : 0, ddeg=a.P? (a.D/a.P)*360 : 0;
+      donut.style.setProperty('--wdeg', `${wdeg}deg`);
+      donut.style.setProperty('--ddeg', `${ddeg}deg`);
+      setText('res-winpct', a.P? a.winPct.toFixed(1)+'%' : '—%');
+      setText('res-w', fmtNum(a.W)); setText('res-d', fmtNum(a.D)); setText('res-l', fmtNum(a.L)); setText('res-p', fmtNum(a.P));
     }
 
     // v4.9.15 — Scoreline heatmap (replaces W/D/L frequency lists)
@@ -3530,6 +3783,19 @@ function getMergerChildren(parentNorm){
       });
     }
 
+function renderKPIs(entity){
+  updateSeasonSwitcher(entity || null);
+  renderHonoursNew(entity || null);
+  renderGoalsCard(entity || null);
+renderResultsDonut(entity || null);
+renderHeatmap(entity || null);
+updateScopeLines(); // keep Results/others in sync
+// optional: animate on render
+addAnim(el('card-seasons')); addAnim(el('card-goals')); addAnim(el('card-results'));
+
+}
+
+
     // ===== Existing honours fallback helper =====
     function bestOverall(entity, order){
       const ents = entitySet();
@@ -3621,6 +3887,8 @@ if (streakTab==='unbeaten') baseLabel='Longest unbeaten streak';
 else if (streakTab==='losses') baseLabel='Longest losing streak';
 else if (streakTab==='winless') baseLabel='Longest winless streak';
 setText('st-title', baseLabel);
+const scLine = document.getElementById('scope-streaks');
+if (scLine) scLine.textContent = buildHeaderSuffix() || '';
 
 
       streakInstances = computeStreakInstances(entity);
@@ -4942,6 +5210,32 @@ g.addEventListener('click', (e) => {
 
 
   })();
+  </script>
+
+  </div><!-- /#dash-root -->
+
+  <script>
+    /* v4.9.3 micro-patch: mirror subbar h2 nickname to the banner subtitle.
+       JS in the main block writes to #sub-title; we observe that and clone it
+       to #club-subtitle-inline so the banner carries the club nickname instead
+       of the navy strip (which now houses controls). */
+    (function(){
+      var src = document.getElementById('sub-title');
+      var dst = document.getElementById('club-subtitle-inline');
+      if (!src || !dst) return;
+      function sync(){
+        var txt = (src.textContent || '').trim();
+        if (txt){
+          dst.textContent = txt;
+          dst.classList.add('has-nickname');
+        } else {
+          dst.textContent = '';
+          dst.classList.remove('has-nickname');
+        }
+      }
+      new MutationObserver(sync).observe(src, { childList:true, characterData:true, subtree:true });
+      sync();
+    })();
   </script>
 
 </body>
