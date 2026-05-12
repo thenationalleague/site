@@ -6,19 +6,15 @@
 <title>National League North &amp; South 2026/27 — the actual split</title>
 <!--
 ====================================================================
-EMBEDDABLE MAP — ACTUAL SPLIT (the reveal)
+EMBEDDABLE MAP — ACTUAL SPLIT (interactive reveal)
 ====================================================================
-v1.0 — The final reveal. Crests as markers (with division-coloured
-       rings), no "rejected" framing, celebratory rather than
-       apologetic. Sits at the end of the article as the answer.
+v2.0 — Three view toggles: North / South / Both
+       Active division: crests visible
+       Inactive division: small grey dots
+       Map animates (flyToBounds) to fit active division
+       Subtitle + stats update per-view
 
-DESIGN
-- Crests loaded from thenationalleague/tools/main/assets/crests/
-  with rose fallback per nl-brand spec
-- Each crest has a thin ring: NL red for North, NL navy for South
-- Tooltip: club name + season round-trip
-- Stats: league total, vs optimum, vs latitude (the near-miss)
-- No rejected chip, no editorial prefix
+v1.0 — Static reveal with crests, both divisions visible.
 ====================================================================
 -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -42,6 +38,7 @@ DESIGN
     --text: #1a2a44;
     --text-muted: #5a6a82;
     --border: #dde3ed;
+    --grey-dim: #c8cdd6;
     --font: 'carbona-variable','carbona',sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -64,15 +61,22 @@ DESIGN
   .title-strip {
     background: var(--white);
     border-bottom: 1px solid var(--border);
-    padding: 14px 16px;
+    padding: 12px 16px;
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 12px;
     flex-wrap: wrap;
   }
+  .title-strip .titleblock {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex-shrink: 1;
+    min-width: 0;
+  }
   .title-strip .label {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 800;
     font-variation-settings: 'wght' 800;
     color: var(--text);
@@ -80,13 +84,52 @@ DESIGN
   }
   .title-strip .label .div-n { color: var(--primary); }
   .title-strip .label .div-s { color: var(--navy); }
-  .title-strip .season {
-    font-size: 12px;
+  .title-strip .sub {
+    font-size: 11px;
     font-weight: 700;
     font-variation-settings: 'wght' 700;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 1.2px;
+    letter-spacing: 1px;
+  }
+  .title-strip .toggles {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .title-strip .toggle {
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 800;
+    font-variation-settings: 'wght' 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 6px 11px;
+    border-radius: 5px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .title-strip .toggle:hover {
+    border-color: var(--text-muted);
+    color: var(--text);
+  }
+  .title-strip .toggle.active.toggle-n {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--white);
+  }
+  .title-strip .toggle.active.toggle-s {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--white);
+  }
+  .title-strip .toggle.active.toggle-both {
+    background: var(--text);
+    border-color: var(--text);
+    color: var(--white);
   }
   #map {
     width: 100%;
@@ -137,8 +180,6 @@ DESIGN
     font-weight: 800;
     font-variation-settings: 'wght' 800;
   }
-
-  /* Crest markers */
   .crest-marker {
     background: var(--white);
     border-radius: 50%;
@@ -152,16 +193,13 @@ DESIGN
     border: 3px solid var(--navy);
     overflow: hidden;
   }
-  .crest-marker.div-n {
-    border-color: var(--primary);
-  }
+  .crest-marker.div-n { border-color: var(--primary); }
   .crest-marker img {
     width: 24px;
     height: 24px;
     object-fit: contain;
     display: block;
   }
-
   .leaflet-tooltip {
     background: var(--white) !important;
     border: 1px solid var(--border) !important;
@@ -195,7 +233,6 @@ DESIGN
   }
   .leaflet-tooltip .div-tag.n { background: var(--primary); color: var(--white); }
   .leaflet-tooltip .div-tag.s { background: var(--navy); color: var(--white); }
-
   .leaflet-tooltip-top:before { border-top-color: var(--border) !important; }
   .leaflet-control-attribution { display: none !important; }
   .leaflet-control-zoom { display: none !important; }
@@ -204,16 +241,21 @@ DESIGN
 <body>
 <div class="embed">
   <div class="title-strip">
-    <span class="label">
-      National League <span class="div-n">North</span> &amp; <span class="div-s">South</span>
-    </span>
-    <span class="season">Season 2026/27</span>
+    <div class="titleblock">
+      <span class="label">National League <span class="div-n">North</span> &amp; <span class="div-s">South</span></span>
+      <span class="sub" id="subtitle">Season 2026/27 · 48 clubs, 1,104 fixtures</span>
+    </div>
+    <div class="toggles">
+      <button class="toggle toggle-n" data-view="north">North</button>
+      <button class="toggle toggle-s" data-view="south">South</button>
+      <button class="toggle toggle-both active" data-view="both">Both</button>
+    </div>
   </div>
   <div id="map"></div>
-  <div class="stats-strip">
+  <div class="stats-strip" id="statsStrip">
     <div class="stat"><span class="lbl">League season</span><span class="val">4,719h</span></div>
     <div class="stat accent"><span class="lbl">vs mathematical optimum</span><span class="val">+1.3%</span></div>
-    <div class="stat"><span class="lbl">Worst single trip</span><span class="val">11h 32m round</span></div>
+    <div class="stat"><span class="lbl">Longest single trip</span><span class="val">11h 32m round</span></div>
   </div>
   <div class="explainer-strip">
     The answer: a 24/24 split that puts <strong>Merthyr in the North</strong> (the only viable Welsh-and-west group) and keeps <strong>Truro, Torquay, Weston and Salisbury in the South</strong>. League-wide it costs 4,719 hours of round-trip driving across 1,104 fixtures — <strong>just 1.3% above the lowest number a computer can produce</strong>, and dramatically better than every other rule-of-thumb method. Brackley, Bedford and Oxford absorb the friction of being central; Truro keeps the long trips at a manageable maximum. Imperfect, but the price of having a league.
@@ -286,30 +328,118 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   subdomains: 'abcd', maxZoom: 19
 }).addTo(map);
 
+// Two markers per club: a crest marker (full division view), and a dim grey-dot
+// marker (used when the club's division is NOT the active view).
+const crestMarkers = [];
+const dotMarkers = [];
+
 CLUBS.forEach(([name, lat, lng], i) => {
   const isN = NORTH_IDX.has(i);
   const cls = isN ? 'crest-marker div-n' : 'crest-marker div-s';
   const crestUrl = CREST_BASE + encodeURIComponent(name) + '.png';
-  // divIcon with HTML — crest + fallback handled inline
   const html = `<div class="${cls}"><img src="${crestUrl}" alt="${name}" onerror="this.onerror=null;this.src='${CREST_FALLBACK}';"></div>`;
-  const icon = L.divIcon({
-    className: '',  // suppress Leaflet's default styling
-    html: html,
-    iconSize: [34, 34],
-    iconAnchor: [17, 17]
-  });
-  const marker = L.marker([lat, lng], { icon: icon }).addTo(map);
+  const icon = L.divIcon({ className: '', html: html, iconSize: [34, 34], iconAnchor: [17, 17] });
+  const crest = L.marker([lat, lng], { icon: icon });
   const divTag = isN
     ? '<span class="div-tag n">North</span>'
     : '<span class="div-tag s">South</span>';
-  marker.bindTooltip(
+  crest.bindTooltip(
     `${divTag}<strong>${name}</strong><span class="meta">${SEASONS[i]}h round-trip driving</span>`,
     { direction: 'top', offset: [0, -18], permanent: false }
   );
+  crestMarkers.push(crest);
+
+  const dot = L.circleMarker([lat, lng], {
+    radius: 4, fillColor: '#c8cdd6', color: '#ffffff',
+    weight: 1, fillOpacity: 0.9
+  });
+  dot.bindTooltip(`<strong>${name}</strong>`, { direction: 'top', offset: [0, -6] });
+  dotMarkers.push(dot);
 });
 
-const bounds = L.latLngBounds(CLUBS.map(c => [c[1], c[2]]));
-map.fitBounds(bounds, { padding: [40, 40] });
+const allBounds = L.latLngBounds(CLUBS.map(c => [c[1], c[2]]));
+const northBounds = L.latLngBounds(CLUBS.filter((c, i) => NORTH_IDX.has(i)).map(c => [c[1], c[2]]));
+const southBounds = L.latLngBounds(CLUBS.filter((c, i) => !NORTH_IDX.has(i)).map(c => [c[1], c[2]]));
+
+const VIEW_META = {
+  both: {
+    sub: 'Season 2026/27 · 48 clubs, 1,104 fixtures',
+    stats: [
+      { lbl: 'League season', val: '4,719h' },
+      { lbl: 'vs mathematical optimum', val: '+1.3%', accent: true },
+      { lbl: 'Longest single trip', val: '11h 32m round' }
+    ],
+    bounds: allBounds
+  },
+  north: {
+    sub: '24 clubs · 552 fixtures · Merthyr to South Shields',
+    stats: [
+      { lbl: 'Total driving', val: '2,714h' },
+      { lbl: 'Average per club', val: '113h' },
+      { lbl: 'Longest trip', val: '10h 30m round' }
+    ],
+    bounds: northBounds
+  },
+  south: {
+    sub: '24 clubs · 552 fixtures · Truro to Folkestone',
+    stats: [
+      { lbl: 'Total driving', val: '2,005h' },
+      { lbl: 'Average per club', val: '84h' },
+      { lbl: 'Longest trip', val: '11h 32m round' }
+    ],
+    bounds: southBounds
+  }
+};
+
+let currentView = 'both';
+function applyView(view, animate) {
+  currentView = view;
+  const meta = VIEW_META[view];
+
+  document.querySelectorAll('.toggle').forEach(b => {
+    b.classList.toggle('active', b.dataset.view === view);
+  });
+
+  document.getElementById('subtitle').textContent = meta.sub;
+
+  const strip = document.getElementById('statsStrip');
+  strip.innerHTML = meta.stats.map(s =>
+    `<div class="stat${s.accent ? ' accent' : ''}">
+       <span class="lbl">${s.lbl}</span>
+       <span class="val">${s.val}</span>
+     </div>`
+  ).join('');
+
+  CLUBS.forEach((_, i) => {
+    const isN = NORTH_IDX.has(i);
+    const showCrest = view === 'both' || (view === 'north' && isN) || (view === 'south' && !isN);
+    const crest = crestMarkers[i];
+    const dot = dotMarkers[i];
+    if (showCrest) {
+      if (!map.hasLayer(crest)) crest.addTo(map);
+      if (map.hasLayer(dot)) map.removeLayer(dot);
+    } else {
+      if (map.hasLayer(crest)) map.removeLayer(crest);
+      if (!map.hasLayer(dot)) dot.addTo(map);
+    }
+  });
+
+  if (animate) {
+    map.flyToBounds(meta.bounds, { padding: [40, 40], duration: 0.9, easeLinearity: 0.3 });
+  } else {
+    map.fitBounds(meta.bounds, { padding: [40, 40] });
+  }
+}
+
+document.querySelectorAll('.toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const v = btn.dataset.view;
+    if (v !== currentView) applyView(v, true);
+  });
+});
+
+// Initial render — no animation on load
+applyView('both', false);
 </script>
 </body>
 </html>
