@@ -234,17 +234,6 @@ INTERACTION
   .leaflet-tooltip-top:before { border-top-color: var(--border) !important; }
   .leaflet-control-attribution { display: none !important; }
   .leaflet-control-zoom { display: none !important; }
-
-  /* Pulse animation for opening attract loop */
-  @keyframes club-pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.7); }
-  }
-  .club-pulsing {
-    animation: club-pulse 1.2s ease-in-out;
-    transform-origin: center center;
-    transform-box: fill-box;
-  }
 </style>
 </head>
 <body>
@@ -357,7 +346,7 @@ function updateMap() {
         radius: 11, fillColor: '#9e0000', color: '#ffffff',
         weight: 2.5, fillOpacity: 1
       });
-      m.setZIndexOffset(1000);
+      m.bringToFront();
     } else {
       const reachable = MINS[selectedIdx][i] <= capMinutesOneWay;
       if (reachable) {
@@ -371,7 +360,6 @@ function updateMap() {
           weight: 1.5, fillOpacity: 0.85
         });
       }
-      m.setZIndexOffset(0);
     }
     // Update tooltip per-club to reflect current state
     const roundMin = MINS[selectedIdx][i] * 2;
@@ -431,15 +419,17 @@ slider.addEventListener('input', () => {
   }
 });
 
-// Attract loop — pulse random clubs until user clicks anything
+// Attract loop — pulse random clubs until user interacts
 function pulseRandom() {
   if (!attractLoopActive) return;
   const i = Math.floor(Math.random() * N);
-  const el = markers[i]._path;
-  if (el) {
-    el.classList.add('club-pulsing');
-    setTimeout(() => el.classList.remove('club-pulsing'), 1200);
-  }
+  const m = markers[i];
+  // Pulse by temporarily expanding the radius, then restoring
+  m.setStyle({ radius: 14 });
+  setTimeout(() => {
+    if (!attractLoopActive || selectedIdx === i) return;
+    m.setStyle({ radius: 8 });
+  }, 700);
   attractTimer = setTimeout(pulseRandom, 600 + Math.random() * 400);
 }
 
