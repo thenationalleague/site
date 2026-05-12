@@ -329,6 +329,7 @@ let capMinutesOneWay = 180;  // 6h round-trip / 2 = 180 min one-way (default)
 
 // Click handler — picks a club
 function selectClub(i) {
+  console.log('[explorer] selectClub called with i=', i, 'club=', CLUBS[i] && CLUBS[i][0]);
   attractLoopActive = false;
   if (attractTimer) clearTimeout(attractTimer);
   selectedIdx = i;
@@ -338,38 +339,48 @@ function selectClub(i) {
 
 // Recompute styling for every marker based on current state
 function updateMap() {
+  console.log('[explorer] updateMap, selectedIdx=', selectedIdx, 'markers.length=', markers.length);
   if (selectedIdx === null) return;
+  let crashed = false;
   CLUBS.forEach(([name, lat, lng], i) => {
-    const m = markers[i];
-    if (i === selectedIdx) {
-      m.setStyle({
-        radius: 11, fillColor: '#9e0000', color: '#ffffff',
-        weight: 2.5, fillOpacity: 1
-      });
-      m.bringToFront();
-    } else {
-      const reachable = MINS[selectedIdx][i] <= capMinutesOneWay;
-      if (reachable) {
+    if (crashed) return;
+    try {
+      const m = markers[i];
+      if (!m) { console.error('[explorer] markers[' + i + '] missing!'); crashed = true; return; }
+      if (i === selectedIdx) {
         m.setStyle({
-          radius: 8, fillColor: '#223b7c', color: '#ffffff',
-          weight: 2, fillOpacity: 1
+          radius: 11, fillColor: '#9e0000', color: '#ffffff',
+          weight: 2.5, fillOpacity: 1
         });
+        m.bringToFront();
       } else {
-        m.setStyle({
-          radius: 6, fillColor: '#c8cdd6', color: '#ffffff',
-          weight: 1.5, fillOpacity: 0.85
-        });
+        const reachable = MINS[selectedIdx][i] <= capMinutesOneWay;
+        if (reachable) {
+          m.setStyle({
+            radius: 8, fillColor: '#223b7c', color: '#ffffff',
+            weight: 2, fillOpacity: 1
+          });
+        } else {
+          m.setStyle({
+            radius: 6, fillColor: '#c8cdd6', color: '#ffffff',
+            weight: 1.5, fillOpacity: 0.85
+          });
+        }
       }
+      // Update tooltip per-club to reflect current state
+      const roundMin = MINS[selectedIdx][i] * 2;
+      const roundH = Math.floor(roundMin / 60);
+      const roundM = Math.round(roundMin % 60);
+      const tripStr = i === selectedIdx
+        ? '<span class="trip">selected</span>'
+        : `<span class="trip">${roundH}h ${String(roundM).padStart(2,'0')}m round-trip</span>`;
+      m.setTooltipContent(`<strong>${name}</strong>${tripStr}`);
+    } catch (e) {
+      console.error('[explorer] updateMap CRASHED on i=' + i + ' (' + name + '):', e);
+      crashed = true;
     }
-    // Update tooltip per-club to reflect current state
-    const roundMin = MINS[selectedIdx][i] * 2;
-    const roundH = Math.floor(roundMin / 60);
-    const roundM = Math.round(roundMin % 60);
-    const tripStr = i === selectedIdx
-      ? '<span class="trip">selected</span>'
-      : `<span class="trip">${roundH}h ${String(roundM).padStart(2,'0')}m round-trip</span>`;
-    m.setTooltipContent(`<strong>${name}</strong>${tripStr}`);
   });
+  console.log('[explorer] updateMap finished');
 }
 
 // Update the title strip readout
