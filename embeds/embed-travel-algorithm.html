@@ -156,7 +156,7 @@ v1.0 — Embeddable map matching the embed-travel-mathematical pattern.
   <div id="map"></div>
   <div class="stats-strip">
     <div class="stat"><span class="lbl">Total league</span><span class="val">5,041h</span></div>
-    <div class="stat"><span class="lbl">vs proposed</span><span class="val">+322h (+7%)</span></div>
+    <div class="stat"><span class="lbl">vs actual</span><span class="val">+322h (+7%)</span></div>
     <div class="stat warn"><span class="lbl">Split</span><span class="val">16 / 32</span></div>
   </div>
   <div class="explainer-strip">
@@ -234,7 +234,7 @@ CLUBS.forEach(([name, lat, lng], i) => {
     radius: 8, fillColor: colour, color: '#ffffff', weight: 2, fillOpacity: 1
   }).addTo(map);
   m.bindTooltip(
-    `<strong>${name}</strong><span class="season">${SEASONS[i]}h this season</span>`,
+    `<strong>${name}</strong><span class="season">${SEASONS[i]}h round-trip driving</span>`,
     { direction: 'top', offset: [0, -8], permanent: false }
   );
 });
