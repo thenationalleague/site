@@ -74,6 +74,24 @@ v1.0 — Embeddable map matching the embed-travel-mathematical pattern.
     font-weight: 600;
     font-variation-settings: 'wght' 600;
   }
+  .title-strip {
+    justify-content: space-between;
+  }
+  .title-strip .chip-rejected {
+    font-size: 10px;
+    font-weight: 800;
+    font-variation-settings: 'wght' 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--amber);
+    background: var(--amber-light);
+    border: 1px solid var(--amber);
+    padding: 3px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    align-self: center;
+    opacity: 0.85;
+  }
   #map {
     width: 100%;
     height: 100%;
@@ -152,15 +170,16 @@ v1.0 — Embeddable map matching the embed-travel-mathematical pattern.
 <div class="embed">
   <div class="title-strip">
     <span class="label"><span class="editorial">Why we didn't choose:</span> a horizontal line across the country</span>
+    <span class="chip-rejected">Rejected</span>
   </div>
   <div id="map"></div>
   <div class="stats-strip">
     <div class="stat"><span class="lbl">Total league</span><span class="val">4,819h</span></div>
-    <div class="stat"><span class="lbl">vs proposed</span><span class="val">+100h (+2%)</span></div>
+    <div class="stat"><span class="lbl">vs actual</span><span class="val">+100h (+2%)</span></div>
     <div class="stat warn"><span class="lbl">Worst trip</span><span class="val">11h 32m round</span></div>
   </div>
   <div class="explainer-strip">
-    Sort all 48 clubs by latitude and slice them in half. The top 24 go North, the bottom 24 go South. Beautifully simple, deeply intuitive, and <strong>100 hours worse than the proposed split</strong> every season. The horizontal line cuts straight through the dense south-east cluster — separating clubs that are 30 minutes apart while leaving the sparse North untouched. It optimises for fairness on a map, not fairness on the road. A pleasing way to draw the answer, but not a useful one.
+    Sort all 48 clubs by latitude and slice them in half. The top 24 go North, the bottom 24 go South. Beautifully simple, deeply intuitive — and astonishingly close to the actual split. It differs by <strong>exactly one swap</strong>: latitude puts Braintree (Essex) North and Merthyr (Wales) South, whereas the actual split does the opposite. The horizontal line, in other words, gets 23 of the 24 placements right purely by where each club's ground sits on a map. The catch is that one swap — Braintree's a south-east-cluster club no closer to Hebburn than Truro is, and Merthyr's an isolated western club that only really works in a Wales-and-west group. Latitude doesn't see roads. Once you do, the swap is obvious.
   </div>
 </div>
 
@@ -234,7 +253,7 @@ CLUBS.forEach(([name, lat, lng], i) => {
     radius: 8, fillColor: colour, color: '#ffffff', weight: 2, fillOpacity: 1
   }).addTo(map);
   m.bindTooltip(
-    `<strong>${name}</strong><span class="season">${SEASONS[i]}h this season</span>`,
+    `<strong>${name}</strong><span class="season">${SEASONS[i]}h round-trip driving</span>`,
     { direction: 'top', offset: [0, -8], permanent: false }
   );
 });
