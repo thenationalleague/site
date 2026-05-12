@@ -8,13 +8,16 @@
 ====================================================================
 EMBEDDABLE MAP — ACTUAL SPLIT (interactive reveal)
 ====================================================================
-v2.0 — Three view toggles: North / South / Both
-       Active division: crests visible
-       Inactive division: small grey dots
-       Map animates (flyToBounds) to fit active division
-       Subtitle + stats update per-view
+v3.0 — Unlocked interaction + fullscreen
+       - Pan, pinch, double-tap, +/- buttons all enabled
+       - Scroll-wheel zoom kept OFF (page scroll wins)
+       - Reset button: returns to current view's default bounds
+       - Expand button: Fullscreen API on the embed wrapper
+       - Tighter padding ([15,15]) so crests fill more of canvas
+       - flyToBounds duration shortened slightly for snappier feel
 
-v1.0 — Static reveal with crests, both divisions visible.
+v2.0 — Three view toggles: North / South / Both
+v1.0 — Static reveal with crests
 ====================================================================
 -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -135,6 +138,7 @@ v1.0 — Static reveal with crests, both divisions visible.
     width: 100%;
     height: 100%;
     background: var(--off-white);
+    position: relative;
   }
   .stats-strip {
     background: var(--white);
@@ -235,7 +239,66 @@ v1.0 — Static reveal with crests, both divisions visible.
   .leaflet-tooltip .div-tag.s { background: var(--navy); color: var(--white); }
   .leaflet-tooltip-top:before { border-top-color: var(--border) !important; }
   .leaflet-control-attribution { display: none !important; }
-  .leaflet-control-zoom { display: none !important; }
+  /* Brand the Leaflet zoom controls */
+  .leaflet-control-zoom {
+    border: 1px solid var(--border) !important;
+    box-shadow: 0 2px 8px rgba(10, 22, 40, 0.10) !important;
+  }
+  .leaflet-control-zoom a {
+    background: var(--white) !important;
+    color: var(--text) !important;
+    font-family: var(--font) !important;
+    font-weight: 700 !important;
+    font-variation-settings: 'wght' 700 !important;
+    border-color: var(--border) !important;
+  }
+  .leaflet-control-zoom a:hover {
+    background: var(--off-white) !important;
+    color: var(--primary) !important;
+  }
+  /* Map overlay buttons (top-right) — fullscreen + reset */
+  .map-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 500;
+    display: flex;
+    gap: 6px;
+  }
+  .map-controls button {
+    background: var(--white);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 800;
+    font-variation-settings: 'wght' 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(10, 22, 40, 0.10);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .map-controls button:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+  .map-controls button svg {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+  }
+  /* When fullscreen is active, swap the icon and label cleanly */
+  :fullscreen .map-controls .expand-label-default,
+  :-webkit-full-screen .map-controls .expand-label-default { display: none; }
+  .map-controls .expand-label-exit { display: none; }
+  :fullscreen .map-controls .expand-label-exit,
+  :-webkit-full-screen .map-controls .expand-label-exit { display: inline; }
 </style>
 </head>
 <body>
@@ -251,7 +314,19 @@ v1.0 — Static reveal with crests, both divisions visible.
       <button class="toggle toggle-both active" data-view="both">Both</button>
     </div>
   </div>
-  <div id="map"></div>
+  <div id="map">
+    <div class="map-controls">
+      <button id="resetBtn" type="button" title="Reset view">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5V1L7 6l5 5V7c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6H4c0 4.4 3.6 8 8 8s8-3.6 8-8-3.6-8-8-8z"/></svg>
+        Reset
+      </button>
+      <button id="fsBtn" type="button" title="Expand to fullscreen">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path class="icon-expand" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/><path class="icon-shrink" style="display:none" d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
+        <span class="expand-label-default">Expand</span>
+        <span class="expand-label-exit">Exit</span>
+      </button>
+    </div>
+  </div>
   <div class="stats-strip" id="statsStrip">
     <div class="stat"><span class="lbl">League season</span><span class="val">4,719h</span></div>
     <div class="stat accent"><span class="lbl">vs mathematical optimum</span><span class="val">+1.3%</span></div>
@@ -320,9 +395,15 @@ const CREST_BASE = 'https://raw.githubusercontent.com/thenationalleague/tools/re
 const CREST_FALLBACK = CREST_BASE + 'National%20League%20rose.png';
 
 const map = L.map('map', {
-  zoomControl: false, attributionControl: false,
-  scrollWheelZoom: false, doubleClickZoom: false,
-  boxZoom: false, keyboard: false, dragging: false, touchZoom: false
+  zoomControl: true,
+  attributionControl: false,
+  scrollWheelZoom: false,  // off — would steal page scroll
+  doubleClickZoom: true,
+  boxZoom: false,
+  keyboard: false,
+  dragging: true,
+  touchZoom: true,
+  tap: true
 });
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   subdomains: 'abcd', maxZoom: 19
@@ -425,9 +506,9 @@ function applyView(view, animate) {
   });
 
   if (animate) {
-    map.flyToBounds(meta.bounds, { padding: [40, 40], duration: 0.9, easeLinearity: 0.3 });
+    map.flyToBounds(meta.bounds, { padding: [15, 15], duration: 0.9, easeLinearity: 0.3 });
   } else {
-    map.fitBounds(meta.bounds, { padding: [40, 40] });
+    map.fitBounds(meta.bounds, { padding: [15, 15] });
   }
 }
 
@@ -437,6 +518,52 @@ document.querySelectorAll('.toggle').forEach(btn => {
     if (v !== currentView) applyView(v, true);
   });
 });
+
+// Reset view button — returns to the current view's default bounds
+document.getElementById('resetBtn').addEventListener('click', () => {
+  const meta = VIEW_META[currentView];
+  map.flyToBounds(meta.bounds, { padding: [15, 15], duration: 0.6, easeLinearity: 0.3 });
+});
+
+// Fullscreen button — expands the whole .embed wrapper so title strip,
+// stats and explainer remain visible. The Fullscreen API requires a
+// user gesture (a tap), which we have here.
+const fsBtn = document.getElementById('fsBtn');
+const embedEl = document.querySelector('.embed');
+function isFullscreen() {
+  return document.fullscreenElement || document.webkitFullscreenElement;
+}
+function toggleFullscreen() {
+  if (isFullscreen()) {
+    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+  } else {
+    const req = embedEl.requestFullscreen || embedEl.webkitRequestFullscreen;
+    if (req) {
+      req.call(embedEl).catch(err => console.warn('Fullscreen blocked:', err.message));
+    } else {
+      console.warn('Fullscreen API not supported in this browser');
+    }
+  }
+}
+fsBtn.addEventListener('click', toggleFullscreen);
+
+// When fullscreen state changes, swap the SVG icon path visibility and
+// force Leaflet to re-measure the map (dimensions just changed).
+function onFsChange() {
+  const fs = !!isFullscreen();
+  const expandIcon = fsBtn.querySelector('.icon-expand');
+  const shrinkIcon = fsBtn.querySelector('.icon-shrink');
+  expandIcon.style.display = fs ? 'none' : '';
+  shrinkIcon.style.display = fs ? '' : 'none';
+  // Tell Leaflet the container resized; otherwise tiles can render in the wrong place.
+  setTimeout(() => {
+    map.invalidateSize();
+    const meta = VIEW_META[currentView];
+    map.fitBounds(meta.bounds, { padding: [15, 15] });
+  }, 100);
+}
+document.addEventListener('fullscreenchange', onFsChange);
+document.addEventListener('webkitfullscreenchange', onFsChange);
 
 // Initial render — no animation on load
 applyView('both', false);
