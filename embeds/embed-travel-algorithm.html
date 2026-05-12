@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why we didn't choose: what an algorithm suggests</title>
+<!--
+====================================================================
+EMBEDDABLE MAP — UNCONSTRAINED ALGORITHM (16/32)
+====================================================================
+v1.0 — Embeddable map matching the embed-travel-mathematical pattern.
+       NL brand, editorial title, explainer strip, per-club season
+       totals in tooltips. Aspect roughly 4:5 to accommodate explainer.
+====================================================================
+-->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  @font-face {
+    font-family: "carbona-variable";
+    src: url("https://use.typekit.net/af/184cf2/0000000000000000774c3175/31/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff2"),
+         url("https://use.typekit.net/af/184cf2/0000000000000000774c3175/31/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff");
+    font-display: swap;
+    font-style: normal;
+    font-weight: 200 900;
+  }
+  :root {
+    --primary: #9e0000;
+    --navy: #223b7c;
+    --amber: #c96f15;
+    --amber-light: #fef6ec;
+    --white: #ffffff;
+    --off-white: #f4f6f9;
+    --text: #1a2a44;
+    --text-muted: #5a6a82;
+    --border: #dde3ed;
+    --font: 'carbona-variable','carbona',sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--font);
+    background: var(--off-white);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  .embed {
+    display: grid;
+    grid-template-rows: auto 1fr auto auto;
+    height: 100vh;
+    width: 100vw;
+  }
+  .title-strip {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .title-strip .label {
+    font-size: 16px;
+    font-weight: 700;
+    font-variation-settings: 'wght' 700;
+    color: var(--text);
+    line-height: 1.25;
+  }
+  .title-strip .label .editorial {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-variation-settings: 'wght' 600;
+  }
+  #map {
+    width: 100%;
+    height: 100%;
+    background: var(--off-white);
+  }
+  .stats-strip {
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    padding: 10px 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+  .stats-strip .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .stats-strip .stat .lbl {
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 700;
+    font-variation-settings: 'wght' 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .stats-strip .stat .val {
+    font-size: 15px;
+    font-weight: 800;
+    font-variation-settings: 'wght' 800;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .stats-strip .stat.warn .val { color: var(--amber); }
+  .explainer-strip {
+    background: var(--amber-light);
+    border-top: 1px solid var(--border);
+    padding: 12px 16px 14px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--text);
+    font-weight: 500;
+    font-variation-settings: 'wght' 500;
+  }
+  .explainer-strip strong {
+    color: var(--primary);
+    font-weight: 800;
+    font-variation-settings: 'wght' 800;
+  }
+  .leaflet-tooltip {
+    background: var(--white) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text) !important;
+    font-family: var(--font) !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    font-variation-settings: 'wght' 600 !important;
+    border-radius: 6px !important;
+    padding: 6px 10px !important;
+    box-shadow: 0 2px 12px rgba(10, 22, 40, 0.10) !important;
+  }
+  .leaflet-tooltip strong { font-weight: 800; font-variation-settings: 'wght' 800; color: var(--text); }
+  .leaflet-tooltip .season {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-variation-settings: 'wght' 600;
+    display: block;
+    margin-top: 2px;
+  }
+  .leaflet-tooltip-top:before { border-top-color: var(--border) !important; }
+  .leaflet-control-attribution { display: none !important; }
+  .leaflet-control-zoom { display: none !important; }
+</style>
+</head>
+<body>
+<div class="embed">
+  <div class="title-strip">
+    <span class="label"><span class="editorial">Why we didn't choose:</span> what an algorithm suggests</span>
+  </div>
+  <div id="map"></div>
+  <div class="stats-strip">
+    <div class="stat"><span class="lbl">Total league</span><span class="val">5,041h</span></div>
+    <div class="stat"><span class="lbl">vs proposed</span><span class="val">+322h (+7%)</span></div>
+    <div class="stat warn"><span class="lbl">Split</span><span class="val">16 / 32</span></div>
+  </div>
+  <div class="explainer-strip">
+    Run a "k-medoids" clustering algorithm — one that asks the geography itself which clubs belong together, with no rules about how many go in each group — and the answer is a <strong>16/32 split</strong>. The natural anchor clubs turn out to be Radcliffe and Slough Town. Truro, Torquay, Weston, Merthyr and Hereford all cluster with Slough — they're closer by road to the south-east than to anywhere in the North. Useless as a competition: <strong>the bigger league would play four times as many fixtures as the smaller</strong>. But it tells us that even with no 24/24 rule, the geography still struggles with where to put Cornwall.
+  </div>
+</div>
+
+<script>
+const CLUBS = [
+  ["AFC Telford United", 52.6974, -2.5014],
+  ["AFC Totton", 50.9342, -1.5099],
+  ["Bedford Town", 52.1288, -0.4138],
+  ["Billericay Town", 51.6218, 0.4033],
+  ["Brackley Town", 52.0246, -1.1440],
+  ["Braintree Town", 51.8753, 0.5730],
+  ["Buxton", 53.2566, -1.9066],
+  ["Chelmsford City", 51.7532, 0.4515],
+  ["Chesham United", 51.6989, -0.6140],
+  ["Chester", 53.1892, -2.9235],
+  ["Chorley", 53.6456, -2.6292],
+  ["Dagenham & Redbridge", 51.5478, 0.1599],
+  ["Darlington", 54.5094, -1.5642],
+  ["Dorking Wanderers", 51.2344, -0.3335],
+  ["Dover Athletic", 51.1378, 1.2849],
+  ["Ebbsfleet United", 51.4496, 0.3223],
+  ["Farnborough", 51.3104, -0.7623],
+  ["Farnham Town", 51.2115, -0.8063],
+  ["Folkestone Invicta", 51.0865, 1.1595],
+  ["Hampton & Richmond Borough", 51.4152, -0.3632],
+  ["Harborough Town", 52.4648, -0.9186],
+  ["Hebburn Town", 54.9686, -1.5240],
+  ["Hednesford Town", 52.6976, -1.9888],
+  ["Hemel Hempstead Town", 51.7539, -0.4444],
+  ["Hereford", 52.0607, -2.7177],
+  ["Horsham", 51.0469, -0.3407],
+  ["King's Lynn Town", 52.7501, 0.4074],
+  ["Macclesfield", 53.2428, -2.1271],
+  ["Maidenhead United", 51.5199, -0.7180],
+  ["Maidstone United", 51.2800, 0.5161],
+  ["Marine", 53.4852, -3.0336],
+  ["Merthyr Town", 51.7513, -3.3777],
+  ["Morecambe", 54.0615, -2.8672],
+  ["Oxford City", 51.7739, -1.2277],
+  ["Radcliffe", 53.5676, -2.3407],
+  ["Salisbury", 51.1043, -1.7857],
+  ["Scarborough Athletic", 54.2689, -0.4135],
+  ["Slough Town", 51.5199, -0.5883],
+  ["South Shields", 54.9745, -1.4701],
+  ["Southport", 53.6381, -2.9788],
+  ["Spalding United", 52.7901, -0.1525],
+  ["Spennymoor Town", 54.7045, -1.5992],
+  ["Tonbridge Angels", 51.2115, 0.2691],
+  ["Torquay United", 50.4764, -3.5238],
+  ["Truro City", 50.2677, -5.1235],
+  ["Walton & Hersham", 51.3991, -0.4097],
+  ["Weston-super-Mare", 51.3307, -2.9561],
+  ["Worksop Town", 53.3116, -1.1314],
+];
+const NORTH_IDX = new Set([0, 6, 9, 10, 12, 21, 22, 27, 30, 32, 34, 36, 38, 39, 41, 47]);
+const SEASONS = [66, 121, 111, 108, 111, 121, 54, 111, 96, 55, 47, 111, 58, 100, 143, 106, 94, 99, 136, 95, 131, 69, 61, 95, 177, 115, 178, 50, 92, 108, 53, 196, 54, 104, 45, 127, 73, 89, 70, 54, 157, 62, 109, 224, 288, 98, 162, 56];
+
+const map = L.map('map', {
+  zoomControl: false, attributionControl: false,
+  scrollWheelZoom: false, doubleClickZoom: false,
+  boxZoom: false, keyboard: false, dragging: false, touchZoom: false
+});
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  subdomains: 'abcd', maxZoom: 19
+}).addTo(map);
+
+CLUBS.forEach(([name, lat, lng], i) => {
+  const isN = NORTH_IDX.has(i);
+  const colour = isN ? '#9e0000' : '#223b7c';
+  const m = L.circleMarker([lat, lng], {
+    radius: 8, fillColor: colour, color: '#ffffff', weight: 2, fillOpacity: 1
+  }).addTo(map);
+  m.bindTooltip(
+    `<strong>${name}</strong><span class="season">${SEASONS[i]}h this season</span>`,
+    { direction: 'top', offset: [0, -8], permanent: false }
+  );
+});
+
+const bounds = L.latLngBounds(CLUBS.map(c => [c[1], c[2]]));
+map.fitBounds(bounds, { padding: [40, 40] });
+</script>
+</body>
+</html>
