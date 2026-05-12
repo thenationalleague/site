@@ -512,9 +512,9 @@ function applyView(view, animate) {
   });
 
   if (animate) {
-    map.flyToBounds(meta.bounds, { padding: [15, 15], duration: 0.9, easeLinearity: 0.3 });
+    map.flyToBounds(meta.bounds, { padding: [40, 40], duration: 0.9, easeLinearity: 0.3 });
   } else {
-    map.fitBounds(meta.bounds, { padding: [15, 15] });
+    map.fitBounds(meta.bounds, { padding: [40, 40] });
   }
 }
 
@@ -528,7 +528,7 @@ document.querySelectorAll('.toggle').forEach(btn => {
 // Reset view button — returns to the current view's default bounds
 document.getElementById('resetBtn').addEventListener('click', () => {
   const meta = VIEW_META[currentView];
-  map.flyToBounds(meta.bounds, { padding: [15, 15], duration: 0.6, easeLinearity: 0.3 });
+  map.flyToBounds(meta.bounds, { padding: [40, 40], duration: 0.6, easeLinearity: 0.3 });
 });
 
 // Fullscreen button — expands the whole .embed wrapper so title strip,
@@ -565,7 +565,7 @@ function onFsChange() {
   setTimeout(() => {
     map.invalidateSize();
     const meta = VIEW_META[currentView];
-    map.fitBounds(meta.bounds, { padding: [15, 15] });
+    map.fitBounds(meta.bounds, { padding: [40, 40] });
   }, 100);
 }
 document.addEventListener('fullscreenchange', onFsChange);
