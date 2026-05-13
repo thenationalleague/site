@@ -155,12 +155,12 @@ v1.0 — Embeddable map matching the embed-travel-mathematical pattern.
   </div>
   <div id="map"></div>
   <div class="stats-strip">
-    <div class="stat"><span class="lbl">Total league</span><span class="val">4,819h</span></div>
-    <div class="stat"><span class="lbl">vs actual</span><span class="val">+100h (+2%)</span></div>
-    <div class="stat warn"><span class="lbl">Longest trip</span><span class="val">11h 32m round</span></div>
+    <div class="stat"><span class="lbl">League season</span><span class="val">260,542 mi</span></div>
+    <div class="stat"><span class="lbl">vs actual</span><span class="val">+6,105 mi (+2%)</span></div>
+    <div class="stat warn"><span class="lbl">Longest trip</span><span class="val">669 mi round</span></div>
   </div>
   <div class="explainer-strip">
-    Sort all 48 clubs by latitude and slice them in half. The top 24 go North, the bottom 24 go South. Beautifully simple, deeply intuitive — and astonishingly close to the actual split. It differs by <strong>exactly one swap</strong>: latitude puts Braintree (Essex) North and Merthyr (Wales) South, whereas the actual split does the opposite. Try the explorer above: at a 4-hour round-trip cap, <strong>Braintree has 24 nearby clubs to choose from. Merthyr has 2.</strong> Latitude doesn't know that. The road network does, which is why the swap is obvious.
+    Sort all 48 clubs by latitude and slice them in half. The top 24 go North, the bottom 24 go South. Beautifully simple, deeply intuitive — and astonishingly close to the actual split. It differs by <strong>exactly one swap</strong>: latitude puts Braintree (Essex) North and Merthyr (Wales) South, whereas the actual split does the opposite. Try the explorer above — at a 4-hour round-trip cap, <strong>Braintree has 24 nearby clubs to choose from. Merthyr has 2.</strong> Latitude doesn't know that. The road network does, which is why the swap is obvious.
   </div>
 </div>
 
@@ -216,7 +216,7 @@ const CLUBS = [
   ["Worksop Town", 53.3116, -1.1314],
 ];
 const NORTH_IDX = new Set([0, 2, 4, 5, 6, 9, 10, 12, 20, 21, 22, 24, 26, 27, 30, 32, 33, 34, 36, 38, 39, 40, 41, 47]);
-const SEASONS = [99, 83, 113, 78, 108, 148, 96, 82, 71, 103, 96, 81, 112, 67, 98, 73, 64, 66, 94, 65, 100, 133, 90, 71, 136, 77, 137, 93, 65, 74, 103, 149, 112, 122, 93, 88, 130, 63, 134, 107, 115, 121, 74, 159, 207, 66, 118, 89];
+const SEASONS = [5266, 4551, 6442, 4348, 6111, 8665, 4475, 4683, 3761, 5562, 5099, 3935, 6365, 3326, 5576, 3871, 3297, 3378, 5300, 3216, 5634, 7613, 4840, 3795, 7062, 3865, 6765, 4694, 3472, 4003, 5544, 8221, 6138, 6812, 5009, 4600, 6629, 3371, 7656, 5619, 6057, 6791, 3853, 8742, 11939, 3257, 6638, 4695];
 
 const map = L.map('map', {
   zoomControl: false, attributionControl: false,
@@ -234,7 +234,7 @@ CLUBS.forEach(([name, lat, lng], i) => {
     radius: 8, fillColor: colour, color: '#ffffff', weight: 2, fillOpacity: 1
   }).addTo(map);
   m.bindTooltip(
-    `<strong>${name}</strong><span class="season">${SEASONS[i]}h round-trip driving</span>`,
+    `<strong>${name}</strong><span class="season">${SEASONS[i].toLocaleString()} mi round-trip driving</span>`,
     { direction: 'top', offset: [0, -8], permanent: false }
   );
 });
