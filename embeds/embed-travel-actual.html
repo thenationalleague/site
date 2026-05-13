@@ -8,6 +8,12 @@
 ====================================================================
 EMBEDDABLE MAP — ACTUAL SPLIT (interactive reveal)
 ====================================================================
+v5.0 — Google Maps data, miles-led
+       - Source swap: OSRM → Google Distance Matrix
+       - Stats lead with miles (254,437 mi league / +0.6% vs optimum)
+       - Per-division stats also in miles (N 145,880 / S 108,557)
+       - CLUB_DATA fully regenerated under Google numbers
+       - Popup tooltips show miles primary, hours small/secondary
 v4.0 — Rich per-club popups on click
        - Hover/tap shows small tooltip (just name)
        - Click opens detailed popup card: crest, division pill, season
@@ -468,12 +474,12 @@ v1.0 — Static reveal with crests
     </div>
   </div>
   <div class="stats-strip" id="statsStrip">
-    <div class="stat"><span class="lbl">League season</span><span class="val">4,719h</span></div>
-    <div class="stat accent"><span class="lbl">vs mathematical optimum</span><span class="val">+1.3%</span></div>
-    <div class="stat"><span class="lbl">Longest single trip</span><span class="val">11h 32m round</span></div>
+    <div class="stat"><span class="lbl">League season</span><span class="val">254,437 mi</span></div>
+    <div class="stat accent"><span class="lbl">vs mathematical optimum</span><span class="val">+0.6%</span></div>
+    <div class="stat"><span class="lbl">Longest single trip</span><span class="val">694 mi round</span></div>
   </div>
   <div class="explainer-strip">
-    The answer: a 24/24 split that puts <strong>Merthyr in the North</strong> (the only viable Welsh-and-west group) and keeps <strong>Truro, Torquay, Weston and Salisbury in the South</strong>. League-wide it costs 4,719 hours of round-trip driving across 1,104 fixtures — <strong>just 1.3% above the lowest number a computer can produce</strong>, and dramatically better than every other rule-of-thumb method. Brackley, Bedford and Oxford absorb the friction of being central; Truro keeps the long trips at a manageable maximum. Imperfect, but the price of having a league.
+    The answer: a 24/24 split that puts <strong>Merthyr in the North</strong> (the only viable Welsh-and-west group) and keeps <strong>Truro, Torquay, Weston and Salisbury in the South</strong>. League-wide it costs <strong>254,437 miles</strong> of round-trip driving across 1,104 fixtures — just 0.6% above the lowest mileage a computer can produce, and dramatically better than every other rule-of-thumb method. Brackley, Bedford and Oxford absorb the friction of being central; Truro keeps the long trips at a manageable maximum. Imperfect, but the price of having a league.
   </div>
 </div>
 
@@ -560,54 +566,54 @@ const dotMarkers = [];
 // Field keys are compressed (d,s,sm,a,am,lt,lm,lo,st,sm2,so) to keep the
 // inline data block small.
 const CLUB_DATA = [
-  /* 0 AFC Telford United*/ {d:'N',s:5874,sm:5091,a:255,am:221,lt:440,lm:433,lo:38,st:72,sm2:50,so:22},
-  /* 1 AFC Totton*/ {d:'S',s:4910,sm:4519,a:213,am:196,lt:438,lm:387,lo:44,st:70,sm2:40,so:35},
-  /* 2 Bedford Town*/ {d:'N',s:6984,sm:6662,a:304,am:290,lt:458,lm:457,lo:38,st:96,sm2:77,so:4},
-  /* 3 Billericay Town*/ {d:'S',s:4314,sm:3879,a:188,am:169,lt:646,lm:614,lo:44,st:32,sm2:18,so:7},
-  /* 4 Brackley Town*/ {d:'N',s:6566,sm:6109,a:285,am:266,lt:464,lm:468,lo:38,st:56,sm2:41,so:33},
-  /* 5 Braintree Town*/ {d:'S',s:5154,sm:4777,a:224,am:208,lt:674,lm:648,lo:44,st:56,sm2:41,so:7},
-  /* 6 Buxton*/ {d:'N',s:5744,sm:4486,a:250,am:195,lt:398,lm:340,lo:31,st:50,sm2:26,so:27},
-  /* 7 Chelmsford City*/ {d:'S',s:4504,sm:4140,a:196,am:180,lt:652,lm:626,lo:44,st:32,sm2:18,so:3},
-  /* 8 Chesham United*/ {d:'S',s:4060,sm:3568,a:177,am:155,lt:566,lm:554,lo:44,st:42,sm2:22,so:23},
-  /* 9 Chester*/ {d:'N',s:6066,sm:5162,a:264,am:224,lt:464,lm:385,lo:26,st:102,sm2:58,so:30},
-  /*10 Chorley*/ {d:'N',s:5704,sm:5018,a:248,am:218,lt:424,lm:396,lo:31,st:70,sm2:43,so:34},
-  /*11 Dagenham & Redbridge*/ {d:'S',s:4482,sm:3689,a:195,am:160,lt:648,lm:600,lo:44,st:54,sm2:34,so:3},
-  /*12 Darlington*/ {d:'N',s:6828,sm:6425,a:297,am:279,lt:560,lm:555,lo:31,st:56,sm2:39,so:41},
-  /*13 Dorking Wanderers*/ {d:'S',s:3794,sm:3112,a:165,am:135,lt:562,lm:520,lo:44,st:52,sm2:31,so:25},
-  /*14 Dover Athletic*/ {d:'S',s:5600,sm:5251,a:243,am:228,lt:692,lm:666,lo:44,st:28,sm2:17,so:18},
-  /*15 Ebbsfleet United*/ {d:'S',s:4066,sm:3553,a:177,am:154,lt:618,lm:585,lo:44,st:50,sm2:35,so:29},
-  /*16 Farnborough*/ {d:'S',s:3690,sm:3202,a:160,am:139,lt:494,lm:463,lo:44,st:40,sm2:21,so:17},
-  /*17 Farnham Town*/ {d:'S',s:3838,sm:3257,a:167,am:142,lt:494,lm:460,lo:44,st:40,sm2:21,so:16},
-  /*18 Folkestone Invicta*/ {d:'S',s:5312,sm:4985,a:231,am:217,lt:676,lm:653,lo:44,st:28,sm2:17,so:14},
-  /*19 Hampton & Richmond Borough*/ {d:'S',s:3736,sm:3107,a:162,am:135,lt:534,lm:499,lo:44,st:30,sm2:11,so:45},
-  /*20 Harborough Town*/ {d:'N',s:6134,sm:5726,a:267,am:249,lt:424,lm:429,lo:38,st:106,sm2:78,so:4},
-  /*21 Hebburn Town*/ {d:'N',s:8050,sm:7577,a:350,am:329,lt:626,lm:621,lo:31,st:20,sm2:8,so:38},
-  /*22 Hednesford Town*/ {d:'N',s:5368,sm:4791,a:233,am:208,lt:396,lm:388,lo:21,st:72,sm2:50,so:0},
-  /*23 Hemel Hempstead Town*/ {d:'S',s:4026,sm:3541,a:175,am:154,lt:576,lm:540,lo:44,st:42,sm2:22,so:8},
-  /*24 Hereford*/ {d:'N',s:7842,sm:6791,a:341,am:295,lt:550,lm:527,lo:38,st:122,sm2:87,so:31},
-  /*25 Horsham*/ {d:'S',s:4376,sm:3712,a:190,am:161,lt:588,lm:523,lo:44,st:52,sm2:31,so:13},
-  /*26 King's Lynn Town*/ {d:'N',s:8522,sm:7314,a:371,am:318,lt:510,lm:455,lo:31,st:100,sm2:69,so:40},
-  /*27 Macclesfield*/ {d:'N',s:5500,sm:4674,a:239,am:203,lt:394,lm:286,lo:26,st:50,sm2:26,so:6},
-  /*28 Maidenhead United*/ {d:'S',s:3790,sm:3381,a:165,am:147,lt:516,lm:522,lo:44,st:22,sm2:13,so:37},
-  /*29 Maidstone United*/ {d:'S',s:4108,sm:3698,a:179,am:161,lt:616,lm:589,lo:44,st:50,sm2:35,so:15},
-  /*30 Marine*/ {d:'N',s:6130,sm:5334,a:267,am:232,lt:458,lm:417,lo:26,st:52,sm2:27,so:39},
-  /*31 Merthyr Town*/ {d:'N',s:9652,sm:8790,a:420,am:382,lt:630,lm:623,lo:38,st:122,sm2:87,so:24},
-  /*32 Morecambe*/ {d:'N',s:6686,sm:5945,a:291,am:258,lt:490,lm:466,lo:31,st:98,sm2:74,so:10},
-  /*33 Oxford City*/ {d:'N',s:7372,sm:6764,a:321,am:294,lt:512,lm:510,lo:38,st:56,sm2:41,so:4},
-  /*34 Radcliffe*/ {d:'N',s:5510,sm:4940,a:240,am:215,lt:418,lm:395,lo:31,st:70,sm2:43,so:10},
-  /*35 Salisbury*/ {d:'S',s:5254,sm:4654,a:228,am:202,lt:408,lm:367,lo:44,st:70,sm2:40,so:1},
-  /*36 Scarborough Athletic*/ {d:'N',s:7874,sm:6688,a:342,am:291,lt:586,lm:536,lo:31,st:194,sm2:144,so:12},
-  /*37 Slough Town*/ {d:'S',s:3624,sm:3405,a:158,am:148,lt:518,lm:527,lo:44,st:22,sm2:13,so:28},
-  /*38 South Shields*/ {d:'N',s:8106,sm:7672,a:352,am:334,lt:630,lm:623,lo:31,st:20,sm2:8,so:21},
-  /*39 Southport*/ {d:'N',s:6350,sm:5467,a:276,am:238,lt:468,lm:421,lo:26,st:52,sm2:27,so:30},
-  /*40 Spalding United*/ {d:'N',s:7150,sm:6254,a:311,am:272,lt:448,lm:414,lo:31,st:100,sm2:69,so:26},
-  /*41 Spennymoor Town*/ {d:'N',s:7366,sm:6798,a:320,am:296,lt:598,lm:582,lo:31,st:56,sm2:39,so:12},
-  /*42 Tonbridge Angels*/ {d:'S',s:4160,sm:3580,a:181,am:156,lt:608,lm:572,lo:44,st:62,sm2:30,so:29},
-  /*43 Torquay United*/ {d:'S',s:9778,sm:8768,a:425,am:381,lt:562,lm:522,lo:14,st:182,sm2:164,so:46},
-  /*44 Truro City*/ {d:'S',s:12610,sm:11939,a:548,am:519,lt:692,lm:666,lo:14,st:230,sm2:217,so:43},
-  /*45 Walton & Hersham*/ {d:'S',s:3812,sm:3121,a:166,am:136,lt:544,lm:498,lo:44,st:30,sm2:11,so:19},
-  /*46 Weston-super-Mare*/ {d:'S',s:7290,sm:6872,a:317,am:299,lt:446,lm:445,lo:14,st:182,sm2:164,so:43},
-  /*47 Worksop Town*/ {d:'N',s:5450,sm:4817,a:237,am:209,lt:404,lm:377,lo:31,st:146,sm2:89,so:6},
+  /* 0 AFC Telford United*/ {d:'N',s:6116,sm:5118,a:266,am:223,lt:454,lm:433,lo:38,st:74,sm2:51,so:22},
+  /* 1 AFC Totton*/ {d:'S',s:5090,sm:4517,a:221,am:196,lt:450,lm:390,lo:44,st:72,sm2:41,so:35},
+  /* 2 Bedford Town*/ {d:'N',s:7170,sm:6690,a:312,am:291,lt:464,lm:457,lo:38,st:114,sm2:76,so:4},
+  /* 3 Billericay Town*/ {d:'S',s:4524,sm:3974,a:197,am:173,lt:656,lm:662,lo:44,st:58,sm2:30,so:7},
+  /* 4 Brackley Town*/ {d:'N',s:6808,sm:6144,a:296,am:267,lt:476,lm:468,lo:38,st:62,sm2:43,so:33},
+  /* 5 Braintree Town*/ {d:'S',s:5304,sm:5001,a:231,am:217,lt:674,lm:694,lo:44,st:52,sm2:26,so:7},
+  /* 6 Buxton*/ {d:'N',s:5946,sm:4430,a:259,am:193,lt:406,lm:334,lo:31,st:56,sm2:25,so:27},
+  /* 7 Chelmsford City*/ {d:'S',s:4930,sm:4273,a:214,am:186,lt:672,lm:673,lo:44,st:52,sm2:26,so:5},
+  /* 8 Chesham United*/ {d:'S',s:4178,sm:3572,a:182,am:155,lt:566,lm:568,lo:44,st:44,sm2:19,so:23},
+  /* 9 Chester*/ {d:'N',s:6300,sm:5354,a:274,am:233,lt:466,lm:375,lo:26,st:106,sm2:62,so:30},
+  /*10 Chorley*/ {d:'N',s:5926,sm:5026,a:258,am:219,lt:432,lm:396,lo:31,st:74,sm2:38,so:34},
+  /*11 Dagenham & Redbridge*/ {d:'S',s:4592,sm:3628,a:200,am:158,lt:640,lm:600,lo:44,st:66,sm2:34,so:15},
+  /*12 Darlington*/ {d:'N',s:7110,sm:6443,a:309,am:280,lt:576,lm:554,lo:31,st:66,sm2:38,so:41},
+  /*13 Dorking Wanderers*/ {d:'S',s:3834,sm:3142,a:167,am:137,lt:554,lm:523,lo:44,st:52,sm2:32,so:25},
+  /*14 Dover Athletic*/ {d:'S',s:5762,sm:5287,a:251,am:230,lt:692,lm:669,lo:44,st:32,sm2:17,so:18},
+  /*15 Ebbsfleet United*/ {d:'S',s:4022,sm:3566,a:175,am:155,lt:608,lm:586,lo:44,st:48,sm2:35,so:29},
+  /*16 Farnborough*/ {d:'S',s:3716,sm:3201,a:162,am:139,lt:488,lm:464,lo:44,st:38,sm2:23,so:17},
+  /*17 Farnham Town*/ {d:'S',s:3884,sm:3290,a:169,am:143,lt:494,lm:460,lo:44,st:38,sm2:23,so:16},
+  /*18 Folkestone Invicta*/ {d:'S',s:5348,sm:5025,a:233,am:218,lt:668,lm:655,lo:44,st:32,sm2:17,so:14},
+  /*19 Hampton & Richmond Borough*/ {d:'S',s:3780,sm:3079,a:164,am:134,lt:530,lm:500,lo:44,st:30,sm2:10,so:45},
+  /*20 Harborough Town*/ {d:'N',s:6362,sm:5742,a:277,am:250,lt:434,lm:429,lo:38,st:118,sm2:75,so:4},
+  /*21 Hebburn Town*/ {d:'N',s:8408,sm:7690,a:366,am:334,lt:648,lm:621,lo:31,st:20,sm2:8,so:38},
+  /*22 Hednesford Town*/ {d:'N',s:5536,sm:4779,a:241,am:208,lt:420,lm:389,lo:21,st:74,sm2:51,so:0},
+  /*23 Hemel Hempstead Town*/ {d:'S',s:4056,sm:3568,a:176,am:155,lt:574,lm:585,lo:44,st:44,sm2:19,so:8},
+  /*24 Hereford*/ {d:'N',s:8088,sm:6758,a:352,am:294,lt:572,lm:526,lo:21,st:118,sm2:86,so:31},
+  /*25 Horsham*/ {d:'S',s:4416,sm:3679,a:192,am:160,lt:594,lm:554,lo:44,st:52,sm2:32,so:13},
+  /*26 King's Lynn Town*/ {d:'N',s:8590,sm:7030,a:373,am:306,lt:506,lm:441,lo:31,st:92,sm2:56,so:40},
+  /*27 Macclesfield*/ {d:'N',s:5750,sm:4646,a:250,am:202,lt:402,lm:290,lo:26,st:56,sm2:25,so:6},
+  /*28 Maidenhead United*/ {d:'S',s:3912,sm:3359,a:170,am:146,lt:510,lm:524,lo:44,st:42,sm2:18,so:37},
+  /*29 Maidstone United*/ {d:'S',s:4110,sm:3722,a:179,am:162,lt:608,lm:590,lo:44,st:48,sm2:35,so:15},
+  /*30 Marine*/ {d:'N',s:6362,sm:5472,a:277,am:238,lt:466,lm:406,lo:26,st:62,sm2:27,so:39},
+  /*31 Merthyr Town*/ {d:'N',s:9816,sm:8832,a:427,am:384,lt:648,lm:621,lo:21,st:118,sm2:86,so:24},
+  /*32 Morecambe*/ {d:'N',s:6732,sm:6064,a:293,am:264,lt:484,lm:465,lo:31,st:96,sm2:75,so:10},
+  /*33 Oxford City*/ {d:'N',s:7662,sm:6819,a:333,am:296,lt:536,lm:509,lo:21,st:62,sm2:43,so:4},
+  /*34 Radcliffe*/ {d:'N',s:5748,sm:4950,a:250,am:215,lt:424,lm:394,lo:31,st:74,sm2:38,so:10},
+  /*35 Salisbury*/ {d:'S',s:5288,sm:4668,a:230,am:203,lt:404,lm:369,lo:44,st:72,sm2:41,so:1},
+  /*36 Scarborough Athletic*/ {d:'N',s:8218,sm:6707,a:357,am:292,lt:600,lm:535,lo:31,st:212,sm2:134,so:12},
+  /*37 Slough Town*/ {d:'S',s:3870,sm:3230,a:168,am:140,lt:528,lm:534,lo:44,st:42,sm2:18,so:28},
+  /*38 South Shields*/ {d:'N',s:8376,sm:7734,a:364,am:336,lt:642,lm:622,lo:31,st:20,sm2:8,so:21},
+  /*39 Southport*/ {d:'N',s:6684,sm:5546,a:291,am:241,lt:480,lm:408,lo:26,st:62,sm2:27,so:30},
+  /*40 Spalding United*/ {d:'N',s:7616,sm:6264,a:331,am:272,lt:466,lm:410,lo:31,st:92,sm2:56,so:26},
+  /*41 Spennymoor Town*/ {d:'N',s:7638,sm:6867,a:332,am:299,lt:604,lm:585,lo:31,st:66,sm2:38,so:12},
+  /*42 Tonbridge Angels*/ {d:'S',s:4240,sm:3591,a:184,am:156,lt:606,lm:574,lo:44,st:62,sm2:34,so:29},
+  /*43 Torquay United*/ {d:'S',s:9786,sm:8996,a:425,am:391,lt:564,lm:523,lo:14,st:182,sm2:155,so:46},
+  /*44 Truro City*/ {d:'S',s:12600,sm:12193,a:548,am:530,lt:692,lm:669,lo:14,st:236,sm2:218,so:43},
+  /*45 Walton & Hersham*/ {d:'S',s:3858,sm:3104,a:168,am:135,lt:540,lm:501,lo:44,st:30,sm2:10,so:19},
+  /*46 Weston-super-Mare*/ {d:'S',s:7344,sm:6891,a:319,am:300,lt:448,lm:446,lo:14,st:182,sm2:155,so:43},
+  /*47 Worksop Town*/ {d:'N',s:5586,sm:4774,a:243,am:208,lt:406,lm:376,lo:31,st:148,sm2:79,so:6},
 ];
 
 // Format minutes as "Xh YYm" for trip-level (single fixtures) or "Xh" for season-level (large totals)
@@ -700,27 +706,27 @@ const VIEW_META = {
   both: {
     sub: 'Season 2026/27 · 48 clubs, 1,104 fixtures',
     stats: [
-      { lbl: 'League season', val: '4,719h' },
-      { lbl: 'vs mathematical optimum', val: '+1.3%', accent: true },
-      { lbl: 'Longest single trip', val: '11h 32m round' }
+      { lbl: 'League season', val: '254,437 mi' },
+      { lbl: 'vs mathematical optimum', val: '+0.6%', accent: true },
+      { lbl: 'Longest single trip', val: '694 mi round' }
     ],
     bounds: allBounds
   },
   north: {
     sub: '24 clubs · 552 fixtures · Merthyr to South Shields',
     stats: [
-      { lbl: 'Total driving', val: '2,714h' },
-      { lbl: 'Average per club', val: '113h' },
-      { lbl: 'Longest trip', val: '10h 30m round' }
+      { lbl: 'Total driving', val: '145,880 mi' },
+      { lbl: 'Average per club', val: '6,078 mi' },
+      { lbl: 'Longest trip', val: '622 mi round' }
     ],
     bounds: northBounds
   },
   south: {
     sub: '24 clubs · 552 fixtures · Truro to Folkestone',
     stats: [
-      { lbl: 'Total driving', val: '2,005h' },
-      { lbl: 'Average per club', val: '84h' },
-      { lbl: 'Longest trip', val: '11h 32m round' }
+      { lbl: 'Total driving', val: '108,557 mi' },
+      { lbl: 'Average per club', val: '4,523 mi' },
+      { lbl: 'Longest trip', val: '694 mi round' }
     ],
     bounds: southBounds
   }
