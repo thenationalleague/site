@@ -8,6 +8,12 @@
 ====================================================================
 EMBEDDABLE MAP — ACTUAL SPLIT (interactive reveal)
 ====================================================================
+v4.0 — Rich per-club popups on click
+       - Hover/tap shows small tooltip (just name)
+       - Click opens detailed popup card: crest, division pill, season
+         total (hrs + miles), avg trip, longest+shortest with opponent
+         crests inline
+       - Compressed CLUB_DATA constant baked in (per-club longest/shortest)
 v3.0 — Unlocked interaction + fullscreen
        - Pan, pinch, double-tap, +/- buttons all enabled
        - Scroll-wheel zoom kept OFF (page scroll wins)
@@ -15,7 +21,6 @@ v3.0 — Unlocked interaction + fullscreen
        - Expand button: Fullscreen API on the embed wrapper
        - Tighter padding ([15,15]) so crests fill more of canvas
        - flyToBounds duration shortened slightly for snappier feel
-
 v2.0 — Three view toggles: North / South / Both
 v1.0 — Static reveal with crests
 ====================================================================
@@ -261,6 +266,135 @@ v1.0 — Static reveal with crests
     background: var(--off-white) !important;
     color: var(--primary) !important;
   }
+  /* Branded Leaflet popup */
+  .leaflet-popup-content-wrapper {
+    background: var(--white) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 6px 24px rgba(10, 22, 40, 0.18) !important;
+    padding: 0 !important;
+  }
+  .leaflet-popup-content {
+    margin: 0 !important;
+    font-family: var(--font) !important;
+    width: 260px !important;
+  }
+  .leaflet-popup-tip {
+    background: var(--white) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: none !important;
+  }
+  .leaflet-popup-close-button {
+    color: var(--text-muted) !important;
+    font-size: 22px !important;
+    padding: 6px 8px !important;
+  }
+  .leaflet-popup-close-button:hover { color: var(--text) !important; }
+
+  .club-popup { font-family: var(--font); color: var(--text); }
+  .club-popup .head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .club-popup .head .crest {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 2.5px solid var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .club-popup .head.div-n .crest { border-color: var(--primary); }
+  .club-popup .head .crest img { width: 24px; height: 24px; object-fit: contain; display: block; }
+  .club-popup .head .name {
+    flex: 1; min-width: 0;
+    font-size: 14px;
+    font-weight: 800; font-variation-settings: 'wght' 800;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .club-popup .head .div-pill {
+    flex-shrink: 0;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 800; font-variation-settings: 'wght' 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--white);
+  }
+  .club-popup .head .div-pill.n { background: var(--primary); }
+  .club-popup .head .div-pill.s { background: var(--navy); }
+  .club-popup .primary { padding: 12px 14px 10px; border-bottom: 1px solid var(--border); }
+  .club-popup .primary .lbl {
+    font-size: 9px; font-weight: 800; font-variation-settings: 'wght' 800;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-muted); margin-bottom: 4px;
+  }
+  .club-popup .primary .val {
+    font-size: 22px; font-weight: 900; font-variation-settings: 'wght' 900;
+    line-height: 1; color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .club-popup .primary .val .sub {
+    font-size: 12px; font-weight: 600; font-variation-settings: 'wght' 600;
+    color: var(--text-muted); margin-left: 6px;
+  }
+  .club-popup .row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .club-popup .row:last-child { border-bottom: none; padding-bottom: 12px; }
+  .club-popup .row .lbl {
+    flex-shrink: 0; width: 64px;
+    font-size: 10px;
+    font-weight: 700; font-variation-settings: 'wght' 700;
+    text-transform: uppercase; letter-spacing: 0.6px;
+    color: var(--text-muted);
+  }
+  .club-popup .row .opp-crest {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .club-popup .row .opp-crest img { width: 16px; height: 16px; object-fit: contain; display: block; }
+  .club-popup .row .opp-info { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
+  .club-popup .row .opp-info .opp-name {
+    font-size: 12px; font-weight: 700; font-variation-settings: 'wght' 700;
+    color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .club-popup .row .opp-info .opp-trip {
+    font-size: 11px; font-weight: 600; font-variation-settings: 'wght' 600;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .club-popup .row .opp-info .opp-trip .sub { color: var(--text-muted); opacity: 0.7; margin-left: 4px; }
+  .club-popup .row.avg .val {
+    flex: 1; text-align: right;
+    font-size: 13px; font-weight: 800; font-variation-settings: 'wght' 800;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .club-popup .row.avg .val .sub {
+    font-size: 11px; font-weight: 600; font-variation-settings: 'wght' 600;
+    color: var(--text-muted); margin-left: 4px;
+  }
   /* Map overlay buttons (top-right) — fullscreen + reset */
   .map-controls {
     position: absolute;
@@ -420,6 +554,122 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 const crestMarkers = [];
 const dotMarkers = [];
 
+// Per-club data for rich popups: division, season (mins, round-trip), miles,
+// avg (mins, miles, round-trip), longest trip (mins, miles, opponent idx),
+// shortest trip (mins, miles, opponent idx).
+// Field keys are compressed (d,s,sm,a,am,lt,lm,lo,st,sm2,so) to keep the
+// inline data block small.
+const CLUB_DATA = [
+  /* 0 AFC Telford United*/ {d:'N',s:5874,sm:5091,a:255,am:221,lt:440,lm:433,lo:38,st:72,sm2:50,so:22},
+  /* 1 AFC Totton*/ {d:'S',s:4910,sm:4519,a:213,am:196,lt:438,lm:387,lo:44,st:70,sm2:40,so:35},
+  /* 2 Bedford Town*/ {d:'N',s:6984,sm:6662,a:304,am:290,lt:458,lm:457,lo:38,st:96,sm2:77,so:4},
+  /* 3 Billericay Town*/ {d:'S',s:4314,sm:3879,a:188,am:169,lt:646,lm:614,lo:44,st:32,sm2:18,so:7},
+  /* 4 Brackley Town*/ {d:'N',s:6566,sm:6109,a:285,am:266,lt:464,lm:468,lo:38,st:56,sm2:41,so:33},
+  /* 5 Braintree Town*/ {d:'S',s:5154,sm:4777,a:224,am:208,lt:674,lm:648,lo:44,st:56,sm2:41,so:7},
+  /* 6 Buxton*/ {d:'N',s:5744,sm:4486,a:250,am:195,lt:398,lm:340,lo:31,st:50,sm2:26,so:27},
+  /* 7 Chelmsford City*/ {d:'S',s:4504,sm:4140,a:196,am:180,lt:652,lm:626,lo:44,st:32,sm2:18,so:3},
+  /* 8 Chesham United*/ {d:'S',s:4060,sm:3568,a:177,am:155,lt:566,lm:554,lo:44,st:42,sm2:22,so:23},
+  /* 9 Chester*/ {d:'N',s:6066,sm:5162,a:264,am:224,lt:464,lm:385,lo:26,st:102,sm2:58,so:30},
+  /*10 Chorley*/ {d:'N',s:5704,sm:5018,a:248,am:218,lt:424,lm:396,lo:31,st:70,sm2:43,so:34},
+  /*11 Dagenham & Redbridge*/ {d:'S',s:4482,sm:3689,a:195,am:160,lt:648,lm:600,lo:44,st:54,sm2:34,so:3},
+  /*12 Darlington*/ {d:'N',s:6828,sm:6425,a:297,am:279,lt:560,lm:555,lo:31,st:56,sm2:39,so:41},
+  /*13 Dorking Wanderers*/ {d:'S',s:3794,sm:3112,a:165,am:135,lt:562,lm:520,lo:44,st:52,sm2:31,so:25},
+  /*14 Dover Athletic*/ {d:'S',s:5600,sm:5251,a:243,am:228,lt:692,lm:666,lo:44,st:28,sm2:17,so:18},
+  /*15 Ebbsfleet United*/ {d:'S',s:4066,sm:3553,a:177,am:154,lt:618,lm:585,lo:44,st:50,sm2:35,so:29},
+  /*16 Farnborough*/ {d:'S',s:3690,sm:3202,a:160,am:139,lt:494,lm:463,lo:44,st:40,sm2:21,so:17},
+  /*17 Farnham Town*/ {d:'S',s:3838,sm:3257,a:167,am:142,lt:494,lm:460,lo:44,st:40,sm2:21,so:16},
+  /*18 Folkestone Invicta*/ {d:'S',s:5312,sm:4985,a:231,am:217,lt:676,lm:653,lo:44,st:28,sm2:17,so:14},
+  /*19 Hampton & Richmond Borough*/ {d:'S',s:3736,sm:3107,a:162,am:135,lt:534,lm:499,lo:44,st:30,sm2:11,so:45},
+  /*20 Harborough Town*/ {d:'N',s:6134,sm:5726,a:267,am:249,lt:424,lm:429,lo:38,st:106,sm2:78,so:4},
+  /*21 Hebburn Town*/ {d:'N',s:8050,sm:7577,a:350,am:329,lt:626,lm:621,lo:31,st:20,sm2:8,so:38},
+  /*22 Hednesford Town*/ {d:'N',s:5368,sm:4791,a:233,am:208,lt:396,lm:388,lo:21,st:72,sm2:50,so:0},
+  /*23 Hemel Hempstead Town*/ {d:'S',s:4026,sm:3541,a:175,am:154,lt:576,lm:540,lo:44,st:42,sm2:22,so:8},
+  /*24 Hereford*/ {d:'N',s:7842,sm:6791,a:341,am:295,lt:550,lm:527,lo:38,st:122,sm2:87,so:31},
+  /*25 Horsham*/ {d:'S',s:4376,sm:3712,a:190,am:161,lt:588,lm:523,lo:44,st:52,sm2:31,so:13},
+  /*26 King's Lynn Town*/ {d:'N',s:8522,sm:7314,a:371,am:318,lt:510,lm:455,lo:31,st:100,sm2:69,so:40},
+  /*27 Macclesfield*/ {d:'N',s:5500,sm:4674,a:239,am:203,lt:394,lm:286,lo:26,st:50,sm2:26,so:6},
+  /*28 Maidenhead United*/ {d:'S',s:3790,sm:3381,a:165,am:147,lt:516,lm:522,lo:44,st:22,sm2:13,so:37},
+  /*29 Maidstone United*/ {d:'S',s:4108,sm:3698,a:179,am:161,lt:616,lm:589,lo:44,st:50,sm2:35,so:15},
+  /*30 Marine*/ {d:'N',s:6130,sm:5334,a:267,am:232,lt:458,lm:417,lo:26,st:52,sm2:27,so:39},
+  /*31 Merthyr Town*/ {d:'N',s:9652,sm:8790,a:420,am:382,lt:630,lm:623,lo:38,st:122,sm2:87,so:24},
+  /*32 Morecambe*/ {d:'N',s:6686,sm:5945,a:291,am:258,lt:490,lm:466,lo:31,st:98,sm2:74,so:10},
+  /*33 Oxford City*/ {d:'N',s:7372,sm:6764,a:321,am:294,lt:512,lm:510,lo:38,st:56,sm2:41,so:4},
+  /*34 Radcliffe*/ {d:'N',s:5510,sm:4940,a:240,am:215,lt:418,lm:395,lo:31,st:70,sm2:43,so:10},
+  /*35 Salisbury*/ {d:'S',s:5254,sm:4654,a:228,am:202,lt:408,lm:367,lo:44,st:70,sm2:40,so:1},
+  /*36 Scarborough Athletic*/ {d:'N',s:7874,sm:6688,a:342,am:291,lt:586,lm:536,lo:31,st:194,sm2:144,so:12},
+  /*37 Slough Town*/ {d:'S',s:3624,sm:3405,a:158,am:148,lt:518,lm:527,lo:44,st:22,sm2:13,so:28},
+  /*38 South Shields*/ {d:'N',s:8106,sm:7672,a:352,am:334,lt:630,lm:623,lo:31,st:20,sm2:8,so:21},
+  /*39 Southport*/ {d:'N',s:6350,sm:5467,a:276,am:238,lt:468,lm:421,lo:26,st:52,sm2:27,so:30},
+  /*40 Spalding United*/ {d:'N',s:7150,sm:6254,a:311,am:272,lt:448,lm:414,lo:31,st:100,sm2:69,so:26},
+  /*41 Spennymoor Town*/ {d:'N',s:7366,sm:6798,a:320,am:296,lt:598,lm:582,lo:31,st:56,sm2:39,so:12},
+  /*42 Tonbridge Angels*/ {d:'S',s:4160,sm:3580,a:181,am:156,lt:608,lm:572,lo:44,st:62,sm2:30,so:29},
+  /*43 Torquay United*/ {d:'S',s:9778,sm:8768,a:425,am:381,lt:562,lm:522,lo:14,st:182,sm2:164,so:46},
+  /*44 Truro City*/ {d:'S',s:12610,sm:11939,a:548,am:519,lt:692,lm:666,lo:14,st:230,sm2:217,so:43},
+  /*45 Walton & Hersham*/ {d:'S',s:3812,sm:3121,a:166,am:136,lt:544,lm:498,lo:44,st:30,sm2:11,so:19},
+  /*46 Weston-super-Mare*/ {d:'S',s:7290,sm:6872,a:317,am:299,lt:446,lm:445,lo:14,st:182,sm2:164,so:43},
+  /*47 Worksop Town*/ {d:'N',s:5450,sm:4817,a:237,am:209,lt:404,lm:377,lo:31,st:146,sm2:89,so:6},
+];
+
+// Format minutes as "Xh YYm" for trip-level (single fixtures) or "Xh" for season-level (large totals)
+function fmtTripMin(m) {
+  const h = Math.floor(m / 60);
+  const mm = m % 60;
+  return mm === 0 ? `${h}h` : `${h}h ${String(mm).padStart(2,'0')}m`;
+}
+function fmtSeasonHours(m) {
+  return `${Math.round(m / 60)}h`;
+}
+function crestUrlFor(name) {
+  return CREST_BASE + encodeURIComponent(name) + '.png';
+}
+
+// Build the rich popup HTML for club index i.
+function buildPopupHtml(i) {
+  const name = CLUBS[i][0];
+  const d = CLUB_DATA[i];
+  const longestName = CLUBS[d.lo][0];
+  const shortestName = CLUBS[d.so][0];
+  const longestCrest = crestUrlFor(longestName);
+  const shortestCrest = crestUrlFor(shortestName);
+  const selfCrest = crestUrlFor(name);
+  const divClass = d.d === 'N' ? 'div-n' : 'div-s';
+  const divPillClass = d.d === 'N' ? 'n' : 's';
+  const divLabel = d.d === 'N' ? 'North' : 'South';
+  return `
+    <div class="club-popup">
+      <div class="head ${divClass}">
+        <div class="crest"><img src="${selfCrest}" alt="" onerror="this.onerror=null;this.src='${CREST_FALLBACK}';"></div>
+        <div class="name">${name}</div>
+        <div class="div-pill ${divPillClass}">${divLabel}</div>
+      </div>
+      <div class="primary">
+        <div class="lbl">Season round-trip</div>
+        <div class="val">${fmtSeasonHours(d.s)}<span class="sub">${d.sm.toLocaleString()} mi</span></div>
+      </div>
+      <div class="row avg">
+        <span class="lbl">Avg trip</span>
+        <span class="val">${fmtTripMin(d.a)}<span class="sub">${d.am} mi</span></span>
+      </div>
+      <div class="row">
+        <span class="lbl">Longest</span>
+        <span class="opp-crest"><img src="${longestCrest}" alt="" onerror="this.onerror=null;this.src='${CREST_FALLBACK}';"></span>
+        <span class="opp-info">
+          <span class="opp-name">${longestName}</span>
+          <span class="opp-trip">${fmtTripMin(d.lt)}<span class="sub">${d.lm} mi</span></span>
+        </span>
+      </div>
+      <div class="row">
+        <span class="lbl">Shortest</span>
+        <span class="opp-crest"><img src="${shortestCrest}" alt="" onerror="this.onerror=null;this.src='${CREST_FALLBACK}';"></span>
+        <span class="opp-info">
+          <span class="opp-name">${shortestName}</span>
+          <span class="opp-trip">${fmtTripMin(d.st)}<span class="sub">${d.sm2} mi</span></span>
+        </span>
+      </div>
+    </div>
+  `;
+}
+
 CLUBS.forEach(([name, lat, lng], i) => {
   const isN = NORTH_IDX.has(i);
   const cls = isN ? 'crest-marker div-n' : 'crest-marker div-s';
@@ -427,13 +677,11 @@ CLUBS.forEach(([name, lat, lng], i) => {
   const html = `<div class="${cls}"><img src="${crestUrl}" alt="${name}" onerror="this.onerror=null;this.src='${CREST_FALLBACK}';"></div>`;
   const icon = L.divIcon({ className: '', html: html, iconSize: [34, 34], iconAnchor: [17, 17] });
   const crest = L.marker([lat, lng], { icon: icon });
-  const divTag = isN
-    ? '<span class="div-tag n">North</span>'
-    : '<span class="div-tag s">South</span>';
-  crest.bindTooltip(
-    `${divTag}<strong>${name}</strong><span class="meta">${SEASONS[i]}h round-trip driving</span>`,
-    { direction: 'top', offset: [0, -18], permanent: false }
-  );
+  // Light tooltip on hover (just name) — popup on click for the rich detail
+  crest.bindTooltip(`<strong>${name}</strong>`, { direction: 'top', offset: [0, -18] });
+  crest.bindPopup(() => buildPopupHtml(i), {
+    maxWidth: 280, minWidth: 260, autoPan: true, closeButton: true, offset: [0, -12]
+  });
   crestMarkers.push(crest);
 
   const dot = L.circleMarker([lat, lng], {
