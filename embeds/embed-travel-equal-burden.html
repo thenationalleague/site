@@ -155,12 +155,12 @@ v1.0 — Embeddable map matching the embed-travel-mathematical pattern.
   </div>
   <div id="map"></div>
   <div class="stats-strip">
-    <div class="stat"><span class="lbl">Total league</span><span class="val">5,988h</span></div>
-    <div class="stat"><span class="lbl">vs actual</span><span class="val">+1,269h (+27%)</span></div>
-    <div class="stat warn"><span class="lbl">Truro's season</span><span class="val">unchanged at 210h</span></div>
+    <div class="stat"><span class="lbl">League season</span><span class="val">336,278 mi</span></div>
+    <div class="stat"><span class="lbl">vs actual</span><span class="val">+81,841 mi (+32%)</span></div>
+    <div class="stat warn"><span class="lbl">Truro's season</span><span class="val">12,276 mi (basically unchanged)</span></div>
   </div>
   <div class="explainer-strip">
-    Surely it's unfair that Slough Town drive 60 hours a season and Truro drive 210? Why not equalise every club's burden? The problem is geography: <strong>Truro will always travel 210 hours a season</strong>, because that's where Cornwall is. The only way to "equalise" is to drag every other club up to match — Brackley's season goes from 109h to 124h, Hebburn pulled into long trips across the country, the map tipped into a bag and shaken. League-wide driving goes up <strong>1,269 hours</strong> for the sake of making things "fair." Truro travel exactly as far as they did before. You cannot equalise away geography.
+    Surely it's unfair that Slough Town drive 3,400 miles a season and Truro drive 12,000? Why not equalise every club's burden? The problem is geography: <strong>Truro will always drive 12,000 miles a season</strong>, because that's where Cornwall is. The only way to "equalise" is to drag everyone else up to match — Hebburn pulled into long trips across the country, the map tipped into a bag and shaken. League-wide driving goes up by <strong>82,000 miles</strong> — a 32% premium — for the sake of making things "fair." Truro travel exactly as far as they did before. You cannot equalise away geography.
   </div>
 </div>
 
@@ -216,7 +216,7 @@ const CLUBS = [
   ["Worksop Town", 53.3116, -1.1314],
 ];
 const NORTH_IDX = new Set([2, 3, 7, 8, 9, 10, 12, 15, 16, 19, 21, 23, 26, 28, 30, 32, 33, 34, 36, 37, 38, 39, 40, 41]);
-const SEASONS = [120, 106, 102, 124, 95, 116, 149, 126, 112, 131, 124, 109, 134, 99, 131, 131, 126, 97, 126, 122, 105, 155, 111, 106, 124, 110, 135, 144, 114, 106, 131, 141, 140, 110, 122, 108, 152, 113, 156, 133, 116, 144, 107, 162, 210, 98, 119, 137];
+const SEASONS = [6829, 5961, 5873, 7200, 5335, 6675, 7709, 6174, 6161, 7542, 6918, 5662, 7823, 7263, 7668, 7441, 7137, 5326, 7387, 6869, 5867, 9070, 6214, 5925, 6533, 5982, 6912, 8135, 6434, 6075, 7401, 7743, 7959, 6150, 6911, 5662, 8037, 6410, 9114, 7389, 6329, 8255, 5929, 9079, 12276, 5209, 6694, 7630];
 
 const map = L.map('map', {
   zoomControl: false, attributionControl: false,
@@ -234,7 +234,7 @@ CLUBS.forEach(([name, lat, lng], i) => {
     radius: 8, fillColor: colour, color: '#ffffff', weight: 2, fillOpacity: 1
   }).addTo(map);
   m.bindTooltip(
-    `<strong>${name}</strong><span class="season">${SEASONS[i]}h round-trip driving</span>`,
+    `<strong>${name}</strong><span class="season">${SEASONS[i].toLocaleString()} mi round-trip driving</span>`,
     { direction: 'top', offset: [0, -8], permanent: false }
   );
 });
