@@ -301,7 +301,7 @@
 <script>
 /*! H2H v2.7.13 — Abandoned+awarded: show A-A with asterisk; derive W/D/L from awarded */
   (function(){
-  var JSON_SRC = window.H2H_JSON_URL || "https://raw.githubusercontent.com/rckd-nl/website/main/results.json";
+  var JSON_SRC = window.H2H_JSON_URL || "https://raw.githubusercontent.com/thenationalleague/site/main/results.json"; // 14/11/2026: data now lives only in thenationalleague/site (rckd-nl/website retired)
   function dirOf(u){ try{ var url=new URL(u,location.href); url.pathname=url.pathname.replace(/[^/]+$/,''); return url.toString(); }catch(_){ var i=String(u).lastIndexOf('/'); return i>-1 ? u.slice(0,i+1) : ''; } }
   var META_SRC = window.H2H_CLUBS_META_URL || (dirOf(JSON_SRC) + "clubs-meta.json");
 
