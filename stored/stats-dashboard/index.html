@@ -1366,8 +1366,8 @@ body:not(.no-club) #intro{ display:none; }
     const STEP2_KEYS = new Set(['North','South']);
 
     // --- Endpoints (Raw + CDN fallback) ---
-    const GH_RAW_BASE = 'https://raw.githubusercontent.com/rckd-nl/website/main';
-    const GH_CDN_BASE = 'https://cdn.jsdelivr.net/gh/rckd-nl/website@main';
+    const GH_RAW_BASE = 'https://raw.githubusercontent.com/thenationalleague/site/main'; // 14/11/2026: data now lives only in thenationalleague/site (rckd-nl/website retired)
+    const GH_CDN_BASE = 'https://cdn.jsdelivr.net/gh/thenationalleague/site@main';
     const JSON_SRC_RAW   = `${GH_RAW_BASE}/results.json`;
     const TABLES_SRC_RAW = `${GH_RAW_BASE}/league-tables.json`;
     const CLUBS_META_RAW = `${GH_RAW_BASE}/clubs-meta.json`;
